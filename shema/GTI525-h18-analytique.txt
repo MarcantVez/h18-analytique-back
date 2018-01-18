@@ -1,0 +1,38 @@
+@startuml GTI525-h18-analytique.png
+skinparam defaultFontSize 14
+skinparam titleFontStyle Bold
+skinparam packageStyle rect
+scale 1.8
+
+title Shéma Analytique et publicité
+
+object "User" as webadmin
+webadmin : username
+webadmin : password
+
+object "WebsiteNavigationData" as wnd
+wnd : session
+wnd : url 
+wnd : hitCounter
+wnd : navigatorInfo
+
+object "PublicityCampaign" as pc
+pc : bannerOrientation
+pc : bannerHitCounter
+pc : bannerURL
+
+wnd "0..*" - "0..*" pc : "  have  "
+
+
+legend right
+**Livrable 1 - Équipe Analytique**
+Marc-Antoine Vézina
+Dulce Esperanza Cayetano Covarrubias
+Samuël Hénault Lefebvre
+Simon Côté
+André Lamba
+Ying Lam
+end legend
+
+Left footer   GTI525 - Livrable 1 - Équipe Analytique
+@enduml
