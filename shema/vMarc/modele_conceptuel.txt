@@ -1,0 +1,84 @@
+@startuml
+
+hide methods
+hide circle
+show << entity >> fields
+
+title Shéma Analytique et publicité
+
+class User << entity >> {
+	userId : Integer
+	userName : String
+	email : String
+	password : String
+}
+
+class WebAdmin << entity >> {
+	amountDue : Integer
+}
+
+class MarketingAdmin << entity >> {
+}
+
+class AdCampain << entity >> {
+	adCampainID : Integer
+	verticalImg : String
+	horizontalImg : String
+	mobileImg : String
+	redirectUrl : String
+}
+
+class Profile << entity >> {
+	profileID : Integer
+	maxAge : Integer
+	minAge : Integer
+}
+
+class TargetURL << entity >> {
+	urlID : Integer
+	domainName : String
+}
+
+class TrafficData << entity >> {
+	visitID : Integer
+	website : String
+	sourceIP : String
+	browser : String
+	os : String
+	deviceType : String
+	screenHeight : Integer
+	screenWidth : Integer
+	browserFingerprint : String
+}
+
+class BankAccount << entity >> {
+	bankInfoID : Integer
+	bankName : String
+	accountNo : Integer
+}
+
+note left of BankAccount
+	check with payment team
+end note		
+
+BankAccount "1" -- "1" User : "has"
+Profile "1" -- "0..*" TargetURL : "defined by"
+AdCampain "0..*" -- "1" MarketingAdmin : "creates"
+TrafficData "0..*" -- "0..*" AdCampain
+AdCampain "1" -- "0..*" Profile : "targets"
+User <|- MarketingAdmin
+User <|- WebAdmin
+
+legend right
+**Livrable 1 - Équipe Analytique**
+Marc-Antoine Vézina
+Dulce Esperanza Cayetano Covarrubias
+Samuël Hénault Lefebvre
+Simon Côté
+André Lamba
+Ying Lam
+end legend
+
+Left footer   GTI525 - Livrable 1 - Équipe Analytique
+
+@enduml
