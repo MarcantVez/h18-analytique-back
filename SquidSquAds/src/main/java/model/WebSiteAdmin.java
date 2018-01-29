@@ -1,5 +1,8 @@
 package model;
 
+
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+
 /**
  * @author: Dulce Cayetano
  * @Date_Of_Creation: 2018-01-18
