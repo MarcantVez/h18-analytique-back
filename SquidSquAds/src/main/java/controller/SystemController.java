@@ -1,6 +1,6 @@
 package controller;
 
-import model.WebSiteAdmin;
+import model.CompteUtilisateur;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
  * @Last_modified_by:
  * @Date_of_last_modification:
  **/
-@RestController
+@RestController("SystemController")
 public class SystemController {
 
     @RequestMapping(value = "/add-web-site-admin/", method = RequestMethod.POST)
-    public void addWebSiteAdmin(@RequestParam(required = true) WebSiteAdmin newAdmin){
+    public void addWebSiteAdmin(@RequestParam(required = true) CompteUtilisateur newAdmin){
 
     }
 }
