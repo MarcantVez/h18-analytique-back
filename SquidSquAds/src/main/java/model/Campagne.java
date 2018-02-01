@@ -25,10 +25,10 @@ public class Campagne{
     private String nom;
 
     @Column(name = "numero_compte")
-    private Date numeroCompte;
+    private int numeroCompte;
 
     @Column(name = "date_creation")
-    private int dateCreation;
+    private Date dateCreation;
 
     @Column(name = "image_hor")
     private String imageHor;
@@ -55,10 +55,9 @@ public class Campagne{
 
     public Campagne(){}
 
-    public Campagne(String nom, Date numeroCompte, int dateCreation, String imageHor, String imageVer, String imageMob, String urlRedirection, Date dateDebut, Date dateFin, float budget) {
+    public Campagne(String nom, int numeroCompte, String imageHor, String imageVer, String imageMob, String urlRedirection, Date dateDebut, Date dateFin, float budget) {
         this.nom = nom;
         this.numeroCompte = numeroCompte;
-        this.dateCreation = dateCreation;
         this.imageHor = imageHor;
         this.imageVer = imageVer;
         this.imageMob = imageMob;
@@ -68,15 +67,17 @@ public class Campagne{
         this.budget = budget;
     }
 
+    // JPA required method
+    @PrePersist
+    void createdNow() {
+        this.dateCreation = new Date();
+    }
+
     // GETTERS + SETTERS
 
 
     public long getNumeroCampagne() {
         return numeroCampagne;
-    }
-
-    public void setNumeroCampagne(long numeroCampagne) {
-        this.numeroCampagne = numeroCampagne;
     }
 
     public String getNom() {
@@ -87,19 +88,19 @@ public class Campagne{
         this.nom = nom;
     }
 
-    public Date getNumeroCompte() {
+    public int getNumeroCompte() {
         return numeroCompte;
     }
 
-    public void setNumeroCompte(Date numeroCompte) {
+    public void setNumeroCompte(int numeroCompte) {
         this.numeroCompte = numeroCompte;
     }
 
-    public int getDateCreation() {
+    public Date getDateCreation() {
         return dateCreation;
     }
 
-    public void setDateCreation(int dateCreation) {
+    public void setDateCreation(Date dateCreation) {
         this.dateCreation = dateCreation;
     }
 
