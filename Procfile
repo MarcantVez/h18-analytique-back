@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -Dserver.port=$PORT -jar build/libs/squidsquads-backend.jar
+web: java -Dserver.port=$PORT -jar  squidsquads-backend.jar
