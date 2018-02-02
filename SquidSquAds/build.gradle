@@ -15,7 +15,7 @@ apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 
 jar {
-    baseName = 'gs-spring-boot'
+    baseName = 'squidsquads-backend'
     version =  '0.1.0'
 }
 
@@ -35,5 +35,7 @@ dependencies {
 
     testCompile("junit:junit")
 }
-task stage(dependsOn: ['build', 'clean'])
-build.mustRunAfter clean
+
+task stage {
+    dependsOn build
+}

@@ -1,2 +1,1 @@
-./graldew clean build
-web: ./gralew bootRun
+web: java $JAVA_OPTS -Dserver.port=$PORT -jar build/libs/squidsquads-backend.jar
