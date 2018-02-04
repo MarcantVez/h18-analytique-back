@@ -9,4 +9,6 @@ public interface ICompteUtilisateurService {
     CompteUtilisateur trouverParCourriel(String courriel);
 
     CompteUtilisateur ajouterCompteUtilisateur(CompteUtilisateur compteUtilisateur);
+
+    boolean authentifierCompteUtilisateur(String courriel, String mdp);
 }

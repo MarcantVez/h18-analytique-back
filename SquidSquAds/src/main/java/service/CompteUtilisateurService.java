@@ -28,6 +28,19 @@ public class CompteUtilisateurService implements ICompteUtilisateurService {
         return compteUtilisateurRepository.save(compteUtilisateur);
     }
 
+    @Override
+    public boolean authentifierCompteUtilisateur(String courriel, String mdp) {
+        boolean isAuthentified = false;
+
+        CompteUtilisateur utilisateur = trouverParCourriel(courriel);
+        if( utilisateur != null & utilisateur.getMotDePasse().equals(mdp) )
+        {
+            isAuthentified = true;
+        }
+
+        return isAuthentified;
+    }
+
     public CompteUtilisateur trouverUtilisateurParNumeroCompte(Long numeroCompte)
     {
         return compteUtilisateurRepository.findOne(numeroCompte);

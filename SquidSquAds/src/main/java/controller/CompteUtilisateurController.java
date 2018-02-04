@@ -12,9 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-// Autre moyen d'access: https://o7planning.org/en/11705/create-a-login-application-with-spring-boot-spring-security-jpa#a13944805
-// https://jaxenter.com/rest-api-spring-java-8-112289.html
-
 /**
  * @author: Dulce Cayetano
  * @Date_Of_Creation: 2018-01-22
@@ -47,8 +44,8 @@ public class CompteUtilisateurController {
     //            "noCompteBanque": "0000"
     //    }
     @PostMapping("/nouvelleUtilisateur")
-    public CompteUtilisateur ajouterUtilisateur(@Valid @RequestBody CompteUtilisateur note) {
-        return compteUtilisateurService.ajouterCompteUtilisateur(note);
+    public CompteUtilisateur ajouterUtilisateur(@Valid @RequestBody CompteUtilisateur utilisateur) {
+        return compteUtilisateurService.ajouterCompteUtilisateur(utilisateur);
     }
 
     // Recuperer un utilisateur
@@ -88,4 +85,9 @@ public class CompteUtilisateurController {
         }
     }
 
+
+    public boolean authentifierUtilisateur(String courriel, String mdp)
+    {
+        return compteUtilisateurService.authentifierCompteUtilisateur(courriel, mdp);
+    }
 }
