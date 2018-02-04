@@ -28,9 +28,8 @@ public class CompteUtilisateurController {
     CompteUtilisateurService compteUtilisateurService;
 
 
-
-    // Get All Notes
-    @GetMapping("/allUsers")
+    // Recuperer tous les utilisateurs
+    @GetMapping("/tousUtilisateurs")
     public List<CompteUtilisateur> trouverTousLesUtilisateurs() {
         List<CompteUtilisateur> list = new ArrayList<>();
         compteUtilisateurService.trouverTous().forEach(list::add);
@@ -39,14 +38,21 @@ public class CompteUtilisateurController {
     }
 
 
-    // Create a new Note
-    @PostMapping("/newUsers")
+    // Nouvelle utilisateur
+    // Accessible par POST en JSON
+    //    {
+    //        "typeAdmin": "WEB",
+    //            "courriel": "json@json.com",
+    //            "motDePasse": "1234",
+    //            "noCompteBanque": "0000"
+    //    }
+    @PostMapping("/nouvelleUtilisateur")
     public CompteUtilisateur ajouterUtilisateur(@Valid @RequestBody CompteUtilisateur note) {
         return compteUtilisateurService.ajouterCompteUtilisateur(note);
     }
 
-    // Get a Single Note
-    @GetMapping("/user/{id}")
+    // Recuperer un utilisateur
+    @GetMapping("/utilisateur/{id}")
     public ResponseEntity<CompteUtilisateur> trouverUtilisateurParID(@PathVariable(value = "id") Long id) {
         CompteUtilisateur utilisateur = compteUtilisateurService.trouverUtilisateurParNumeroCompte(id);
 
@@ -56,8 +62,8 @@ public class CompteUtilisateurController {
         return ResponseEntity.ok().body(utilisateur);
     }
 
-    // Update a Note
-    @PostMapping("/user/{id}/update")
+    // Mettre a jour un utilisateur
+    @PostMapping("/utilisateur/{id}/update")
     public ResponseEntity<CompteUtilisateur> majUtilisateurParID(@PathVariable(value = "id") Long id) {
         ResponseEntity<CompteUtilisateur> re;
 
@@ -72,8 +78,8 @@ public class CompteUtilisateurController {
     }
 
 
-    // Delete a Note
-    @GetMapping("/user/{id}/delete")
+    // Supprimer un utilisateur
+    @GetMapping("/utilisateur/{id}/delete")
     public void supprimerUtilisateurParID(@PathVariable(value = "id") Long id) {
         try {
             compteUtilisateurService.supprimerUtilisateurParID(id);

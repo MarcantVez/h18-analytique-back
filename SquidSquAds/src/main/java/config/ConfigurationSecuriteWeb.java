@@ -21,11 +21,8 @@ public class ConfigurationSecuriteWeb extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-
         // Setting Service to find User in the database.
-        // And Setting PassswordEncoder
         auth.userDetailsService(userDetailsService);
-
     }
 
     @Override
@@ -33,32 +30,25 @@ public class ConfigurationSecuriteWeb extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable();
 
-        // The pages does not require login
+        // Page accessible sans authentification
         http.authorizeRequests().antMatchers("/", "/login", "/logout").permitAll();
 
-        // If no login, it will redirect to /login page.
-//        http.authorizeRequests().antMatchers("/loggedIn", "/logoutSuccessful").hasRole("WEB");
-//        http.authorizeRequests().antMatchers("/loggedIn", "/logoutSuccessful").hasRole("WEB");
+        // Ligne pour definir les pages avec access requis
         http.authorizeRequests().antMatchers("/loggedIn").hasAnyAuthority("WEB", "PUB");
-//        http.authorizeRequests().antMatchers("/loggedIn").access("hasAnyRole('WEB', 'PUB')");
 
-        // When the user has logged in as XX.
-        // But access a page that requires role YY,
-        // AccessDeniedException will be thrown.
+        // Si acces a une page non autorise erreur 403
         http.authorizeRequests().and().exceptionHandling().accessDeniedPage("/403");
 
-        // Config for Login Form
+        // Page de login
         http.authorizeRequests().and().formLogin()//
-                // Submit URL of login page.
-                .loginProcessingUrl("/j_spring_security_check") // Submit URL
+                .loginProcessingUrl("/j_spring_security_check")
                 .loginPage("/login")
                 .failureUrl("/login?error=true")
                 .usernameParameter("username")
                 .passwordParameter("password")
-                // Config for Logout Page
                 .and().logout().logoutUrl("/logout").logoutSuccessUrl("/logoutSuccessful");
 
-        // Config Remember Me.
+        // Config Remember Me
         http.authorizeRequests().and() //
                 .rememberMe().tokenRepository(this.persistentTokenRepository()) //
                 .tokenValiditySeconds(1 * 24 * 60 * 60); // 24h

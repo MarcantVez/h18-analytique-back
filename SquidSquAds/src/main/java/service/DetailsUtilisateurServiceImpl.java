@@ -24,27 +24,26 @@ public class DetailsUtilisateurServiceImpl  implements UserDetailsService {
         CompteUtilisateur appUser = compteUtilisateurService.trouverParCourriel(courriel);
 
         if (appUser == null) {
-            System.out.println("User not found! " + courriel);
-            throw new UsernameNotFoundException("User " + courriel + " was not found in the database");
+            System.out.println("Utilisateur inexistant pour " + courriel);
+            throw new UsernameNotFoundException("L'tilisateur " + courriel + "n'a pas ete trouve dans la base de donnees");
         }
 
-        System.out.println("Found User: " + appUser.getCourriel());
-        System.out.println(appUser.getTypeAdmin());
+        //System.out.println("Found User: " + appUser.getCourriel());
+        //System.out.println(appUser.getTypeAdmin());
 
-        // [ROLE_USER, ROLE_ADMIN,..]
-        List<String> roleNames = new ArrayList<>();
-        roleNames.add(appUser.getTypeAdmin());
+        // Liste des autorites
+        List<String> authorityNames = new ArrayList<>();
+        authorityNames.add(appUser.getTypeAdmin());
 
         List<GrantedAuthority> grantList = new ArrayList<>();
-        if (roleNames != null) {
-            for (String role : roleNames) {
-                GrantedAuthority authority = new SimpleGrantedAuthority(role);
+        if (authorityNames != null) {
+            for (String authorityName : authorityNames) {
+                GrantedAuthority authority = new SimpleGrantedAuthority(authorityName);
                 grantList.add(authority);
             }
         }
 
-        UserDetails userDetails = (UserDetails) new User(appUser.getCourriel(), //
-                appUser.getMotDePasse(), grantList);
+        UserDetails userDetails = new User(appUser.getCourriel(), appUser.getMotDePasse(), grantList);
 
         return userDetails;
     }
