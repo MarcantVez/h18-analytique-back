@@ -1,12 +1,19 @@
 package controller;
 
+import javassist.NotFoundException;
 import model.CompteUtilisateur;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import repository.CompteUtilisateurRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import service.CompteUtilisateurService;
+
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+
+
+// Autre moyen d'access: https://o7planning.org/en/11705/create-a-login-application-with-spring-boot-spring-security-jpa#a13944805
+// https://jaxenter.com/rest-api-spring-java-8-112289.html
 
 /**
  * @author: Dulce Cayetano
@@ -18,24 +25,61 @@ import repository.CompteUtilisateurRepository;
 public class CompteUtilisateurController {
 
     @Autowired
-    CompteUtilisateurRepository compteUtilisateurRepository;
+    CompteUtilisateurService compteUtilisateurService;
 
-    @RequestMapping("/save")
-    public String process(){
-        // save a single Customer
-        compteUtilisateurRepository.save(CompteUtilisateur.creerAdminWeb("test@test.com", "test", "0000 1111 2222 3333"));
 
-        return "Done";
+
+    // Get All Notes
+    @GetMapping("/allUsers")
+    public List<CompteUtilisateur> trouverTousLesUtilisateurs() {
+        List<CompteUtilisateur> list = new ArrayList<>();
+        compteUtilisateurService.trouverTous().forEach(list::add);
+
+        return list;
     }
 
-    @RequestMapping("/findAll")
-    public String findAll(){
-        String result = "";
 
-        for(CompteUtilisateur compteUtilisateur : compteUtilisateurRepository.findAll()){
-            result += compteUtilisateur.toString() + "<br>";
+    // Create a new Note
+    @PostMapping("/newUsers")
+    public CompteUtilisateur ajouterUtilisateur(@Valid @RequestBody CompteUtilisateur note) {
+        return compteUtilisateurService.ajouterCompteUtilisateur(note);
+    }
+
+    // Get a Single Note
+    @GetMapping("/user/{id}")
+    public ResponseEntity<CompteUtilisateur> trouverUtilisateurParID(@PathVariable(value = "id") Long id) {
+        CompteUtilisateur utilisateur = compteUtilisateurService.trouverUtilisateurParNumeroCompte(id);
+
+        if(utilisateur == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(utilisateur);
+    }
+
+    // Update a Note
+    @PostMapping("/user/{id}/update")
+    public ResponseEntity<CompteUtilisateur> majUtilisateurParID(@PathVariable(value = "id") Long id) {
+        ResponseEntity<CompteUtilisateur> re;
+
+        try {
+            CompteUtilisateur utilisateur = compteUtilisateurService.majUtilisateurParID(id);
+            re = ResponseEntity.ok().body(utilisateur);
+        } catch (NotFoundException e) {
+            re = ResponseEntity.notFound().build();
         }
 
-        return result;
+        return re;
     }
+
+
+    // Delete a Note
+    @GetMapping("/user/{id}/delete")
+    public void supprimerUtilisateurParID(@PathVariable(value = "id") Long id) {
+        try {
+            compteUtilisateurService.supprimerUtilisateurParID(id);
+        } catch (NotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 }
