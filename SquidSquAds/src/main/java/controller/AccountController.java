@@ -30,6 +30,25 @@ public class AccountController {
     @Autowired
     WebSiteAdminController webSiteAdminController;
 
+    /*
+        Authenticate REST API
+
+        JSON request
+        {
+            "email": "test@test.com",
+            "password": "test"
+        }
+
+        JSON response
+        {
+            "isAuthenticated": "true",
+            "accountID": "2",
+            "isAdminPub": "true",
+            "isAdminWeb": "false",
+            "displayName": "Moi",
+            "token": "HASH"
+        }
+     */
     @PostMapping(value = "/authenticate")
     public String authenticateAccount(@Valid @RequestBody AccountAuthenticateForm af)
     {
@@ -54,6 +73,23 @@ public class AccountController {
         return response;
     }
 
+    /*
+        Get Account REST API
+
+        HTTP GET Request
+        email=google2@google.com
+
+        JSON response
+        {
+            "accountID": "10",
+            "isAdminPub": "true",
+            "isAdminWeb": "false",
+            "email": "google2@google.com",
+            "bank": "1111 2222 3333 4444",
+            "webSiteAdminID": "11",
+            "url": "google2.com"
+        }
+     */
     @GetMapping(value = "/getAccount")
     public String getAccount(@RequestParam(required = true) String email)
     {
@@ -71,9 +107,7 @@ public class AccountController {
                     "\"email\": \"" + account.getEmail() + "\"," +
                     "\"bank\": \"" + account.getBankAccount() + "\"," +
                     "\"webSiteAdminID\": \"" + webSiteAdmin.getWebSiteAdminID() + "\"," +
-                    "\"url\": \"" + webSiteAdmin.getUrl() + "\"," +
-                    "";
-            response += "\" }";
+                    "\"url\": \"" + webSiteAdmin.getUrl() + "\" }";
         } catch (Exception e) {
             response += "\"error\": \"true\"," +
                     "\"reason\": \"" + e.getMessage() + "\"" +
@@ -82,6 +116,22 @@ public class AccountController {
         return response;
     }
 
+    /*
+      Add account REST API
+
+      JSON Request
+     {
+        "adminType": "ADS",
+        "email": "google2@google.com",
+        "domain": "google2.com",
+        "bank": "1111 2222 3333 4444",
+        "password": "gogol",
+        "confirmPassword": "gogol"
+    }
+
+      JSON response
+      { "created" : "true" }
+   */
     @PostMapping(value = "/addAccount")
     public String addAccount(@Valid @RequestBody AccountCreateForm acf)
     {
