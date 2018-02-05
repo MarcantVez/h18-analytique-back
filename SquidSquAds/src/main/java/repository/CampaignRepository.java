@@ -1,6 +1,6 @@
 package repository;
 
-import model.Campagne;
+import model.Campaign;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +12,6 @@ import java.util.List;
  */
 
 @Repository
-public interface CampagneRepository extends org.springframework.data.repository.Repository<Campagne, Long> {
-    List<Campagne> findAllByNumeroCompte(int numeroCompte);
+public interface CampaignRepository extends CrudRepository<Campaign, Long> {
+    List<Campaign> findByAuthor (Long accountId);
 }
