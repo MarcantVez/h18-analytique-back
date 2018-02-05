@@ -69,11 +69,8 @@ public class CampaignController {
             return new ResponseEntity(new ErrorInOperationException("Impossible de créer cette campagne, une campagne ayant " +
                     "l'identifiant "+newCampaign.getCampaignId()+" existe déjà"), HttpStatus.BAD_REQUEST);
         }
-        campaignService.addCampaign(newCampaign);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/campagne/{id}").buildAndExpand(newCampaign.getCampaignId()).toUri());
-        return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+        Campaign campaign = campaignService.addCampaign(newCampaign);
+        return new ResponseEntity<Campaign>(campaign, HttpStatus.CREATED);
     }
 
     // -------------------Update une Campagne---------------------------------------------
@@ -88,8 +85,8 @@ public class CampaignController {
             return new ResponseEntity(new ErrorInOperationException("Impossible de modifier. Aucune campagne ayant " +
                     "l'identifiant "+ id +" trouvée"), HttpStatus.BAD_REQUEST);
         }
-        campaignService.updateCampaign(campaign);
-        return new ResponseEntity<Campaign>(campaign, HttpStatus.OK);
+        Campaign updated = campaignService.updateCampaign(campaign);
+        return new ResponseEntity<Campaign>(updated, HttpStatus.OK);
     }
 
     // -------------------Supprimer une Campagne---------------------------------------------
@@ -104,7 +101,7 @@ public class CampaignController {
             return new ResponseEntity(new ErrorInOperationException("Impossible de supprimer. La campagne #"+id
                     +" n'a pas été trouvée"), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<Campaign>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<Campaign>(HttpStatus.OK);
     }
 
 }

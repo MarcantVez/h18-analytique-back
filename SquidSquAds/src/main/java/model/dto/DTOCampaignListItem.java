@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
  * @Date_Of_Creation: 2018-02-01
  */
 
-public class DTOCampaignListItem {
+public class DTOCampaignListItem implements IDataTransferObject<DTOCampaignListItem, Campaign> {
 
     private int id;
     private String nom;
@@ -21,13 +21,16 @@ public class DTOCampaignListItem {
         this.dateCreation = dateCreation;
     }
 
-    public static DTOCampaignListItem fromCampaign(Campaign campaign){
+
+    @Override
+    public DTOCampaignListItem fromClass(Campaign campaign) {
         return new DTOCampaignListItem(
                 campaign.getAccountId(),
                 campaign.getName(),
                 new SimpleDateFormat("yyyy-MM-dd").format(campaign.getCreationDate())
         );
     }
+
 
     // ----- GETTERS AND SETTERS
 
