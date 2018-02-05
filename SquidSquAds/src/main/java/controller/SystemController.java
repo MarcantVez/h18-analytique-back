@@ -1,7 +1,7 @@
 package controller;
 
 import model.WebSiteAdmin;
-import model.Campagne;
+import model.Campaign;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,8 +21,4 @@ public class SystemController {
 
     }
 
-    @RequestMapping(value = "/add-new-campagne/", method = RequestMethod.POST)
-    public void addCampagne(@RequestParam(required = true) Campagne newCampagne){
-
-    }
 }
