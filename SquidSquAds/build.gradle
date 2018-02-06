@@ -15,8 +15,11 @@ apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 
 jar {
-    baseName = 'gs-spring-boot'
+    baseName = 'squidsquads-backend'
     version =  '0.1.0'
+    manifest{
+        attributes("Main-Class": 'SquidSquAds.src.main.java.Application.java')
+    }
 }
 
 repositories {
@@ -34,4 +37,17 @@ dependencies {
 
 
     testCompile("junit:junit")
+}
+
+task stage(type: Copy, dependsOn: [clean, build]) {
+    from jar.archivePath
+    into project.rootDir
+    rename {
+        'squidsquads-backend.jar'
+    }
+}
+stage.mustRunAfter(clean)
+
+clean << {
+    project.file('squidsquads-backend.jar').delete()
 }

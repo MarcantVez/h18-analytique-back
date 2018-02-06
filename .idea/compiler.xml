@@ -2,6 +2,8 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
+      <module name="h18-analytique-back-SquidSquAds_main" target="1.8" />
+      <module name="h18-analytique-back-SquidSquAds_test" target="1.8" />
       <module name="SquidSquAds_main" target="1.8" />
       <module name="SquidSquAds_test" target="1.8" />
     </bytecodeTargetLevel>
