@@ -1,0 +1,21 @@
+package com.squidsquads.service.account;
+
+import com.squidsquads.model.account.WebSiteAdmin;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.squidsquads.repository.account.WebSiteAdminRepository;
+
+@Service
+public class WebSiteAdminService {
+
+    @Autowired
+    WebSiteAdminRepository webSiteAdminRepository;
+
+    public WebSiteAdmin findByAccountID(Long accountID) {
+        return webSiteAdminRepository.findByAccountID(accountID);
+    }
+
+    public WebSiteAdmin addWebSiteAdmin(WebSiteAdmin webSiteAdmin) {
+        return webSiteAdminRepository.save(webSiteAdmin);
+    }
+}
