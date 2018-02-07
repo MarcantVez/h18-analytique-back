@@ -14,9 +14,9 @@ import com.squidsquads.utils.exception.campaign.CampaignException;
 import com.squidsquads.utils.exception.campaign.CampaignFormatException;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -82,6 +82,7 @@ public class CampaignService {
                     newCampaign.profileIds
             );
             campaign.setAccountId(0);
+            campaign.setCreationDate(new Date());
             Campaign created = campaignRepository.save(campaign);
             for(long id : newCampaign.profileIds){
                 campaignProfileRepository.save(new CampaignProfile(id, created.getCampaignId()));

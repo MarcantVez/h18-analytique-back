@@ -29,7 +29,7 @@ CREATE TABLE Paiement
 (
     Numero_Paiement		BIGSERIAL,
     Numero_Compte		INTEGER NOT NULL,
-    Montant				MONEY,
+    Montant				NUMERIC,
     Date_Paiement		TIMESTAMP
 );
 
@@ -45,7 +45,7 @@ CREATE TABLE Campagne
     Url_De_Redirection	VARCHAR(100),
     Date_Debut			TIMESTAMP,
     Date_Fin			TIMESTAMP,
-    Budget				MONEY
+    Budget				NUMERIC
 );
 
 CREATE TABLE ProfilDUtilisateur
@@ -116,7 +116,7 @@ CREATE TABLE Redevance
     Numero_Redevance	BIGSERIAL,
     Numero_Compte		INTEGER NOT NULL,
     Numero_Visite		INTEGER NOT NULL,
-    Montant				MONEY,
+    Montant				NUMERIC,
     Date_Creation		TIMESTAMP,
     Est_Reclame			BOOLEAN
 );
