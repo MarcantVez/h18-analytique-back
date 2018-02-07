@@ -1,6 +1,6 @@
-package restForm.utilisateur;
+package form.account.request;
 
-public class AccountPasswordChange {
+public class AccountPasswordRequest {
     String oldPassword;
     String newPassword;
     String confirmPassword;

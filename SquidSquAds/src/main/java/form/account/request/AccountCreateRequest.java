@@ -1,6 +1,6 @@
-package restForm.utilisateur;
+package form.account.request;
 
-public class AccountCreateForm {
+public class AccountCreateRequest {
     public String adminType;
     public String email;
     public String domain;

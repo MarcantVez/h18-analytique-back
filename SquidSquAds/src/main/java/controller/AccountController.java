@@ -2,14 +2,19 @@ package controller;
 
 import exception.account.AccountExceptionType;
 import exception.account.AccountNotFoundException;
+import exception.account.AddAccountException;
+import form.account.response.AccountInfoResponse;
+import form.account.response.AuthenticateResponse;
+import form.account.response.MessageResponse;
 import model.account.Account;
 import model.account.AdminType;
 import model.account.WebSiteAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import restForm.utilisateur.AccountAuthenticateForm;
-import restForm.utilisateur.AccountCreateForm;
-import restForm.utilisateur.AccountIdentificationForm;
+import form.account.request.AccountAuthenticateRequest;
+import form.account.request.AccountCreateRequest;
 import service.account.AccountService;
 
 import javax.validation.Valid;
@@ -30,70 +35,39 @@ public class AccountController {
     @Autowired
     WebSiteAdminController webSiteAdminController;
 
-    /*
-        Authenticate REST API
 
-        JSON request
-        {
-            "email": "test@test.com",
-            "password": "test"
-        }
-
-        JSON response
-        {
-            "isAuthenticated": "true",
-            "accountID": "2",
-            "isAdminPub": "true",
-            "isAdminWeb": "false",
-            "displayName": "Moi",
-            "token": "HASH"
-        }
-     */
     @PostMapping(value = "/authenticate")
-    public String authenticateAccount(@Valid @RequestBody AccountAuthenticateForm af)
+    public ResponseEntity<?> authenticateAccount(@Valid @RequestBody AccountAuthenticateRequest af)
     {
-        String response = "{";
+        ResponseEntity<?> responseEntity;
         try {
             Account account = accountService.authenticate(af.email, af.password);
+            AuthenticateResponse authenticateResponse = new AuthenticateResponse(
+                    HttpStatus.OK.value(),
+                    true,
+                    account.getAccountID(),
+                    AdminType.valueOf(account.getAdminType()).equals(AdminType.ADS),
+                    AdminType.valueOf(account.getAdminType()).equals(AdminType.WEB),
+                    "HASH"
+                    );
 
-            // To generate with Swagger2 I guess ? Not enough time to look at swagger
-            response += "\"isAuthenticated\": \"true\"," +
-                    "\"accountID\": \"" + account.getAccountID() + "\"," +
-                    "\"isAdminPub\": \"" + account.getAdminType().equals(AdminType.ADS.toString()) + "\"," +
-                    "\"isAdminWeb\": \"" + account.getAdminType().equals(AdminType.WEB.toString()) + "\"," +
-                    //"\"displayName\": \"" + accountProfile.getName() + "\"," +
-                    "\"token\": \"HASH\"" +
-                    "}";
+            responseEntity = ResponseEntity.ok().body(authenticateResponse);
         } catch (Exception e) {
-            response += "\"isAuthenticated\": \"false\"," +
-                    "\"reason\": \"" + e.getMessage() + "\"" +
-                    "}";
+            MessageResponse messageResponse = new MessageResponse(
+                    HttpStatus.BAD_REQUEST.value(),
+                    e.getMessage()
+            );
+            responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
         }
 
-        return response;
+        return responseEntity;
     }
 
-    /*
-        Get Account REST API
 
-        HTTP GET Request
-        email=google2@google.com
-
-        JSON response
-        {
-            "accountID": "10",
-            "isAdminPub": "true",
-            "isAdminWeb": "false",
-            "email": "google2@google.com",
-            "bank": "1111 2222 3333 4444",
-            "webSiteAdminID": "11",
-            "url": "google2.com"
-        }
-     */
     @GetMapping(value = "/getAccount")
-    public String getAccount(@RequestParam(required = true) String email)
+    public ResponseEntity<?> getAccount(@RequestParam(required = true) String email)
     {
-        String response = "{";
+        ResponseEntity<?> responseEntity;
         try {
             Account account = accountService.findByEmail(email);
             if( account == null ) throw new AccountNotFoundException(AccountExceptionType.ACCOUNT_NOT_FOUND.toString());
@@ -101,85 +75,58 @@ public class AccountController {
             WebSiteAdmin webSiteAdmin = webSiteAdminController.findWebSiteAdminByAccountID(account.getAccountID());
             if( webSiteAdmin == null ) throw new AccountNotFoundException(AccountExceptionType.ACCOUNT_NOT_FOUND.toString()); //TODO: To change ?
 
-            response += "\"accountID\": \"" + account.getAccountID() + "\"," +
-                    "\"isAdminPub\": \"" + account.getAdminType().equals(AdminType.ADS.toString()) + "\"," +
-                    "\"isAdminWeb\": \"" + account.getAdminType().equals(AdminType.WEB.toString()) + "\"," +
-                    "\"email\": \"" + account.getEmail() + "\"," +
-                    "\"bank\": \"" + account.getBankAccount() + "\"," +
-                    "\"webSiteAdminID\": \"" + webSiteAdmin.getWebSiteAdminID() + "\"," +
-                    "\"url\": \"" + webSiteAdmin.getUrl() + "\" }";
+            AccountInfoResponse accountInfoResponse = new AccountInfoResponse(
+                    HttpStatus.OK.value(),
+                    account.getAccountID(),
+                    AdminType.valueOf(account.getAdminType()).equals(AdminType.ADS),
+                    AdminType.valueOf(account.getAdminType()).equals(AdminType.WEB),
+                    "HASH",
+                    account.getEmail(),
+                    account.getBankAccount(),
+                    webSiteAdmin.getUrl()
+            );
+
+            responseEntity = ResponseEntity.ok().body(accountInfoResponse);
+
+
         } catch (Exception e) {
-            response += "\"error\": \"true\"," +
-                    "\"reason\": \"" + e.getMessage() + "\"" +
-                    "}";
+            MessageResponse messageResponse = new MessageResponse(
+                    HttpStatus.BAD_REQUEST.value(),
+                    e.getMessage()
+            );
+            responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
         }
-        return response;
+
+        return responseEntity;
     }
 
-    /*
-      Add account REST API
 
-      JSON Request
-     {
-        "adminType": "ADS",
-        "email": "google2@google.com",
-        "domain": "google2.com",
-        "bank": "1111 2222 3333 4444",
-        "password": "gogol",
-        "confirmPassword": "gogol"
-    }
-
-      JSON response
-      { "created" : "true" }
-   */
     @PostMapping(value = "/addAccount")
-    public String addAccount(@Valid @RequestBody AccountCreateForm acf)
+    public ResponseEntity<?> addAccount(@Valid @RequestBody AccountCreateRequest acf)
     {
-        String response = "{ \"created\" : \"";
+        ResponseEntity<?> responseEntity;
 
         Account account = accountService.addAccount(new Account(acf.adminType, acf.email, acf.password, acf.bank));
         WebSiteAdmin webSiteAdmin = new WebSiteAdmin(account.getAccountID(), acf.domain);
         webSiteAdminController.addWebSiteAdmin(webSiteAdmin);
 
-        response += (account != null  & webSiteAdmin != null) ? true : false ;
-        response += "\" }";
-
-        return response;
-    }
-
-
-    ///// TODO FOLLOWING FOR LATER SPRINT !!!!!
-
-
-    @PostMapping(value = "/deleteAccount")
-    public String deleteAccount(@Valid @RequestBody AccountIdentificationForm aif)
-    {
-        String response = "{ \"deleted\" : \"";
-
         try {
-            accountService.deleteByEmail(aif.email);
-            response += true + "\"";
+            if(account == null) throw new AddAccountException(AccountExceptionType.ADD_ACCOUNT.toString());
+
+            MessageResponse messageResponse = new MessageResponse(
+                    HttpStatus.OK.value(),
+                    "OK"
+            );
+
+            responseEntity = ResponseEntity.ok().body(messageResponse);
         } catch (Exception e) {
-            response += false + "\"";
+            MessageResponse messageResponse = new MessageResponse(
+                    HttpStatus.BAD_REQUEST.value(),
+                    e.getMessage()
+            );
+            responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
         }
 
-        return response;
-    }
-
-    @PostMapping(value = "/updateAccount")
-    public String updateAccount(@Valid @RequestBody AccountCreateForm acf)
-    {
-        String response = "{ \"updated\" : \"";
-
-        try {
-            accountService.updateAccount(new Account(acf.adminType, acf.email, acf.password, acf.bank));
-            response +=  true ;
-        } catch (Exception e) {
-            response += false;
-        }
-
-        response += "\"";
-
-        return response;
+        return responseEntity;
     }
 }
