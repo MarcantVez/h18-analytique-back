@@ -1,6 +1,6 @@
 package com.squidsquads.form.campaign.request;
 
-public class CampaignCreateRequest {
+public class CampaignCreateUpdateRequest {
     public String name;
     public String redirectUrl;
     public Long[] profileIds;

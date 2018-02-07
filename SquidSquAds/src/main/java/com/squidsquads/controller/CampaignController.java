@@ -10,12 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.squidsquads.form.campaign.request.CampaignCreateRequest;
+import com.squidsquads.form.campaign.request.CampaignCreateUpdateRequest;
 import com.squidsquads.service.campaign.CampaignService;
 import com.squidsquads.utils.exception.ErrorInOperationException;
 import com.squidsquads.utils.exception.campaign.CampaignException;
 
-import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 
 /**
@@ -56,38 +55,30 @@ public class CampaignController {
     // -------------------Ajouter une Campagne---------------------------------------------
 
     @PostMapping(value = "/campagne", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createCampaign(@Valid @RequestBody CampaignCreateRequest newCampaign){
+    public ResponseEntity<?> createCampaign(@Valid @RequestBody CampaignCreateUpdateRequest newCampaign){
         logger.info("Création d'une campagne : {}", newCampaign);
-        try{
             // TODO remove this
             Campaign campaign = campaignService.addCampaign(newCampaign);
             return new ResponseEntity<Campaign>(campaign, HttpStatus.CREATED);
-        } catch (CampaignException campExcept) {
-            logger.error("Le format de campagne est ");
-            return new ResponseEntity(
-                    new ErrorInOperationException("Impossible de créer cette campagne, une campagne portant le même nom existe déjà"), HttpStatus.BAD_REQUEST);
-        }
     }
 
     // -------------------Update une Campagne---------------------------------------------
 
     @PutMapping(value = "campagne/{id}")
-    public ResponseEntity<Campaign> updateCampainById(@PathVariable(value = "id") Long id, @RequestBody Campaign campaign) {
+    public ResponseEntity<Campaign> updateCampainById(@PathVariable(value = "id") Long id, @Valid @RequestBody CampaignCreateUpdateRequest updatedCampaign) {
         logger.info("Mise à jour de la Campagne ayant l'identifiant {}", id);
-        Campaign targetCamaign = campaignService.findOneById(id);
-
-        if (targetCamaign == null) {
+        if (campaignService.findOneById(id) == null) {
             logger.error("Impossible de modifier. Aucune campagne ayant l'identifiant {} trouvée", id);
             return new ResponseEntity(new ErrorInOperationException("Impossible de modifier. Aucune campagne ayant " +
                     "l'identifiant "+ id +" trouvée"), HttpStatus.BAD_REQUEST);
         }
-        Campaign updated = campaignService.updateCampaign(campaign);
+        Campaign updated = campaignService.updateCampaign(updatedCampaign);
         return new ResponseEntity<Campaign>(updated, HttpStatus.OK);
     }
 
     // -------------------Supprimer une Campagne---------------------------------------------
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "campagne/{id}")
     public ResponseEntity<Campaign> deleteCampaignById(@PathVariable(value = "id") Long id) {
         logger.info("Recherche et suppression de la Campagne #{}", id);
         try {

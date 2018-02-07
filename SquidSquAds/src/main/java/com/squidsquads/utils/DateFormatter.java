@@ -16,7 +16,11 @@ public class DateFormatter {
         return format.format(aDate);
     }
 
-    public static Date StringToDate(String dateText) throws ParseException {
-        return (Date) format.parse(dateText);
+    public static Date StringToDate(String dateText) {
+        try {
+            return (Date) format.parse(dateText);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 }

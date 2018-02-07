@@ -9,7 +9,7 @@ import com.squidsquads.model.campaign.Campaign;
 import com.squidsquads.model.campaign.CampaignProfile;
 import com.squidsquads.form.campaign.response.CampaignListResponseItem;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.squidsquads.form.campaign.request.CampaignCreateRequest;
+import com.squidsquads.form.campaign.request.CampaignCreateUpdateRequest;
 import com.squidsquads.utils.exception.campaign.CampaignException;
 import com.squidsquads.utils.exception.campaign.CampaignFormatException;
 import org.springframework.stereotype.Service;
@@ -49,56 +49,42 @@ public class CampaignService {
     }
 
     // Modifier une Campagne.
-    public Campaign updateCampaign(Campaign Campagin) {
-        try {
-            return updateCampaignByID(Campagin.getCampaignId());
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    // Modifier une
-    public Campaign updateCampaignByID(Long campaignID) throws NotFoundException {
-        Campaign campaign = findOneById(campaignID);
-        if( campaign == null )
-        {
-            throw new NotFoundException("Campagne " + campaignID + " inexistante");
-        }
+    public Campaign updateCampaign(CampaignCreateUpdateRequest updatedCampaign) {
+        Campaign campaign = new Campaign(
+                updatedCampaign.name,
+                updatedCampaign.imageHor,
+                updatedCampaign.imageVer,
+                updatedCampaign.imageMob,
+                updatedCampaign.redirectUrl,
+                DateFormatter.StringToDate(updatedCampaign.dateDebut),
+                DateFormatter.StringToDate(updatedCampaign.dateFin),
+                updatedCampaign.budget,
+                updatedCampaign.profileIds
+        );
+        campaign.setAccountId(0);
+        campaign.setCreationDate(new Date());
         return campaignRepository.save(campaign);
     }
 
-    public Campaign addCampaign(CampaignCreateRequest newCampaign) throws CampaignException {
-        try {
-            Campaign campaign = new Campaign(
-                    newCampaign.name,
-                    newCampaign.imageHor,
-                    newCampaign.imageVer,
-                    newCampaign.imageMob,
-                    newCampaign.redirectUrl,
-                    DateFormatter.StringToDate(newCampaign.dateDebut),
-                    DateFormatter.StringToDate(newCampaign.dateFin),
-                    newCampaign.budget,
-                    newCampaign.profileIds
-            );
-            campaign.setAccountId(0);
-            campaign.setCreationDate(new Date());
-            Campaign created = campaignRepository.save(campaign);
-            for(long id : newCampaign.profileIds){
-                campaignProfileRepository.save(new CampaignProfile(id, created.getCampaignId()));
-            }
-            return created;
-        }catch (ParseException e) {
-            throw new CampaignFormatException("Le format de date pour cette campagne est invalide");
+    public Campaign addCampaign(CampaignCreateUpdateRequest newCampaign) {
+        Campaign campaign = new Campaign(
+                newCampaign.name,
+                newCampaign.imageHor,
+                newCampaign.imageVer,
+                newCampaign.imageMob,
+                newCampaign.redirectUrl,
+                DateFormatter.StringToDate(newCampaign.dateDebut),
+                DateFormatter.StringToDate(newCampaign.dateFin),
+                newCampaign.budget,
+                newCampaign.profileIds
+        );
+        campaign.setAccountId(0);
+        campaign.setCreationDate(new Date());
+        Campaign created = campaignRepository.save(campaign);
+        for(long id : newCampaign.profileIds){
+            campaignProfileRepository.save(new CampaignProfile(id, created.getCampaignId()));
         }
-    }
-
-    public void deleteCampaign(Campaign campaign) {
-        try {
-            deleteCampaignById(campaign.getCampaignId());
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-        }
+        return created;
     }
 
     public void deleteCampaignById(Long campaignId) throws NotFoundException {
