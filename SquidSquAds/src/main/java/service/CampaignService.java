@@ -1,30 +1,45 @@
 package service;
 
+import repository.campaign.CampaignPreviewRepository;
+import repository.campaign.CampaignProfileRepository;
+import repository.campaign.CampaignRepository;
 import javassist.NotFoundException;
 import model.Campaign;
+import model.CampaignProfile;
+import model.dto.CampaignPreview;
 import org.springframework.beans.factory.annotation.Autowired;
-import repository.CampaignRepository;
+import org.springframework.stereotype.Component;
+import restForm.CampaignCreateForm;
+import utils.exceptions.campaign.CampaignException;
+import utils.exceptions.campaign.CampaignFormatException;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
-public class CampaignService implements ICampaignService {
+@Component
+public class CampaignService {
     @Autowired
     CampaignRepository campaignRepository;
+    @Autowired
+    CampaignPreviewRepository campaignPreviewRepository;
+    @Autowired
+    CampaignProfileRepository campaignProfileRepository;
+
 
     // Trouver les campagnes publicitaires d'un compte
-    @Override
-    public List<Campaign> findAllForAuthor(Long accountId) {
-        return campaignRepository.findByAuthor(accountId);
+    public List<CampaignPreview> findAllForAuthor(Long accountId) {
+        return campaignPreviewRepository.findAllByAccountId(accountId);
     }
 
     // Trouver une campagne publicitaire par son identificateur
-    @Override
     public Campaign findOneById(Long campaingID) {
         return campaignRepository.findOne(campaingID);
     }
 
     // Modifier une Campagne.
-    @Override
     public Campaign updateCampaign(Campaign Campagin) {
         try {
             return updateCampaignByID(Campagin.getCampaignId());
@@ -44,12 +59,30 @@ public class CampaignService implements ICampaignService {
         return campaignRepository.save(campaign);
     }
 
-    @Override
-    public Campaign addCampaign(Campaign campaign) {
-        return campaignRepository.save(campaign);
+    public Campaign addCampaign(CampaignCreateForm newCampaign) throws CampaignException {
+        DateFormat format = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
+        try {
+            Campaign campaign = new Campaign(
+                    newCampaign.name,
+                    newCampaign.imageHor,
+                    newCampaign.imageVer,
+                    newCampaign.imageMob,
+                    newCampaign.redirectUrl,
+                    format.parse(newCampaign.dateDebut),
+                    format.parse(newCampaign.dateFin),
+                    newCampaign.budget,
+                    newCampaign.profileIds
+            );
+            Campaign created = campaignRepository.save(campaign);
+            for(long id : newCampaign.profileIds){
+                campaignProfileRepository.save(new CampaignProfile(id, created.getCampaignId()));
+            }
+            return created;
+        }catch (ParseException e) {
+            throw new CampaignFormatException("Le format de date pour cette campagne est invalide");
+        }
     }
 
-    @Override
     public void deleteCampaign(Campaign campaign) {
         try {
             deleteCampaignById(campaign.getCampaignId());

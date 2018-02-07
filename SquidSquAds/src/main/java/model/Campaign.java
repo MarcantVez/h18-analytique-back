@@ -1,7 +1,5 @@
 package model;
 
-import org.springframework.stereotype.Component;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -12,9 +10,8 @@ import java.util.Date;
  * @Date_of_last_modification
  **/
 
-@Component
 @Entity
-@Table(name="Campagne")
+@Table(name="campagne")
 public class Campaign {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,6 +23,8 @@ public class Campaign {
 
     @Column(name = "numero_compte")
     private int accountId;
+
+    private Long[] linkedProfiles;
 
     @Column(name = "date_creation")
     private Date creationDate;
@@ -55,9 +54,8 @@ public class Campaign {
 
     public Campaign(){}
 
-    public Campaign(String name, int accountId, String horizontalImg, String verticalImg, String mobileImg, String redirectUrl, Date startDate, Date endDate, float budget) {
+    public Campaign(String name, String horizontalImg, String verticalImg, String mobileImg, String redirectUrl, Date startDate, Date endDate, float budget, Long[] linkedProfiles) {
         this.name = name;
-        this.accountId = accountId;
         this.horizontalImg = horizontalImg;
         this.verticalImg = verticalImg;
         this.mobileImg = mobileImg;
@@ -65,6 +63,7 @@ public class Campaign {
         this.startDate = startDate;
         this.endDate = endDate;
         this.budget = budget;
+        this.linkedProfiles = linkedProfiles;
     }
 
     // JPA required method
@@ -79,10 +78,6 @@ public class Campaign {
         return campaignId;
     }
 
-    public void setCampaignId(long campaignId) {
-        this.campaignId = campaignId;
-    }
-
     public String getName() {
         return name;
     }
@@ -93,10 +88,6 @@ public class Campaign {
 
     public int getAccountId() {
         return accountId;
-    }
-
-    public void setAccountId(int accountId) {
-        this.accountId = accountId;
     }
 
     public Date getCreationDate() {
@@ -179,4 +170,3 @@ public class Campaign {
                 "budget="+budget+"}";
     }
 }
-

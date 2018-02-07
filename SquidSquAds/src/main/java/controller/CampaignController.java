@@ -2,20 +2,19 @@ package controller;
 
 import javassist.NotFoundException;
 import model.Campaign;
-import model.dto.DTOCampaignListItem;
+import model.dto.CampaignPreview;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
+import restForm.CampaignCreateForm;
 import service.CampaignService;
 import utils.exceptions.ErrorInOperationException;
+import utils.exceptions.campaign.CampaignException;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +23,6 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/campagne")
 public class CampaignController {
     public static final Logger logger = LoggerFactory.getLogger(CampaignController.class);
 
@@ -33,21 +31,17 @@ public class CampaignController {
 
     // -------------------Trouver une campagne par ID de compte---------------------------------------------
 
-    @GetMapping(value = "/list")
-    public ResponseEntity<List<DTOCampaignListItem>> findAllforAuthor(){
+    @GetMapping("/campagne")
+    public ResponseEntity<List<CampaignPreview>> findAllForAuthor(){
         // TODO find logged in account ID
         long accountID = 0;
-        List<Campaign> campaigns = campaignService.findAllForAuthor(accountID);
-        List<DTOCampaignListItem> results = new ArrayList<>();
-        for(Campaign camp : campaigns){
-            results.add(DTOCampaignListItem.fromCampaign(camp));
-        }
-        return ResponseEntity.ok().body(results);
+        List<CampaignPreview> campaignPreviewList = campaignService.findAllForAuthor(accountID);
+        return ResponseEntity.ok().body(campaignPreviewList);
     }
 
     // -------------------Trouver une Campagne---------------------------------------------
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/campagne/{id}")
     public ResponseEntity<Campaign> findById(@PathVariable(value = "id") Long id) {
         logger.info("Recherche d'une campagne avec l'identifiant {}", id);
         Campaign campaign = campaignService.findOneById(id);
@@ -60,22 +54,21 @@ public class CampaignController {
 
     // -------------------Ajouter une Campagne---------------------------------------------
 
-    @PostMapping(value = "/create")
-    public ResponseEntity<?> createCampaign(@Valid @RequestBody Campaign newCampaign, UriComponentsBuilder ucBuilder){
+    @PostMapping(value = "campagne")
+    public ResponseEntity<?> createCampaign(@Valid @RequestBody CampaignCreateForm newCampaign){
         logger.info("Création d'une campagne : {}", newCampaign);
-
-        if (campaignService.findOneById(newCampaign.getCampaignId()) != null) {
-            logger.error("Impossible de créer cette campagne, une campagne ayant l'identifiant {} existe déjà", newCampaign.getCampaignId());
-            return new ResponseEntity(new ErrorInOperationException("Impossible de créer cette campagne, une campagne ayant " +
-                    "l'identifiant "+newCampaign.getCampaignId()+" existe déjà"), HttpStatus.BAD_REQUEST);
+        try{
+            Campaign campaign = campaignService.addCampaign(newCampaign);
+            return new ResponseEntity<Campaign>(campaign, HttpStatus.CREATED);
+        } catch (CampaignException campExcept) {
+            logger.error("Le format de campagne est ");
+            return new ResponseEntity(new ErrorInOperationException("Impossible de créer cette campagne, une campagne portant le même nom existe déjà"), HttpStatus.BAD_REQUEST);
         }
-        Campaign campaign = campaignService.addCampaign(newCampaign);
-        return new ResponseEntity<Campaign>(campaign, HttpStatus.CREATED);
     }
 
     // -------------------Update une Campagne---------------------------------------------
 
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = "campagne/{id}")
     public ResponseEntity<Campaign> updateCampainById(@PathVariable(value = "id") Long id, @RequestBody Campaign campaign) {
         logger.info("Mise à jour de la Campagne ayant l'identifiant {}", id);
         Campaign targetCamaign = campaignService.findOneById(id);

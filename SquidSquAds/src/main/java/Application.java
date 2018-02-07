@@ -1,7 +1,6 @@
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author: Dulce Cayetano
@@ -9,8 +8,7 @@ import org.springframework.context.annotation.Configuration;
  * @Last_modified_by:
  * @Date_of_last_modification:
  **/
-@Configuration
-@EnableAutoConfiguration
+@SpringBootApplication
 public class Application {
     private static ApplicationContext applicationContext;
 

@@ -1,4 +1,4 @@
-package repository;
+package repository.campaign;
 
 import model.Campaign;
 import org.springframework.data.repository.CrudRepository;
@@ -13,5 +13,5 @@ import java.util.List;
 
 @Repository
 public interface CampaignRepository extends CrudRepository<Campaign, Long> {
-    List<Campaign> findByAuthor (Long accountId);
+    List<Campaign> findByAccountId (Long accountId);
 }
