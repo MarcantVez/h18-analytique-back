@@ -98,5 +98,3 @@ SquidSquAds/out/**
 SquidSquAds/build/**
 *.class
 .idea/**
-gradlew
-*.ipr
