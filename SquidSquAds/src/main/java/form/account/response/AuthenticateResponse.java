@@ -1,6 +1,6 @@
 package form.account.response;
 
-import form.account.Form;
+import form.Form;
 
 public class AuthenticateResponse extends Form {
     private boolean isAuthenticated;

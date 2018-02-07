@@ -1,17 +1,17 @@
-package service;
+package service.campaign;
 
 import repository.campaign.CampaignPreviewRepository;
 import repository.campaign.CampaignProfileRepository;
 import repository.campaign.CampaignRepository;
 import javassist.NotFoundException;
-import model.Campaign;
-import model.CampaignProfile;
-import model.dto.CampaignPreview;
+import model.campaign.Campaign;
+import model.campaign.CampaignProfile;
+import form.campaign.response.CampaignListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import restForm.CampaignCreateForm;
-import utils.exceptions.campaign.CampaignException;
-import utils.exceptions.campaign.CampaignFormatException;
+import exception.campaign.CampaignException;
+import exception.campaign.CampaignFormatException;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -30,7 +30,7 @@ public class CampaignService {
 
 
     // Trouver les campagnes publicitaires d'un compte
-    public List<CampaignPreview> findAllForAuthor(Long accountId) {
+    public List<CampaignListResponse> findAllForAuthor(Long accountId) {
         return campaignPreviewRepository.findAllByAccountId(accountId);
     }
 

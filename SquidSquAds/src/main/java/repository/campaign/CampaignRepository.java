@@ -1,6 +1,6 @@
 package repository.campaign;
 
-import model.Campaign;
+import model.campaign.Campaign;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,6 @@
 package form.account.response;
 
-import form.account.Form;
+import form.Form;
 
 public class MessageResponse extends Form{
     private String message;

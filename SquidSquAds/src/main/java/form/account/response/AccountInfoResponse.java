@@ -1,6 +1,6 @@
 package form.account.response;
 
-import form.account.Form;
+import form.Form;
 
 public class AccountInfoResponse extends Form {
     private Long accountID;

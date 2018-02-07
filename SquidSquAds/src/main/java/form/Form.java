@@ -1,4 +1,4 @@
-package form.account;
+package form;
 
 public abstract class Form {
     protected int status;

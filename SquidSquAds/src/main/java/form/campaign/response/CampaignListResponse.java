@@ -1,16 +1,19 @@
-package model.dto;
+package form.campaign.response;
+
+import form.Form;
 
 /**
  * @author Marc-Antoine Vézina
  * @Date_Of_Creation: 2018-02-01
  */
 
-public class CampaignPreview {
+public class CampaignListResponse extends Form{
     private Long id;
     private String nom;
     private String dateCreation;
 
-    public CampaignPreview(Long id, String nom, String dateCreation) {
+    public CampaignListResponse(int status, Long id, String nom, String dateCreation) {
+        super(status);
         this.id = id;
         this.nom = nom;
         this.dateCreation = dateCreation;

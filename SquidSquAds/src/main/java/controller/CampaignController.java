@@ -1,8 +1,8 @@
 package controller;
 
 import javassist.NotFoundException;
-import model.Campaign;
-import model.dto.CampaignPreview;
+import model.campaign.Campaign;
+import form.campaign.response.CampaignListResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import restForm.CampaignCreateForm;
-import service.CampaignService;
+import service.campaign.CampaignService;
 import utils.exceptions.ErrorInOperationException;
-import utils.exceptions.campaign.CampaignException;
+import exception.campaign.CampaignException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -32,11 +32,11 @@ public class CampaignController {
     // -------------------Trouver une campagne par ID de compte---------------------------------------------
 
     @GetMapping("/campagne")
-    public ResponseEntity<List<CampaignPreview>> findAllForAuthor(){
+    public ResponseEntity<List<CampaignListResponse>> findAllForAuthor(){
         // TODO find logged in account ID
         long accountID = 0;
-        List<CampaignPreview> campaignPreviewList = campaignService.findAllForAuthor(accountID);
-        return ResponseEntity.ok().body(campaignPreviewList);
+        List<CampaignListResponse> campaignListResponseList = campaignService.findAllForAuthor(accountID);
+        return ResponseEntity.ok().body(campaignListResponseList);
     }
 
     // -------------------Trouver une Campagne---------------------------------------------

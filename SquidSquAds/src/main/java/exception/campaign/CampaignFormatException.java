@@ -1,4 +1,4 @@
-package utils.exceptions.campaign;
+package exception.campaign;
 
 public class CampaignFormatException extends CampaignException {
     public CampaignFormatException(String errormessage) {

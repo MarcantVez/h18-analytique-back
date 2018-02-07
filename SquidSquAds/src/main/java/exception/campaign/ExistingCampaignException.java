@@ -1,4 +1,4 @@
-package utils.exceptions.campaign;
+package exception.campaign;
 
 public class ExistingCampaignException extends CampaignException{
     public ExistingCampaignException(String message) {

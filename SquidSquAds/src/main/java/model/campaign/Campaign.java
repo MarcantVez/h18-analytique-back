@@ -1,4 +1,4 @@
-package model;
+package model.campaign;
 
 import javax.persistence.*;
 import java.util.Date;
