@@ -129,4 +129,16 @@ public class AccountController {
 
         return responseEntity;
     }
+
+
+    // TEST ONLY
+//    @GetMapping(value = "/test")
+//    public ResponseEntity<?> test(@RequestParam Long id)
+//    {
+//        ResponseEntity<?> responseEntity;
+//        Account account = accountService.test(id);
+//        responseEntity = ResponseEntity.ok().body(account);
+//
+//        return responseEntity;
+//    }
 }

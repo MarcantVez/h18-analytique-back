@@ -1,7 +1,7 @@
 package service.account;
 
 import exception.account.AccountNotFoundException;
-import exception.account.WrongPasswordException;
+import exception.account.AccountWrongPasswordException;
 import exception.account.AccountExceptionType;
 import model.account.Account;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +57,7 @@ public class AccountService {
         }
         if( account.getPassword().equals(password) == false )
         {
-            throw new WrongPasswordException(AccountExceptionType.WRONG_PASSWORD.toString());
+            throw new AccountWrongPasswordException(AccountExceptionType.WRONG_PASSWORD.toString());
         }
 
         return account;
@@ -67,4 +67,10 @@ public class AccountService {
     {
         return accountRepository.findOne(accountID);
     }
+
+    // TEST ONLY
+//    public Account test(Long id)
+//    {
+//        return accountRepository.customFind(id);
+//    }
 }

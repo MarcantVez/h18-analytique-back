@@ -14,7 +14,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  **/
 
 @Configuration
-@ComponentScan({"controller", "service", "config"})
+@ComponentScan({"controller", "service"})
 @EnableJpaRepositories("repository")
 @EntityScan("model")
 @EnableAutoConfiguration
