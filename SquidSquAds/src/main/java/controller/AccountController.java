@@ -108,9 +108,14 @@ public class AccountController {
             Account account = accountService.findAccountByAcountID(id);
             if( account == null ) throw new AccountNotFoundException(AccountExceptionType.ACCOUNT_NOT_FOUND.toString());
 
-            WebSiteAdmin webSiteAdmin = webSiteAdminController.findWebSiteAdminByAccountID(account.getAccountID());
-            if( webSiteAdmin == null ) throw new AccountNotFoundException(AccountExceptionType.ACCOUNT_NOT_FOUND.toString()); //TODO: To change ?
-
+            String url = "";
+            if( AdminType.valueOf(account.getAdminType()).equals(AdminType.WEB) ) {
+                WebSiteAdmin webSiteAdmin = webSiteAdminController.findWebSiteAdminByAccountID(account.getAccountID());
+                if (webSiteAdmin == null) {
+                    throw new AccountNotFoundException(AccountExceptionType.ACCOUNT_NOT_FOUND.toString());
+                }
+                url = webSiteAdmin.getUrl();
+            }
             AccountInfoResponse accountInfoResponse = new AccountInfoResponse(
                     HttpStatus.OK.value(),
                     account.getAccountID(),
@@ -119,7 +124,7 @@ public class AccountController {
                     "HASH",
                     account.getEmail(),
                     account.getBankAccount(),
-                    webSiteAdmin.getUrl()
+                    url
             );
 
             responseEntity = ResponseEntity.ok().body(accountInfoResponse);
