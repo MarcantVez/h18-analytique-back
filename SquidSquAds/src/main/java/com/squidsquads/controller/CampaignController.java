@@ -57,9 +57,8 @@ public class CampaignController {
     @PostMapping(value = "/campagne", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createCampaign(@Valid @RequestBody CampaignCreateUpdateRequest newCampaign){
         logger.info("Création d'une campagne : {}", newCampaign);
-            // TODO remove this
-            Campaign campaign = campaignService.addCampaign(newCampaign);
-            return new ResponseEntity<Campaign>(campaign, HttpStatus.CREATED);
+        Campaign campaign = campaignService.addCampaign(newCampaign);
+        return new ResponseEntity<Campaign>(campaign, HttpStatus.CREATED);
     }
 
     // -------------------Update une Campagne---------------------------------------------

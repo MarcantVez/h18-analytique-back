@@ -14,9 +14,9 @@ import java.util.Date;
 @Table(name="campagne")
 public class Campaign {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "numero_campagne")
-    private long campaignId;
+    private Long campaignId;
 
     @Column(name = "nom")
     private String name;
@@ -24,7 +24,7 @@ public class Campaign {
     @Column(name = "numero_compte")
     private int accountId;
 
-    private Long[] linkedProfiles;
+    private Long[] profileIds;
 
     @Column(name = "date_creation")
     private Date creationDate;
@@ -54,7 +54,8 @@ public class Campaign {
 
     public Campaign(){}
 
-    public Campaign(String name, String horizontalImg, String verticalImg, String mobileImg, String redirectUrl, Date startDate, Date endDate, float budget, Long[] linkedProfiles) {
+    public Campaign(Long campaignId, String name, String horizontalImg, String verticalImg, String mobileImg, String redirectUrl, Date startDate, Date endDate, float budget, Long[] linkedProfiles) {
+        this.campaignId = campaignId;
         this.name = name;
         this.horizontalImg = horizontalImg;
         this.verticalImg = verticalImg;
@@ -63,19 +64,18 @@ public class Campaign {
         this.startDate = startDate;
         this.endDate = endDate;
         this.budget = budget;
-        this.linkedProfiles = linkedProfiles;
-    }
-
-    // JPA required method
-    @PrePersist
-    void createdNow() {
         this.creationDate = new Date();
+        this.profileIds = linkedProfiles;
     }
 
     // GETTERS + SETTERS
 
-    public long getCampaignId() {
+    public Long getCampaignId() {
         return campaignId;
+    }
+
+    public void setCampaignId(Long campaignId) {
+        this.campaignId = campaignId;
     }
 
     public String getName() {
@@ -156,6 +156,14 @@ public class Campaign {
 
     public void setAccountId(int accountId) {
         this.accountId = accountId;
+    }
+
+    public Long[] getProfileIds() {
+        return profileIds;
+    }
+
+    public void setProfileIds(Long[] profileIds) {
+        this.profileIds = profileIds;
     }
 
     @Override

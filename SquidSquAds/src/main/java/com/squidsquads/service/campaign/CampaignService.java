@@ -1,8 +1,10 @@
 package com.squidsquads.service.campaign;
 
 import com.squidsquads.form.campaign.response.CampaignListResponse;
+import com.squidsquads.model.profile.Profile;
 import com.squidsquads.repository.campaign.CampaignProfileRepository;
 import com.squidsquads.repository.campaign.CampaignRepository;
+import com.squidsquads.repository.profile.ProfileRepository;
 import com.squidsquads.utils.DateFormatter;
 import javassist.NotFoundException;
 import com.squidsquads.model.campaign.Campaign;
@@ -14,10 +16,9 @@ import com.squidsquads.utils.exception.campaign.CampaignException;
 import com.squidsquads.utils.exception.campaign.CampaignFormatException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CampaignService {
@@ -25,6 +26,8 @@ public class CampaignService {
     CampaignRepository campaignRepository;
     @Autowired
     CampaignProfileRepository campaignProfileRepository;
+    @Autowired
+    ProfileRepository profileRepository;
 
 
     // Trouver les campagnes publicitaires d'un compte
@@ -36,7 +39,7 @@ public class CampaignService {
                 new CampaignListResponseItem(
                     c.getCampaignId(),
                     c.getName(),
-                    DateFormatter.DateToString((Date) c.getCreationDate())
+                    DateFormatter.DateToString(c.getCreationDate())
                 )
             );
         }
@@ -49,8 +52,10 @@ public class CampaignService {
     }
 
     // Modifier une Campagne.
+    @Transactional
     public Campaign updateCampaign(CampaignCreateUpdateRequest updatedCampaign) {
         Campaign campaign = new Campaign(
+                updatedCampaign.campaignId,
                 updatedCampaign.name,
                 updatedCampaign.imageHor,
                 updatedCampaign.imageVer,
@@ -61,13 +66,17 @@ public class CampaignService {
                 updatedCampaign.budget,
                 updatedCampaign.profileIds
         );
+        campaignProfileRepository.deleteAllByCampaignID(updatedCampaign.campaignId);
+        for(long id : updatedCampaign.profileIds){
+            campaignProfileRepository.save(new CampaignProfile(id, updatedCampaign.campaignId));
+        }
         campaign.setAccountId(0);
-        campaign.setCreationDate(new Date());
-        return campaignRepository.save(campaign);
+        return  campaignRepository.save(campaign);
     }
 
     public Campaign addCampaign(CampaignCreateUpdateRequest newCampaign) {
         Campaign campaign = new Campaign(
+                null,
                 newCampaign.name,
                 newCampaign.imageHor,
                 newCampaign.imageVer,
@@ -79,7 +88,6 @@ public class CampaignService {
                 newCampaign.profileIds
         );
         campaign.setAccountId(0);
-        campaign.setCreationDate(new Date());
         Campaign created = campaignRepository.save(campaign);
         for(long id : newCampaign.profileIds){
             campaignProfileRepository.save(new CampaignProfile(id, created.getCampaignId()));

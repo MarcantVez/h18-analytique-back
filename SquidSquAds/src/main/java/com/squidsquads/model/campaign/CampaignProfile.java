@@ -3,7 +3,7 @@ package com.squidsquads.model.campaign;
 import javax.persistence.*;
 
 @Entity
-@Table(name="campagne_profilutilisateur")
+@Table(name="campagne_profildutilisateur")
 public class CampaignProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,6 +17,9 @@ public class CampaignProfile {
     private Long campaignID;
 
     // CONSTRUCTORS
+
+
+    public CampaignProfile() {}
 
     public CampaignProfile(Long profileID, Long campaignID) {
         this.profileID = profileID;

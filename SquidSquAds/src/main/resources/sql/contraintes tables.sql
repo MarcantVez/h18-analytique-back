@@ -30,8 +30,8 @@ ALTER TABLE Campagne ADD CONSTRAINT fk_campagne_no_compte FOREIGN KEY (Numero_Co
 ALTER TABLE ProfilDUtilisateur ADD CONSTRAINT fk_profildutilisateur_no_compte FOREIGN KEY (Numero_Compte) REFERENCES CompteUtilisateur (Numero_Compte);
 
 -- CLE TABLE Campagne_ProfilDUtilisateur
-ALTER TABLE Campagne_ProfilDUtilisateur ADD CONSTRAINT fk_campagne_profildutilisateur_no_profildutilisateur FOREIGN KEY (Numero_ProfilDUtilisateur) REFERENCES ProfilDUtilisateur (Numero_ProfilDUtilisateur);
-ALTER TABLE Campagne_ProfilDUtilisateur ADD CONSTRAINT fk_campagne_profildutilisateur_no_campagne FOREIGN KEY (Numero_Campagne) REFERENCES Campagne (Numero_Campagne);
+ALTER TABLE Campagne_ProfilDUtilisateur ADD CONSTRAINT fk_campagne_profildutilisateur_no_profildutilisateur FOREIGN KEY (Numero_ProfilDUtilisateur) REFERENCES ProfilDUtilisateur (Numero_ProfilDUtilisateur) ON DELETE CASCADE;
+ALTER TABLE Campagne_ProfilDUtilisateur ADD CONSTRAINT fk_campagne_profildutilisateur_no_campagne FOREIGN KEY (Numero_Campagne) REFERENCES Campagne (Numero_Campagne) ON DELETE CASCADE;
 
 -- CLE TABLE Site
 ALTER TABLE Site ADD CONSTRAINT fk_site_no_profildutilisateur FOREIGN KEY (Numero_ProfilDUtilisateur) REFERENCES ProfilDUtilisateur (Numero_ProfilDUtilisateur);

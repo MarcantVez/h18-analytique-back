@@ -18,7 +18,7 @@ public class DateFormatter {
 
     public static Date StringToDate(String dateText) {
         try {
-            return (Date) format.parse(dateText);
+            return format.parse(dateText);
         } catch (ParseException e) {
             return null;
         }
