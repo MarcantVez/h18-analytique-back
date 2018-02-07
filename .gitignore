@@ -1,3 +1,4 @@
+.DS_Store
 
 # Created by https://www.gitignore.io/api/java,java-web,intellij+all
 
@@ -98,3 +99,4 @@ SquidSquAds/build/**
 *.class
 .idea/**
 gradlew
+*.ipr
