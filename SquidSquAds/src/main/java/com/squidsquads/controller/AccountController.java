@@ -100,7 +100,7 @@ public class AccountController {
 //        return responseEntity;
 //    }
 
-    @GetMapping(value = "/getAccount/{id}")
+    @GetMapping(value = "/account/{id}")
     public ResponseEntity<?> getAccount(@PathVariable(value = "id") Long id)
     {
         ResponseEntity<?> responseEntity;
@@ -142,7 +142,7 @@ public class AccountController {
     }
 
 
-    @PostMapping(value = "/addAccount")
+    @PostMapping(value = "/account")
     public ResponseEntity<?> addAccount(@Valid @RequestBody AccountCreateRequest acf)
     {
         ResponseEntity<?> responseEntity;
