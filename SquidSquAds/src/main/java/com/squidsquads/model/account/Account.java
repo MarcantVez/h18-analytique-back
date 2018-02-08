@@ -15,7 +15,7 @@ import java.util.Date;
 
 @Component
 @Entity
-@Table(name = "compte_utilisateur")
+@Table(name = "compteutilisateur")
 public class Account {
 
     private static final long serialVersionUID = -3009157732242241606L;

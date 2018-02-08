@@ -17,6 +17,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan({"com.squidsquads.controller", "com.squidsquads.service"})
 @EnableJpaRepositories("com.squidsquads.repository")
 @EntityScan("com.squidsquads.model")
+@Configuration
 @EnableAutoConfiguration
 @SpringBootApplication
 public class Application {

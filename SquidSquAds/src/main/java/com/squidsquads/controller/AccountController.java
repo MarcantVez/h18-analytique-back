@@ -64,17 +64,58 @@ public class AccountController {
     }
 
 
-    @GetMapping(value = "/getAccount")
-    public ResponseEntity<?> getAccount(@RequestParam(required = true) String email)
+//    @GetMapping(value = "/getAccount")
+//    public ResponseEntity<?> getAccount(@RequestParam(required = true) String email)
+//    {
+//        ResponseEntity<?> responseEntity;
+//        try {
+//            Account account = accountService.findByEmail(email);
+//            if( account == null ) throw new AccountNotFoundException(AccountExceptionType.ACCOUNT_NOT_FOUND.toString());
+//
+//            WebSiteAdmin webSiteAdmin = webSiteAdminController.findWebSiteAdminByAccountID(account.getAccountID());
+//            if( webSiteAdmin == null ) throw new AccountNotFoundException(AccountExceptionType.ACCOUNT_NOT_FOUND.toString()); //TODO: To change ?
+//
+//            AccountInfoResponse accountInfoResponse = new AccountInfoResponse(
+//                    HttpStatus.OK.value(),
+//                    account.getAccountID(),
+//                    AdminType.valueOf(account.getAdminType()).equals(AdminType.ADS),
+//                    AdminType.valueOf(account.getAdminType()).equals(AdminType.WEB),
+//                    "HASH",
+//                    account.getEmail(),
+//                    account.getBankAccount(),
+//                    webSiteAdmin.getUrl()
+//            );
+//
+//            responseEntity = ResponseEntity.ok().body(accountInfoResponse);
+//
+//
+//        } catch (Exception e) {
+//            MessageResponse messageResponse = new MessageResponse(
+//                    HttpStatus.BAD_REQUEST.value(),
+//                    e.getMessage()
+//            );
+//            responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(messageResponse);
+//        }
+//
+//        return responseEntity;
+//    }
+
+    @GetMapping(value = "/getAccount/{id}")
+    public ResponseEntity<?> getAccount(@PathVariable(value = "id") Long id)
     {
         ResponseEntity<?> responseEntity;
         try {
-            Account account = accountService.findByEmail(email);
+            Account account = accountService.findAccountByAcountID(id);
             if( account == null ) throw new AccountNotFoundException(AccountExceptionType.ACCOUNT_NOT_FOUND.toString());
 
-            WebSiteAdmin webSiteAdmin = webSiteAdminController.findWebSiteAdminByAccountID(account.getAccountID());
-            if( webSiteAdmin == null ) throw new AccountNotFoundException(AccountExceptionType.ACCOUNT_NOT_FOUND.toString()); //TODO: To change ?
-
+            String url = "";
+            if( AdminType.valueOf(account.getAdminType()).equals(AdminType.WEB) ) {
+                WebSiteAdmin webSiteAdmin = webSiteAdminController.findWebSiteAdminByAccountID(account.getAccountID());
+                if (webSiteAdmin == null) {
+                    throw new AccountNotFoundException(AccountExceptionType.ACCOUNT_NOT_FOUND.toString());
+                }
+                url = webSiteAdmin.getUrl();
+            }
             AccountInfoResponse accountInfoResponse = new AccountInfoResponse(
                     HttpStatus.OK.value(),
                     account.getAccountID(),
@@ -83,7 +124,7 @@ public class AccountController {
                     "HASH",
                     account.getEmail(),
                     account.getBankAccount(),
-                    webSiteAdmin.getUrl()
+                    url
             );
 
             responseEntity = ResponseEntity.ok().body(accountInfoResponse);
@@ -129,4 +170,16 @@ public class AccountController {
 
         return responseEntity;
     }
+
+
+    // TEST ONLY
+//    @GetMapping(value = "/test")
+//    public ResponseEntity<?> test(@RequestParam Long id)
+//    {
+//        ResponseEntity<?> responseEntity;
+//        Account account = accountService.test(id);
+//        responseEntity = ResponseEntity.ok().body(account);
+//
+//        return responseEntity;
+//    }
 }
