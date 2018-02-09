@@ -30,7 +30,7 @@ public class ResetPasswordResponse {
     }
 
     public ResetPasswordResponse failed() {
-        status = HttpStatus.BAD_REQUEST;
+        status = HttpStatus.INTERNAL_SERVER_ERROR;
         message = RESET_FAILED;
         return this;
     }

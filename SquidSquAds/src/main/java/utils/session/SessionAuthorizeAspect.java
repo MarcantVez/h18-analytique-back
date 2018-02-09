@@ -22,7 +22,7 @@ import java.util.Arrays;
 public class SessionAuthorizeAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(SessionAuthorizeAspect.class);
-    private static final String UNAUTHORIZED_SESSION_MESSAGE = "Vous n'avez pas les droits d'accès requis pour accéder à cette ressource";
+    private static final String FORBIDDEN_SESSION_MESSAGE = "Vous n'avez pas les droits d'accès requis pour accéder à cette ressource";
 
     @Around("@annotation(utils.session.SessionAuthorize) && execution(public * *(..))")
     public Object verifySession(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -41,7 +41,7 @@ public class SessionAuthorizeAspect {
         // Si la session n'existe pas ou si le type de l'utilisateur n'est pas permis
         if (adminType == null || !Arrays.asList(sessionAuthorize.value()).contains(adminType)) {
             logger.info("Un utilisateur ne possédant pas les droits requis a tenté d'accéder à " + request.getRequestURI());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(UNAUTHORIZED_SESSION_MESSAGE);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(FORBIDDEN_SESSION_MESSAGE);
         }
 
         // Renouvellement de la date d'expiration de la session
