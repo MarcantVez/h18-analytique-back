@@ -6,15 +6,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-/**
- * @author: Dulce Cayetano
- * @Date_Of_Creation: 2018-01-16
- * @Last_modified_by:
- * @Date_of_last_modification:
- **/
-
 @Configuration
-@ComponentScan({"controller", "service"})
+@ComponentScan({"config", "controller", "service", "utils"})
 @EnableJpaRepositories("repository")
 @EntityScan("model")
 @EnableAutoConfiguration

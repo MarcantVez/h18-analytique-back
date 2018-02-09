@@ -1,30 +1,25 @@
-
-import exception.account.AccountExceptionType;
-import exception.account.AccountNotFoundException;
-import exception.account.AccountWrongPasswordException;
+import form.account.request.LoginRequest;
+import form.account.response.AbstractLoginResponse;
+import form.account.response.LoginFailedResponse;
+import form.account.response.LoginSucceededResponse;
 import model.account.Account;
 import model.account.AdminType;
-import service.account.AccountService;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.http.HttpStatus;
+import service.account.AccountService;
 
 import java.util.Date;
 
-import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-/**
- * Created by AL on 07/02/2018.
- */
-
-
-public class AccountServiceTest
-{
+public class AccountServiceTest {
     private static Account witnessAccount;
 
     @BeforeClass
-    public static void init()
-    {
+    public static void init() {
         witnessAccount = mock(Account.class);
         when(witnessAccount.getAccountID()).thenReturn(1L);
         when(witnessAccount.getAdminType()).thenReturn(AdminType.WEB.toString());
@@ -34,43 +29,60 @@ public class AccountServiceTest
         when(witnessAccount.getCreatedDate()).thenReturn(new Date(0));
     }
 
-    @Test (expected = AccountNotFoundException.class)
-    public void noAccountTest() throws Exception
-    {
+    @Test
+    public void noAccountTest() {
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("doesnt@exist.com");
+        loginRequest.setPassword("123");
+
         AccountService asMock = mock(AccountService.class);
-        when(asMock.authenticate(witnessAccount.getEmail(), witnessAccount.getPassword()))
-                .thenThrow(new AccountNotFoundException(AccountExceptionType.ACCOUNT_NOT_FOUND.toString()));
+        when(asMock.login(loginRequest)).thenReturn(new LoginFailedResponse());
 
-        asMock.authenticate(witnessAccount.getEmail(), witnessAccount.getPassword());
-    }
+        AbstractLoginResponse loginResponse = asMock.login(loginRequest);
 
-    @Test (expected = AccountWrongPasswordException.class)
-    public void authenticateFailTest() throws Exception
-    {
-        AccountService asMock = mock(AccountService.class);
-        when(asMock.authenticate(witnessAccount.getEmail(), witnessAccount.getPassword()))
-                .thenThrow(new AccountWrongPasswordException(AccountExceptionType.WRONG_PASSWORD.toString()));
-
-        asMock.authenticate(witnessAccount.getEmail(), witnessAccount.getPassword());
-
-        assertTrue(false);
+        assertTrue(loginResponse instanceof LoginFailedResponse);
+        assertFalse(loginResponse.isAuthenticated());
+        assertEquals(HttpStatus.UNAUTHORIZED, loginResponse.getStatus());
     }
 
     @Test
-    public void authenticateTest()
-    {
-        AccountService asMock = mock(AccountService.class);
-        try {
-            when(asMock.authenticate(witnessAccount.getEmail(), witnessAccount.getPassword()))
-                    .thenReturn(witnessAccount);
+    public void wrongInformationTest() {
 
-            Account account = asMock.authenticate("test@test.com", "test1234");
-            assertTrue(AdminType.valueOf(account.getAdminType()).equals(AdminType.WEB));
-            assertTrue(account.getEmail().equals("test@test.com"));
-            assertTrue(account.getPassword().equals("test1234"));
-            assertTrue(account.getBankAccount().equals("0000 1111 2222 3333"));
-        } catch (Exception e) {
-            assertTrue(false);
-        }
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("test@test.com");
+        loginRequest.setPassword("12345");
+
+        AccountService asMock = mock(AccountService.class);
+        when(asMock.login(loginRequest)).thenReturn(new LoginFailedResponse());
+
+        AbstractLoginResponse loginResponse = asMock.login(loginRequest);
+
+        assertTrue(loginResponse instanceof LoginFailedResponse);
+        assertFalse(loginResponse.isAuthenticated());
+        assertEquals(HttpStatus.UNAUTHORIZED, loginResponse.getStatus());
+    }
+
+    @Test
+    public void successfulLogin() {
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail(witnessAccount.getEmail());
+        loginRequest.setPassword(witnessAccount.getPassword());
+
+        AccountService asMock = mock(AccountService.class);
+        when(asMock.login(loginRequest))
+                .thenReturn(new LoginSucceededResponse(1L, false, true, "", ""));
+
+        AbstractLoginResponse loginResponse = asMock.login(loginRequest);
+
+        assertTrue(loginResponse instanceof LoginSucceededResponse);
+        assertTrue(loginResponse.isAuthenticated());
+        assertTrue(((LoginSucceededResponse) loginResponse).isAdminWeb());
+        assertFalse(((LoginSucceededResponse) loginResponse).isAdminPub());
+        assertEquals(witnessAccount.getAccountID(), ((LoginSucceededResponse) loginResponse).getAccountId());
+        assertEquals("", ((LoginSucceededResponse) loginResponse).getDisplayName());
+        assertEquals("", ((LoginSucceededResponse) loginResponse).getToken());
+        assertEquals(HttpStatus.OK, loginResponse.getStatus());
     }
 }
