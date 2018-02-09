@@ -23,7 +23,7 @@ public class AccountController {
     @Autowired
     AccountService accountService;
 
-
+    // --------------------------------------------------------------------- //
     @PostMapping("/login")
     public ResponseEntity<AbstractLoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -31,6 +31,7 @@ public class AccountController {
         return ResponseEntity.status(loginResponse.getStatus()).body(loginResponse);
     }
 
+    // --------------------------------------------------------------------- //
     @PostMapping("/create")
     public ResponseEntity<?> create(@Valid @RequestBody CreateRequest createRequest) {
 
@@ -38,6 +39,7 @@ public class AccountController {
         return ResponseEntity.status(createResponse.getStatus()).body(createResponse);
     }
 
+    // --------------------------------------------------------------------- //
     @GetMapping("/info")
     @SessionAuthorize({AdminType.PUB,  AdminType.WEB})
     public ResponseEntity<?> getInfo(@RequestHeader("Token") String token) {
@@ -46,6 +48,7 @@ public class AccountController {
         return ResponseEntity.status(infoResponse.getStatus()).body(infoResponse);
     }
 
+    // --------------------------------------------------------------------- //
     @PostMapping("/password")
     @SessionAuthorize({AdminType.PUB,  AdminType.WEB})
     public ResponseEntity<?> resetPassword(@RequestHeader("Token") String token, @Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {

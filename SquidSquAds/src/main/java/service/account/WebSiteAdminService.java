@@ -9,7 +9,7 @@ import repository.account.WebSiteAdminRepository;
 public class WebSiteAdminService {
 
     @Autowired
-    WebSiteAdminRepository webSiteAdminRepository;
+    public WebSiteAdminRepository webSiteAdminRepository;
 
     public WebSiteAdmin findByAccountID(Long accountID) {
         return webSiteAdminRepository.findByAccountID(accountID);

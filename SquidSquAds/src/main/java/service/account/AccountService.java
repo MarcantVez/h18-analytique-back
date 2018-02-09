@@ -16,21 +16,29 @@ import utils.session.SessionManager;
 @Service
 public class AccountService {
 
+    @Autowired
+    public AccountRepository accountRepository;
 
     @Autowired
-    AccountRepository accountRepository;
+    public WebSiteAdminService webSiteAdminService;
 
-    @Autowired
-    WebSiteAdminService webSiteAdminService;
-
+    /**
+     * Trouver un compte utilisateur en fonction de son email
+     */
     private Account findByEmail(String email) {
         return accountRepository.findByEmail(email);
     }
 
+    /**
+     * Trouver un compte utilisateur en fonction de son ID
+     */
     private Account findByAccountID(long accountID) {
         return accountRepository.findByAccountID(accountID);
     }
 
+    /**
+     * Tenter de connecter l'utilisateur au système et de lui attribuer un token de session
+     */
     public AbstractLoginResponse login(LoginRequest loginRequest) {
 
         Account account = findByEmail(loginRequest.getEmail());
@@ -50,13 +58,19 @@ public class AccountService {
         );
     }
 
+    /**
+     * Créer un compte administrateur de site web ou de publicité
+     */
     public CreateResponse create(CreateRequest createRequest) {
 
         if (findByEmail(createRequest.getEmail()) != null) {
             return new CreateResponse().emailAlreadyUsed();
         }
 
-        // TODO : Validate form content (e.g. valid email, domain, etc.)
+        if (!AdminType.PUB.name().equals(createRequest.getAdminType()) &&
+                !AdminType.WEB.name().equals(createRequest.getAdminType())) {
+            return new CreateResponse().invalidAdminType();
+        }
 
         Account account = accountRepository.save(new Account(
                 createRequest.getAdminType(),
@@ -72,6 +86,9 @@ public class AccountService {
         return new CreateResponse().ok();
     }
 
+    /**
+     * Obtenir de l'information par rapport à un compte (sauf le mot de passe)
+     */
     public InfoResponse getInfo(String token) {
 
         long accountId = SessionManager.getInstance().getAccountIdForToken(token);
@@ -91,6 +108,9 @@ public class AccountService {
         return new InfoResponse(HttpStatus.OK, account.getEmail(), domain, account.getBankAccount());
     }
 
+    /**
+     * Rénitialiser le mot de passe de l'utilisateur
+     */
     public ResetPasswordResponse resetPassword(String token, ResetPasswordRequest rpr) {
 
         long accountId = SessionManager.getInstance().getAccountIdForToken(token);
