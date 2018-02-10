@@ -4,15 +4,16 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * @author  Marc-Antoine Vézina
+ * @author Marc-Antoine Vézina
  * @Date_Of_Creation 2018-02-01
  * @Last_modified_by
  * @Date_of_last_modification
  **/
 
 @Entity
-@Table(name="campagne")
+@Table(name = "campagne")
 public class Campaign {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "numero_campagne")
@@ -52,7 +53,8 @@ public class Campaign {
 
     // CONSTRUCTOR
 
-    public Campaign(){}
+    public Campaign() {
+    }
 
     public Campaign(Long campaignId, Long accountId, String name, String horizontalImg, String verticalImg, String mobileImg, String redirectUrl, Date startDate, Date endDate, float budget, Long[] linkedProfiles) {
         this.campaignId = campaignId;
@@ -169,17 +171,17 @@ public class Campaign {
 
     @Override
     public String toString() {
-        return "Campagne{"+
-                "numeroCampagne="+campaignId+"\""+
-                "nom="+name+"\"" +
-                "numeroCompte="+accountId+"\"" +
-                "dateCreation="+creationDate+"\"" +
-                "imageHor="+horizontalImg+"\"" +
-                "imageVer="+verticalImg+"\"" +
-                "imageMob="+mobileImg+"\"" +
-                "urlRedirection="+redirectUrl+"\"" +
-                "dateDebut="+startDate+"\"" +
-                "dateFin="+endDate+"\"" +
-                "budget="+budget+"}";
+        return "Campagne{" +
+                "numeroCampagne=" + campaignId + "\"" +
+                "nom=" + name + "\"" +
+                "numeroCompte=" + accountId + "\"" +
+                "dateCreation=" + creationDate + "\"" +
+                "imageHor=" + horizontalImg + "\"" +
+                "imageVer=" + verticalImg + "\"" +
+                "imageMob=" + mobileImg + "\"" +
+                "urlRedirection=" + redirectUrl + "\"" +
+                "dateDebut=" + startDate + "\"" +
+                "dateFin=" + endDate + "\"" +
+                "budget=" + budget + "}";
     }
 }

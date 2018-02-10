@@ -1,16 +1,17 @@
 package com.squidsquads.form.campaign.request;
 
 public class UpdateRequest {
-    private  Long campaignId;
-    private  String name;
-    private  String redirectUrl;
-    private  Long[] profileIds;
-    private  String startDate;
-    private  String endDate;
-    private  float budget;
-    private  String imageHor;
-    private  String imageVer;
-    private  String imageMob;
+
+    private Long campaignId;
+    private String name;
+    private String redirectUrl;
+    private Long[] profileIds;
+    private String startDate;
+    private String endDate;
+    private float budget;
+    private String imageHor;
+    private String imageVer;
+    private String imageMob;
 
     public Long getCampaignId() {
         return campaignId;

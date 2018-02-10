@@ -41,7 +41,7 @@ public class AccountController {
 
     // --------------------------------------------------------------------- //
     @GetMapping("/info")
-    @SessionAuthorize({AdminType.PUB,  AdminType.WEB})
+    @SessionAuthorize({AdminType.PUB, AdminType.WEB})
     public ResponseEntity<?> getInfo(@RequestHeader("Token") String token) {
 
         InfoResponse infoResponse = accountService.getInfo(token);
@@ -50,7 +50,7 @@ public class AccountController {
 
     // --------------------------------------------------------------------- //
     @PostMapping("/password")
-    @SessionAuthorize({AdminType.PUB,  AdminType.WEB})
+    @SessionAuthorize({AdminType.PUB, AdminType.WEB})
     public ResponseEntity<?> resetPassword(@RequestHeader("Token") String token, @Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
 
         ResetPasswordResponse rpr = accountService.resetPassword(token, resetPasswordRequest);

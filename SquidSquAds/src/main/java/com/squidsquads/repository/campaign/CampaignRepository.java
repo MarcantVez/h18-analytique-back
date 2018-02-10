@@ -13,5 +13,7 @@ import java.util.List;
 
 @Repository
 public interface CampaignRepository extends CrudRepository<Campaign, Long> {
-    List<Campaign> findByAccountId (long accountId);
+
+    List<Campaign> findByAccountId(long accountId);
+
 }

@@ -5,6 +5,7 @@ import com.squidsquads.utils.DateFormatter;
 import org.springframework.http.HttpStatus;
 
 public class CampaignDetailResponse {
+
     private Long campaignId;
     private String name;
     private Long accountId;
@@ -26,23 +27,23 @@ public class CampaignDetailResponse {
     public CampaignDetailResponse() {
     }
 
-    public CampaignDetailResponse unauthorized(){
+    public CampaignDetailResponse unauthorized() {
         status = HttpStatus.UNAUTHORIZED;
         return this;
     }
 
-    public CampaignDetailResponse notFound(){
+    public CampaignDetailResponse notFound() {
         status = HttpStatus.NOT_FOUND;
         return this;
     }
 
-    public CampaignDetailResponse fieldsMissing(){
+    public CampaignDetailResponse fieldsMissing() {
         status = HttpStatus.BAD_REQUEST;
         message = CREATE_FIELDS_MISSING;
         return this;
     }
 
-    public CampaignDetailResponse ok(Campaign c){
+    public CampaignDetailResponse ok(Campaign c) {
         campaignId = c.getCampaignId();
         name = c.getName();
         accountId = c.getAccountId();

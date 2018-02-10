@@ -1,9 +1,9 @@
 package com.squidsquads.service.account;
 
 import com.squidsquads.model.account.WebSiteAdmin;
+import com.squidsquads.repository.account.WebSiteAdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.squidsquads.repository.account.WebSiteAdminRepository;
 
 @Service
 public class WebSiteAdminService {

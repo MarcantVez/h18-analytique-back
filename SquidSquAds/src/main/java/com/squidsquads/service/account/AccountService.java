@@ -9,12 +9,12 @@ import com.squidsquads.model.account.Account;
 import com.squidsquads.model.account.AdminType;
 import com.squidsquads.model.account.WebSiteAdmin;
 import com.squidsquads.repository.account.AccountRepository;
+import com.squidsquads.utils.session.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import com.squidsquads.utils.session.SessionManager;
 
 @Service
 public class AccountService {

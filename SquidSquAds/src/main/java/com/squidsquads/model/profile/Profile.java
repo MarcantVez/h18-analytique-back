@@ -6,6 +6,7 @@ import java.util.Date;
 @Entity
 @Table(name = "profildutilisateur")
 public class Profile {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "numero_ProfilDUtilisateur")

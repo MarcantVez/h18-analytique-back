@@ -6,6 +6,7 @@ package com.squidsquads.form.campaign.response;
  */
 
 public class CampaignListResponseItem {
+
     private Long id;
     private String nom;
     private String creationDate;

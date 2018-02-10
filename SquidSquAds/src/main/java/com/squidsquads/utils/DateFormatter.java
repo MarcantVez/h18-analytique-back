@@ -6,13 +6,13 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 @Component
 public class DateFormatter {
+
     private static DateFormat format = new SimpleDateFormat("YYYY-MM-DD");
 
-    public static String DateToString(Date aDate){
+    public static String DateToString(Date aDate) {
         return format.format(aDate);
     }
 
