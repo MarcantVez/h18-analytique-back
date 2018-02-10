@@ -16,14 +16,15 @@ apply plugin: 'org.springframework.boot'
 
 jar {
     baseName = 'squidsquads-backend'
-    version =  '0.1.0'
-    manifest{
+    version = '0.1.0'
+    manifest {
         attributes("Main-Class": 'SquidSquAds.src.main.java.Application.java')
     }
 }
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 sourceCompatibility = 1.8
@@ -31,12 +32,15 @@ targetCompatibility = 1.8
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("org.springframework.boot:spring-boot-starter-aop")
+
     compile group: 'postgresql', name: 'postgresql', version: '9.0-801.jdbc4'
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.0.2'
     compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.7.0'
 
-
     testCompile("junit:junit")
+    testCompile "org.mockito:mockito-core:1.+"
 }
 
 task stage(type: Copy, dependsOn: [clean, build]) {
