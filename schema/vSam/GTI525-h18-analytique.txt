@@ -1,0 +1,148 @@
+@startuml GTI525-h18-analytique-schema-relationnel.png
+skinparam defaultFontSize 14
+skinparam titleFontStyle Bold
+skinparam packageStyle rect
+scale 1.8
+
+title Analytique et publicité\nSchéma relationnel
+
+
+object "**G02, G13, G15** Admin" as adm
+adm : idAdmin INTEGER
+adm : idTypeAdmin INTEGER
+adm : idCompteBanque INTEGER
+adm : courriel VARCHAR(50)
+adm : nomUtilisateur VARCHAR(30)
+adm : motDePasse VARCHAR(50)
+
+object "TypeAdmin" as tad
+tad : idTypeAdmin INTEGER
+tad : description VARCHAR(120)
+
+object "SiteWeb" as stweb
+stweb : idSiteWeb INTEGER
+stweb : idClient INTEGER
+stweb : nom VARCHAR(100)
+stweb : url VARCHAR(100)
+
+object "**G04, G11** DonneeDeSuivi" as dds
+dds : idDonneeDeSuivi INTEGER
+dds : urlActuel VARCHAR(500)
+dds : tempsAuSuivi TIMESTAMP
+dds : empreinte VARCHAR(100)
+dds : tailleEcranEtCouleur VARCHAR(20)
+dds : extensionsDuNaviguateur TEXT
+dds : langue VARCHAR(10)
+dds : police TEXT
+dds : plateforme VARCHAR(10)
+dds : agentUtilisateur TEXT
+dds : navigateur VARCHAR(50)
+dds : urlProvenance VARCHAR(500)
+dds : adresseIPv4 VARCHAR(15)
+dds : adresseIPv6 VARCHAR(46)
+dds : tempsPasseSurLaPage TIME
+
+
+object "**G13** Redevance" as red
+red : idRedevance INTEGER
+red : idCompteBanque INTEGER
+red : idAdminWeb INTEGER
+red : estReclame BOOLEAN
+red : dateReclamation TIMESTAMP
+red : montantRedevanceTotal MONEY
+
+'note top of red
+'    idCompteBanque : si un redevance a été payé,
+'    mais qu'un admin web change après son compte
+'end note
+
+object "CompteBanque" as cpteb
+cpteb : idCompteBanque INTEGER
+cpteb : numeroCompte VARCHAR(100)
+cpteb : nomCompte VARCHAR(100)
+
+
+object "**G08, G12** DetailRedevance" as dred
+dred : idDetailRedevance INTEGER
+dred : idRedevance INTEGER
+dred : idDonneSuivi INTEGER
+dred : estCible BOOLEAN
+dred : estVu BOOLEAN
+dred : estClique BOOLEAN
+dred : dateVu TIMESTAMP
+dred : dateClique TIMESTAMP
+dred : montantRedevance MONEY
+
+object "**G20, G21** Profil" as pro
+pro : idProfil INTEGER
+pro : idAdmin INTEGER
+pro : nomProfil VARCHAR(50)
+pro : description VARCHAR(50)
+
+object "**G19** ProfilVisite" as prov
+prov : idProfilVisite INTEGER
+prov : idProfil INTEGER
+prov : urlCible VARCHAR(100)
+
+object "**G16, G17, G18** CampagnePublicitaire" as cpub
+cpub : idCampagnePublicitaire INTEGER
+cpub : urlCible VARCHAR(100)
+cpub : orientationBanniere INTEGER
+cpub : nomCampagne VARCHAR(100)
+cpub : urlBanniereImageHorizontale VARCHAR(100)
+cpub : urlBanniereImageVerticale VARCHAR(100)
+cpub : urlBanniereImageMobile VARCHAR(100)
+
+object "**G22** ProfilCampagnePublicitaire" as pcpub
+pcpub : idProfilCampagnePublicitaire INTEGER
+pcpub : idProfil INTEGER
+pcpub : idCampagnePublicitaire INTEGER
+
+object "**G07** ProfilRedevance" as pror
+pror : idProfilRedevance INTEGER
+pror : idDetailRedevance INTEGER
+pror : idCampagnePublicitaire INTEGER
+
+
+' Associations '
+
+adm "0..1" <|-- "N" pro
+red "N" -|> "1" adm
+tad <|- adm
+
+adm " 1" <|- "0..1" stweb : "     " 
+
+stweb "1" <|-- " N " dds: "   " 
+
+adm --|> cpub
+
+red <|-- dred
+
+'red - cpteb
+
+adm -|> cpteb
+red -|> cpteb
+
+dred <|--- dds
+
+pro "1" <|-- "N" prov
+
+cpub "1" <|-- "N" pcpub
+pcpub "N" --|> "1" pro
+
+pror <|- dred
+pror <|- prov
+
+
+legend right
+**Livrable 1 - Équipe Analytique**
+Marc-Antoine Vézina
+Dulce Esperanza Cayetano Covarrubias
+Samuël Hénault Lefebvre
+Simon Côté
+André Lamba
+Ying Lam
+end legend
+
+Left footer   GTI525 - Livrable 1 - Équipe Analytique
+@enduml

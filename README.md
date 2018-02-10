@@ -9,3 +9,7 @@ Download [Java 6](http://www.oracle.com/technetwork/java/javase/downloads/index.
 Intstall [Gradle 4.2](https://gradle.org/install/) or later.
 
 Install [PostgreSQL](https://www.postgresql.org/download/)
+
+## Documentation for teams using our services
+
+[Standard banner ads](https://github.com/gti525/h18-analytique-front/wiki/Standard-des-bannières-publicitaires)
