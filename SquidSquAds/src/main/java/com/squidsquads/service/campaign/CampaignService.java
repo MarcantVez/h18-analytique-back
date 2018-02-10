@@ -31,11 +31,6 @@ public class CampaignService {
     CampaignProfileRepository campaignProfileRepository;
     @Autowired
     ProfileRepository profileRepository;
-    @Autowired
-    CampaignCreateValidator campaignCreateValidator;
-    @Autowired
-    CampaignUpdateValidator campaignUpdateValidator;
-
 
     // Trouver les campagnes publicitaires d'un compte
     public CampaignListResponse findAllForAuthor(String token) {
@@ -138,6 +133,7 @@ public class CampaignService {
         for(long id : newCampaign.getProfileIds()){
             campaignProfileRepository.save(new CampaignProfile(id, created.getCampaignId()));
         }
+        created.setProfileIds(campaign.getProfileIds());
         return new CampaignDetailResponse().ok(created);
     }
 
@@ -149,7 +145,7 @@ public class CampaignService {
         }
         Campaign campaign = campaignRepository.findOne(campaignId);
         if(campaign != null){
-            if (campaign.getAccountId().equals(accountID)){
+            if (!campaign.getAccountId().equals(accountID)){
                 return new CampaignDeleteResponse().unauthorized();
             }
             campaignRepository.delete(campaignId);

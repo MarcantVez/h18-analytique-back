@@ -8,12 +8,12 @@ package com.squidsquads.form.campaign.response;
 public class CampaignListResponseItem {
     private Long id;
     private String nom;
-    private String dateCreation;
+    private String creationDate;
 
-    public CampaignListResponseItem(Long id, String nom, String dateCreation) {
+    public CampaignListResponseItem(Long id, String nom, String creationDate) {
         this.id = id;
         this.nom = nom;
-        this.dateCreation = dateCreation;
+        this.creationDate = creationDate;
     }
 
     public Long getId() {
@@ -24,7 +24,7 @@ public class CampaignListResponseItem {
         return nom;
     }
 
-    public String getDateCreation() {
-        return dateCreation;
+    public String getCreationDate() {
+        return creationDate;
     }
 }

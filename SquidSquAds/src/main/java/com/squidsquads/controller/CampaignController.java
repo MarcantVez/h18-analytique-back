@@ -44,27 +44,27 @@ public class CampaignController {
 
     @GetMapping(value = "/campagne/{id}")
     @SessionAuthorize({AdminType.PUB})
-    public ResponseEntity<Campaign> findById(@RequestHeader("Token") String token, @PathVariable(value = "id") Long id) {
+    public ResponseEntity<CampaignDetailResponse> findById(@RequestHeader("Token") String token, @PathVariable(value = "id") Long id) {
         CampaignDetailResponse campaignDetail = campaignService.findOneById(token, id);
-        return ResponseEntity.status(campaignDetail.getStatus()).body(campaignDetail.getCampaign());
+        return ResponseEntity.status(campaignDetail.getStatus()).body(campaignDetail);
     }
 
     // -------------------Ajouter une Campagne---------------------------------------------
 
     @PostMapping(value = "/campagne", consumes = MediaType.APPLICATION_JSON_VALUE)
     @SessionAuthorize({AdminType.PUB})
-    public ResponseEntity<Campaign> createCampaign(@RequestHeader("Token") String token, @Valid @RequestBody CreateRequest newCampaign){
+    public ResponseEntity<CampaignDetailResponse> createCampaign(@RequestHeader("Token") String token, @Valid @RequestBody CreateRequest newCampaign){
         CampaignDetailResponse campaignResponse = campaignService.addCampaign(token, newCampaign);
-        return ResponseEntity.status(campaignResponse.getStatus()).body(campaignResponse.getCampaign());
+        return ResponseEntity.status(campaignResponse.getStatus()).body(campaignResponse);
     }
 
     // -------------------Update une Campagne---------------------------------------------
 
     @PutMapping(value = "campagne/{id}")
     @SessionAuthorize({AdminType.PUB})
-    public ResponseEntity<Campaign> updateCampainById(@RequestHeader("Token") String token, @PathVariable(value = "id") Long campaignID, @Valid @RequestBody UpdateRequest updatedCampaign) {
+    public ResponseEntity<CampaignDetailResponse> updateCampainById(@RequestHeader("Token") String token, @PathVariable(value = "id") Long campaignID, @Valid @RequestBody UpdateRequest updatedCampaign) {
         CampaignDetailResponse campaignResponse = campaignService.updateCampaign(token, campaignID, updatedCampaign);
-        return ResponseEntity.status(campaignResponse.getStatus()).body(campaignResponse.getCampaign());
+        return ResponseEntity.status(campaignResponse.getStatus()).body(campaignResponse);
     }
 
     // -------------------Supprimer une Campagne---------------------------------------------
