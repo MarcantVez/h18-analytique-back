@@ -1,6 +1,7 @@
 package com.squidsquads.controller;
 
 import com.squidsquads.form.campaign.response.CampaignListResponse;
+import com.squidsquads.model.account.Account;
 import javassist.NotFoundException;
 import com.squidsquads.model.campaign.Campaign;
 import org.slf4j.Logger;
@@ -32,10 +33,10 @@ public class CampaignController {
     // -------------------Trouver une campagne par ID de compte---------------------------------------------
 
     @GetMapping("/campagne")
-    public ResponseEntity<CampaignListResponse> findAllForAuthor(){
-        // TODO find logged in account ID
-        int accountID = 0;
-        CampaignListResponse campaignListResponseList = campaignService.findAllForAuthor(accountID);
+    public ResponseEntity<CampaignListResponse> findAllForAuthor(@RequestHeader("Token") String token){
+        Account account =
+        logger.info("Recherche des campagnes pour l'identifiant {}", accountId);
+        CampaignListResponse campaignListResponseList = campaignService.findAllForAuthor(token);
         return ResponseEntity.ok().body(campaignListResponseList);
     }
 
@@ -64,7 +65,7 @@ public class CampaignController {
     // -------------------Update une Campagne---------------------------------------------
 
     @PutMapping(value = "campagne/{id}")
-    public ResponseEntity<Campaign> updateCampainById(@PathVariable(value = "id") Long id, @Valid @RequestBody CampaignCreateUpdateRequest updatedCampaign) {
+    public ResponseEntity<?> updateCampainById(@PathVariable(value = "id") Long id, @Valid @RequestBody CampaignCreateUpdateRequest updatedCampaign) {
         logger.info("Mise à jour de la Campagne ayant l'identifiant {}", id);
         if (campaignService.findOneById(id) == null) {
             logger.error("Impossible de modifier. Aucune campagne ayant l'identifiant {} trouvée", id);
@@ -78,7 +79,7 @@ public class CampaignController {
     // -------------------Supprimer une Campagne---------------------------------------------
 
     @DeleteMapping(value = "campagne/{id}")
-    public ResponseEntity<Campaign> deleteCampaignById(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<?> deleteCampaignById(@PathVariable(value = "id") Long id) {
         logger.info("Recherche et suppression de la Campagne #{}", id);
         try {
             campaignService.deleteCampaignById(id);

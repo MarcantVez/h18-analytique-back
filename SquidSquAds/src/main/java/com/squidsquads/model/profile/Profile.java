@@ -7,7 +7,7 @@ import java.util.Date;
 @Table(name = "profildutilisateur")
 public class Profile {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "numero_ProfilDUtilisateur")
     private Long profileId;
 
