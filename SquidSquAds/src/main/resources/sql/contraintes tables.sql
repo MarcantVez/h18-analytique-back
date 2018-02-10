@@ -1,22 +1,22 @@
 -- Primary Key
-ALTER TABLE CompteUtilisateur ADD CONSTRAINT pk_compte_utilisateur PRIMARY KEY(Numero_Compte);
-ALTER TABLE Paiement ADD CONSTRAINT pk_paiement PRIMARY KEY(Numero_Paiement);
-ALTER TABLE Campagne ADD CONSTRAINT pk_campagne PRIMARY KEY(Numero_Campagne);
-ALTER TABLE ProfilDUtilisateur ADD CONSTRAINT pk_profildutilisateur PRIMARY KEY(Numero_ProfilDUtilisateur);
-ALTER TABLE Campagne_ProfilDUtilisateur ADD CONSTRAINT pk_campagne_profildutilisateur PRIMARY KEY(Numero_Campagne_ProfilDUtilisateur);
-ALTER TABLE Site ADD CONSTRAINT pk_site PRIMARY KEY(Numero_Site);
-ALTER TABLE Banniere ADD CONSTRAINT pk_banniere PRIMARY KEY(Numero_Banniere);
-ALTER TABLE Orientation ADD CONSTRAINT pk_orientation PRIMARY KEY(Numero_Orientation);
-ALTER TABLE Orientation_Banniere ADD CONSTRAINT pk_orientation_banniere PRIMARY KEY (Numero_Orientation_Banniere);
-ALTER TABLE Visite ADD CONSTRAINT pk_visite PRIMARY KEY(Numero_visite);
-ALTER TABLE Categorie ADD CONSTRAINT pk_categorie PRIMARY KEY(Numero_Categorie);
-ALTER TABLE Categorie_Visite ADD CONSTRAINT pk_categorie_visite PRIMARY KEY (Numero_Categorie_Visite);
-ALTER TABLE Redevance ADD CONSTRAINT pk_redevance PRIMARY KEY(Numero_Redevance);
-ALTER TABLE SiteWebAdmin ADD CONSTRAINT pk_sitewebadmin PRIMARY KEY(Numero_SiteWebAdmin);
-ALTER TABLE InfoDeSuivi ADD CONSTRAINT pk_infodesuivi PRIMARY KEY(Numero_InfoDeSuivi);
-ALTER TABLE AgentUtilisateur ADD CONSTRAINT pk_agentutilisateur PRIMARY KEY(Numero_AgentUtilisateur);
-ALTER TABLE TypeNavigateur ADD CONSTRAINT pk_typenavigateur PRIMARY KEY (Numero_TypeNavigateur);
-ALTER TABLE TypeNavigateur_Agent ADD CONSTRAINT pk_typenavigateur_agent PRIMARY KEY(Numero_TypeNavigateur_Agent);
+--ALTER TABLE CompteUtilisateur ADD CONSTRAINT pk_compte_utilisateur PRIMARY KEY(Numero_Compte);
+--ALTER TABLE Paiement ADD CONSTRAINT pk_paiement PRIMARY KEY(Numero_Paiement);
+--ALTER TABLE Campagne ADD CONSTRAINT pk_campagne PRIMARY KEY(Numero_Campagne);
+--ALTER TABLE ProfilDUtilisateur ADD CONSTRAINT pk_profildutilisateur PRIMARY KEY(Numero_ProfilDUtilisateur);
+--ALTER TABLE Campagne_ProfilDUtilisateur ADD CONSTRAINT pk_campagne_profildutilisateur PRIMARY KEY(Numero_Campagne_ProfilDUtilisateur);
+--ALTER TABLE Site ADD CONSTRAINT pk_site PRIMARY KEY(Numero_Site);
+--ALTER TABLE Banniere ADD CONSTRAINT pk_banniere PRIMARY KEY(Numero_Banniere);
+--ALTER TABLE Orientation ADD CONSTRAINT pk_orientation PRIMARY KEY(Numero_Orientation);
+--ALTER TABLE Orientation_Banniere ADD CONSTRAINT pk_orientation_banniere PRIMARY KEY (Numero_Orientation_Banniere);
+--ALTER TABLE Visite ADD CONSTRAINT pk_visite PRIMARY KEY(Numero_visite);
+--ALTER TABLE Categorie ADD CONSTRAINT pk_categorie PRIMARY KEY(Numero_Categorie);
+--ALTER TABLE Categorie_Visite ADD CONSTRAINT pk_categorie_visite PRIMARY KEY (Numero_Categorie_Visite);
+--ALTER TABLE Redevance ADD CONSTRAINT pk_redevance PRIMARY KEY(Numero_Redevance);
+--ALTER TABLE SiteWebAdmin ADD CONSTRAINT pk_sitewebadmin PRIMARY KEY(Numero_SiteWebAdmin);
+--ALTER TABLE InfoDeSuivi ADD CONSTRAINT pk_infodesuivi PRIMARY KEY(Numero_InfoDeSuivi);
+--ALTER TABLE AgentUtilisateur ADD CONSTRAINT pk_agentutilisateur PRIMARY KEY(Numero_AgentUtilisateur);
+--ALTER TABLE TypeNavigateur ADD CONSTRAINT pk_typenavigateur PRIMARY KEY (Numero_TypeNavigateur);
+--ALTER TABLE TypeNavigateur_Agent ADD CONSTRAINT pk_typenavigateur_agent PRIMARY KEY(Numero_TypeNavigateur_Agent);
 
 -- Foreign Key
 
@@ -30,8 +30,8 @@ ALTER TABLE Campagne ADD CONSTRAINT fk_campagne_no_compte FOREIGN KEY (Numero_Co
 ALTER TABLE ProfilDUtilisateur ADD CONSTRAINT fk_profildutilisateur_no_compte FOREIGN KEY (Numero_Compte) REFERENCES CompteUtilisateur (Numero_Compte);
 
 -- CLE TABLE Campagne_ProfilDUtilisateur
-ALTER TABLE Campagne_ProfilDUtilisateur ADD CONSTRAINT fk_campagne_profildutilisateur_no_profildutilisateur FOREIGN KEY (Numero_ProfilDUtilisateur) REFERENCES ProfilDUtilisateur (Numero_ProfilDUtilisateur) ON DELETE CASCADE;
-ALTER TABLE Campagne_ProfilDUtilisateur ADD CONSTRAINT fk_campagne_profildutilisateur_no_campagne FOREIGN KEY (Numero_Campagne) REFERENCES Campagne (Numero_Campagne) ON DELETE CASCADE;
+ALTER TABLE Campagne_ProfilDUtilisateur ADD CONSTRAINT fk_campagne_profildutilisateur_no_profildutilisateur FOREIGN KEY (Numero_ProfilDUtilisateur) REFERENCES ProfilDUtilisateur (Numero_ProfilDUtilisateur);
+ALTER TABLE Campagne_ProfilDUtilisateur ADD CONSTRAINT fk_campagne_profildutilisateur_no_campagne FOREIGN KEY (Numero_Campagne) REFERENCES Campagne (Numero_Campagne);
 
 -- CLE TABLE Site
 ALTER TABLE Site ADD CONSTRAINT fk_site_no_profildutilisateur FOREIGN KEY (Numero_ProfilDUtilisateur) REFERENCES ProfilDUtilisateur (Numero_ProfilDUtilisateur);
