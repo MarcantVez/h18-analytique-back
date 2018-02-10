@@ -3,9 +3,7 @@ package model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Component;
-
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -23,43 +21,51 @@ public class UserProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "numero_profilutilisateur")
-    private int profileNumber;
+    private long profileID;
 
     @Column(name = "numero_compte")
     private int accountNumber;
 
-    @Column(name = "nom")
-    private String nom;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "description")
     private String description;
 
     @Column(name = "date_creation")
-    private Timestamp creationTime;
+    private Date creationTime;
+
+    @Column(name = "url")
+    private String[] url;
 
     // CONSTRUCTOR
 
     public UserProfile(){}
 
-    public UserProfile(int accountNumber, String nom, String description) {
+    public UserProfile(int accountNumber, String name, String description, String[] url) {
         this.accountNumber = accountNumber;
-        this.nom = nom;
+        this.name = name;
         this.description = description;
+        this.url = new String[url.length];
+
+        for(int i = 0; i < url.length; i++){
+          this.url[i] = url[i];
+        }
     }
 
     // JPA required method
 
     @PrePersist
     void creationTimeStamp() {
-        this.creationTime = new Timestamp(new Date().getTime());
+        this.creationTime = new Date();
     }
 
-    public int getProfileNumber() {
-        return profileNumber;
+    public long getProfileID() {
+        return profileID;
     }
 
-    public void setProfileNumber(int profileNumber) {
-        this.profileNumber = profileNumber;
+    public void setProfileID(long profileID) {
+        this.profileID = profileID;
     }
 
     public int getAccountNumber() {
@@ -70,12 +76,12 @@ public class UserProfile {
         this.accountNumber = accountNumber;
     }
 
-    public String getNom() {
-        return nom;
+    public String getName() {
+        return name;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -86,11 +92,19 @@ public class UserProfile {
         this.description = description;
     }
 
-    public Timestamp getCreationTime() {
+    public Date getCreationTime() {
         return creationTime;
     }
 
-    public void setCreationTime(Timestamp creationTime) {
+    public void setCreationTime(Date creationTime) {
         this.creationTime = creationTime;
+    }
+
+    public String[] getUrl() {
+        return url;
+    }
+
+    public void setUrl(String[] url) {
+        this.url = url;
     }
 }

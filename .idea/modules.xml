@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/SquidSquAds/SquidSquAds_main.iml" filepath="$PROJECT_DIR$/.idea/modules/SquidSquAds/SquidSquAds_main.iml" group="SquidSquAds" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/SquidSquAds/SquidSquAds_test.iml" filepath="$PROJECT_DIR$/.idea/modules/SquidSquAds/SquidSquAds_test.iml" group="SquidSquAds" />
       <module fileurl="file://$PROJECT_DIR$/h18-analytique-back.iml" filepath="$PROJECT_DIR$/h18-analytique-back.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SquidSquAds/h18-analytique-back-SquidSquAds.iml" filepath="$PROJECT_DIR$/.idea/modules/SquidSquAds/h18-analytique-back-SquidSquAds.iml" group="SquidSquAds" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/SquidSquAds/h18-analytique-back-SquidSquAds_main.iml" filepath="$PROJECT_DIR$/.idea/modules/SquidSquAds/h18-analytique-back-SquidSquAds_main.iml" group="SquidSquAds" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/SquidSquAds/h18-analytique-back-SquidSquAds_test.iml" filepath="$PROJECT_DIR$/.idea/modules/SquidSquAds/h18-analytique-back-SquidSquAds_test.iml" group="SquidSquAds" />
     </modules>
