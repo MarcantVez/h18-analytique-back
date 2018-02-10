@@ -22,7 +22,7 @@ public class Campaign {
     private String name;
 
     @Column(name = "numero_compte")
-    private int accountId;
+    private Long accountId;
 
     private Long[] profileIds;
 
@@ -54,8 +54,9 @@ public class Campaign {
 
     public Campaign(){}
 
-    public Campaign(Long campaignId, String name, String horizontalImg, String verticalImg, String mobileImg, String redirectUrl, Date startDate, Date endDate, float budget, Long[] linkedProfiles) {
+    public Campaign(Long campaignId, Long accountId, String name, String horizontalImg, String verticalImg, String mobileImg, String redirectUrl, Date startDate, Date endDate, float budget, Long[] linkedProfiles) {
         this.campaignId = campaignId;
+        this.accountId = accountId;
         this.name = name;
         this.horizontalImg = horizontalImg;
         this.verticalImg = verticalImg;
@@ -86,7 +87,7 @@ public class Campaign {
         this.name = name;
     }
 
-    public int getAccountId() {
+    public Long getAccountId() {
         return accountId;
     }
 
@@ -154,7 +155,7 @@ public class Campaign {
         this.budget = budget;
     }
 
-    public void setAccountId(int accountId) {
+    public void setAccountId(Long accountId) {
         this.accountId = accountId;
     }
 

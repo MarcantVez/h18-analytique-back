@@ -9,13 +9,13 @@ import com.squidsquads.repository.account.WebSiteAdminRepository;
 public class WebSiteAdminService {
 
     @Autowired
-    WebSiteAdminRepository webSiteAdminRepository;
+    public WebSiteAdminRepository webSiteAdminRepository;
 
     public WebSiteAdmin findByAccountID(Long accountID) {
         return webSiteAdminRepository.findByAccountID(accountID);
     }
 
-    public WebSiteAdmin addWebSiteAdmin(WebSiteAdmin webSiteAdmin) {
-        return webSiteAdminRepository.save(webSiteAdmin);
+    public WebSiteAdmin create(Long accountId, String domain) {
+        return webSiteAdminRepository.save(new WebSiteAdmin(accountId, domain));
     }
 }

@@ -1,17 +1,9 @@
 package com.squidsquads.model.account;
 
-
 import org.springframework.stereotype.Component;
+
 import javax.persistence.*;
 import java.util.Date;
-
-/**
- * @author: Dulce Cayetano
- * @Date_Of_Creation: 2018-01-18
- * @Last_modified_by:
- * @Date_of_last_modification:
- **/
-
 
 @Component
 @Entity
@@ -21,7 +13,7 @@ public class Account {
     private static final long serialVersionUID = -3009157732242241606L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "numero_compte")
     private long accountID;
 
@@ -42,7 +34,8 @@ public class Account {
 
     // CONSTRUCTOR
 
-    public Account() {}
+    public Account() {
+    }
 
     public Account(String adminType, String email, String password, String bankAccount) {
         this.adminType = adminType;
@@ -58,7 +51,6 @@ public class Account {
         this.createdDate = new Date();
     }
 
-
     public long getAccountID() {
         return accountID;
     }
@@ -69,6 +61,10 @@ public class Account {
 
     public String getAdminType() {
         return adminType;
+    }
+
+    public AdminType getAdminTypeValue() {
+        return AdminType.valueOf(adminType);
     }
 
     public void setAdminType(String adminType) {

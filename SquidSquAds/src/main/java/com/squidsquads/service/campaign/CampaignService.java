@@ -1,23 +1,26 @@
 package com.squidsquads.service.campaign;
 
+import com.squidsquads.form.campaign.request.CreateRequest;
+import com.squidsquads.form.campaign.response.CampaignDeleteResponse;
+import com.squidsquads.form.campaign.response.CampaignDetailResponse;
 import com.squidsquads.form.campaign.response.CampaignListResponse;
-import com.squidsquads.model.profile.Profile;
+import com.squidsquads.form.validator.CampaignCreateValidator;
+import com.squidsquads.form.validator.CampaignUpdateValidator;
+import com.squidsquads.model.account.AdminType;
 import com.squidsquads.repository.campaign.CampaignProfileRepository;
 import com.squidsquads.repository.campaign.CampaignRepository;
 import com.squidsquads.repository.profile.ProfileRepository;
 import com.squidsquads.utils.DateFormatter;
+import com.squidsquads.utils.session.SessionManager;
 import javassist.NotFoundException;
 import com.squidsquads.model.campaign.Campaign;
 import com.squidsquads.model.campaign.CampaignProfile;
 import com.squidsquads.form.campaign.response.CampaignListResponseItem;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.squidsquads.form.campaign.request.CampaignCreateUpdateRequest;
-import com.squidsquads.utils.exception.campaign.CampaignException;
-import com.squidsquads.utils.exception.campaign.CampaignFormatException;
+import com.squidsquads.form.campaign.request.UpdateRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.text.ParseException;
 import java.util.*;
 
 @Service
@@ -28,11 +31,20 @@ public class CampaignService {
     CampaignProfileRepository campaignProfileRepository;
     @Autowired
     ProfileRepository profileRepository;
+    @Autowired
+    CampaignCreateValidator campaignCreateValidator;
+    @Autowired
+    CampaignUpdateValidator campaignUpdateValidator;
 
 
     // Trouver les campagnes publicitaires d'un compte
-    public CampaignListResponse findAllForAuthor(int accountId) {
-        List<Campaign> campaigns = campaignRepository.findByAccountId(accountId);
+    public CampaignListResponse findAllForAuthor(String token) {
+        Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
+        AdminType adminType = SessionManager.getInstance().getAdminTypeForToken(token);
+        if (accountID == SessionManager.NO_SESSION || adminType != AdminType.PUB){
+            return new CampaignListResponse().unauthorized();
+        }
+        List<Campaign> campaigns = campaignRepository.findByAccountId(accountID);
         List<CampaignListResponseItem> responseList = new ArrayList<>();
         for (Campaign c : campaigns){
             responseList.add(
@@ -43,65 +55,107 @@ public class CampaignService {
                 )
             );
         }
-        return new CampaignListResponse(200, responseList);
+        return new CampaignListResponse().ok(responseList);
     }
 
     // Trouver une campagne publicitaire par son identificateur
-    public Campaign findOneById(Long campaingID) {
-        return campaignRepository.findOne(campaingID);
+    public CampaignDetailResponse findOneById(String token, Long campaingID) {
+        Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
+        AdminType adminType = SessionManager.getInstance().getAdminTypeForToken(token);
+        if (accountID == SessionManager.NO_SESSION || adminType != AdminType.PUB){
+            return new CampaignDetailResponse().unauthorized();
+        }
+        Campaign campaign = campaignRepository.findOne(campaingID);
+        if(campaign == null || campaign.getAccountId() != accountID){
+            return new CampaignDetailResponse().notFound();
+        }
+        // GET linked profiles for campaign
+        List<CampaignProfile> profiles = campaignProfileRepository.findAllByCampaignID(campaingID);
+        Long[] profileIDs = new Long[profiles.size()];
+        for(int i = 0; i<profiles.size(); i++){
+            profileIDs[i] = profiles.get(i).getProfileID();
+        }
+        campaign.setProfileIds(profileIDs);
+        return new CampaignDetailResponse().ok(campaign);
     }
 
     // Modifier une Campagne.
     @Transactional
-    public Campaign updateCampaign(CampaignCreateUpdateRequest updatedCampaign) {
-        Campaign campaign = new Campaign(
-                updatedCampaign.campaignId,
-                updatedCampaign.name,
-                updatedCampaign.imageHor,
-                updatedCampaign.imageVer,
-                updatedCampaign.imageMob,
-                updatedCampaign.redirectUrl,
-                DateFormatter.StringToDate(updatedCampaign.dateDebut),
-                DateFormatter.StringToDate(updatedCampaign.dateFin),
-                updatedCampaign.budget,
-                updatedCampaign.profileIds
-        );
-        campaignProfileRepository.deleteAllByCampaignID(updatedCampaign.campaignId);
-        for(long id : updatedCampaign.profileIds){
-            campaignProfileRepository.save(new CampaignProfile(id, updatedCampaign.campaignId));
+    public CampaignDetailResponse updateCampaign(String token, Long campaignID, UpdateRequest updatedCampaign) {
+        Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
+        AdminType adminType = SessionManager.getInstance().getAdminTypeForToken(token);
+        if (accountID == SessionManager.NO_SESSION || adminType != AdminType.PUB){
+            return new CampaignDetailResponse().unauthorized();
         }
-        campaign.setAccountId(0);
-        return  campaignRepository.save(campaign);
+        if(campaignID != updatedCampaign.getCampaignId()){
+            return new CampaignDetailResponse().fieldsMissing();
+        }
+        Campaign campaign = new Campaign(
+                updatedCampaign.getCampaignId(),
+                accountID,
+                updatedCampaign.getName(),
+                updatedCampaign.getImageHor(),
+                updatedCampaign.getImageVer(),
+                updatedCampaign.getImageMob(),
+                updatedCampaign.getRedirectUrl(),
+                DateFormatter.StringToDate(updatedCampaign.getStartDate()),
+                DateFormatter.StringToDate(updatedCampaign.getEndDate()),
+                updatedCampaign.getBudget(),
+                updatedCampaign.getProfileIds()
+        );
+        campaignProfileRepository.deleteAllByCampaignID(updatedCampaign.getCampaignId());
+        for(long id : updatedCampaign.getProfileIds()){
+            campaignProfileRepository.save(new CampaignProfile(id, updatedCampaign.getCampaignId()));
+        }
+        Campaign updated = campaignRepository.save(campaign);
+        return new CampaignDetailResponse().ok(updated);
     }
 
-    public Campaign addCampaign(CampaignCreateUpdateRequest newCampaign) {
+    public CampaignDetailResponse addCampaign(String token, CreateRequest newCampaign) {
+        Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
+        AdminType adminType = SessionManager.getInstance().getAdminTypeForToken(token);
+        if (accountID == SessionManager.NO_SESSION || adminType != AdminType.PUB){
+            return new CampaignDetailResponse().unauthorized();
+        }
+
+        if(!CampaignCreateValidator.isCreateRequestComplete(newCampaign)){
+            return new CampaignDetailResponse().fieldsMissing();
+        }
         Campaign campaign = new Campaign(
                 null,
-                newCampaign.name,
-                newCampaign.imageHor,
-                newCampaign.imageVer,
-                newCampaign.imageMob,
-                newCampaign.redirectUrl,
-                DateFormatter.StringToDate(newCampaign.dateDebut),
-                DateFormatter.StringToDate(newCampaign.dateFin),
-                newCampaign.budget,
-                newCampaign.profileIds
+                accountID,
+                newCampaign.getName(),
+                newCampaign.getImageHor(),
+                newCampaign.getImageVer(),
+                newCampaign.getImageMob(),
+                newCampaign.getRedirectUrl(),
+                DateFormatter.StringToDate(newCampaign.getStartDate()),
+                DateFormatter.StringToDate(newCampaign.getEndDate()),
+                newCampaign.getBudget(),
+                newCampaign.getProfileIds()
         );
-        campaign.setAccountId(0);
         Campaign created = campaignRepository.save(campaign);
-        for(long id : newCampaign.profileIds){
+        for(long id : newCampaign.getProfileIds()){
             campaignProfileRepository.save(new CampaignProfile(id, created.getCampaignId()));
         }
-        return created;
+        return new CampaignDetailResponse().ok(created);
     }
 
-    public void deleteCampaignById(Long campaignId) throws NotFoundException {
-        Campaign campaign = findOneById(campaignId);
-        if(campaign == null)
-        {
-            throw new NotFoundException("Campagne " + campaign + " inexistante");
-        } else {
+    public CampaignDeleteResponse deleteCampaignById(String token, Long campaignId) {
+        Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
+        AdminType adminType = SessionManager.getInstance().getAdminTypeForToken(token);
+        if (accountID == SessionManager.NO_SESSION || adminType != AdminType.PUB){
+            return new CampaignDeleteResponse().unauthorized();
+        }
+        Campaign campaign = campaignRepository.findOne(campaignId);
+        if(campaign != null){
+            if (campaign.getAccountId().equals(accountID)){
+                return new CampaignDeleteResponse().unauthorized();
+            }
             campaignRepository.delete(campaignId);
+            return  new CampaignDeleteResponse().ok();
+        } else {
+            return new CampaignDeleteResponse().notFound();
         }
     }
 }

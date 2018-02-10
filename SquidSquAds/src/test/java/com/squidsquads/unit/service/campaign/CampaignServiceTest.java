@@ -1,6 +1,6 @@
 package com.squidsquads.unit.service.campaign;
 
-import com.squidsquads.form.campaign.request.CampaignCreateUpdateRequest;
+import com.squidsquads.form.campaign.request.UpdateRequest;
 import com.squidsquads.model.campaign.Campaign;
 import com.squidsquads.repository.campaign.CampaignRepository;
 import com.squidsquads.service.campaign.CampaignService;
@@ -25,7 +25,7 @@ public class CampaignServiceTest {
     public void testCampaignCreation(){
         CampaignRepository repository = mock(CampaignRepository.class);
         Campaign testCampaign = new Campaign(
-                null,
+                null, 0L,
                 "testCampaign",
                 "https://URL_TO_IMG_HOST",
                 "https://URL_TO_IMG_HOST",
@@ -39,6 +39,7 @@ public class CampaignServiceTest {
 
         when(repository.save(testCampaign)).thenReturn(new Campaign(
                 Long.valueOf(1),
+                0L,
                 "testCampaign",
                 "https://URL_TO_IMG_HOST",
                 "https://URL_TO_IMG_HOST",
@@ -49,8 +50,6 @@ public class CampaignServiceTest {
                 800,
                 new Long[]{Long.valueOf(1), Long.valueOf(2), Long.valueOf(3)})
         );
-
-        campaignService.addCampaign(new CampaignCreateUpdateRequest());
         // TODO complete.
     }
 }

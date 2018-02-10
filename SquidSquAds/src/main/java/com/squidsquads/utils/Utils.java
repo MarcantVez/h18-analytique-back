@@ -1,4 +1,4 @@
-package utils;
+package com.squidsquads.utils;
 
 /**
  * @author: Dulce Cayetano

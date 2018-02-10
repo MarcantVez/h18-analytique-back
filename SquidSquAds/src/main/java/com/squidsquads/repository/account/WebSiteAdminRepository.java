@@ -6,5 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WebSiteAdminRepository extends JpaRepository<WebSiteAdmin, Long> {
+
     WebSiteAdmin findByAccountID(Long accountID);
+
 }

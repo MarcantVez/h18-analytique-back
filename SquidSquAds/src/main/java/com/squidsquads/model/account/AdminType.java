@@ -1,6 +1,6 @@
 package com.squidsquads.model.account;
 
 public enum AdminType {
-    WEB,
-    ADS
+    PUB,
+    WEB
 }
