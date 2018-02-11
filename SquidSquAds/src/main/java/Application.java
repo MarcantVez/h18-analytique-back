@@ -6,6 +6,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import javax.annotation.sql.DataSourceDefinition;
+
 @Configuration
 @ComponentScan({"config", "controller", "service", "utils"})
 @EnableJpaRepositories("repository")

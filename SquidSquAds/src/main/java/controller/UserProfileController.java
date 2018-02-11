@@ -10,6 +10,7 @@ import form.account.response.ResetPasswordResponse;
 import form.userProfile.request.CreateUserProfileRequest;
 import form.userProfile.response.CreateUserProfileResponse;
 import form.userProfile.response.EditUserProfileResponse;
+import form.userProfile.response.UserProfileInfoResponse;
 import form.userProfile.response.UserProfileResponse;
 import model.account.AdminType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +28,13 @@ import javax.validation.Valid;
  * @Date_of_last_modification:
  **/
 @RestController("UserProfileController")
+@RequestMapping("/user-profile")
 public class UserProfileController {
 
     @Autowired
     UserProfileService userProfileService;
 
-    @PostMapping("/user-profile")
+    @PostMapping("/create")
     @SessionAuthorize({AdminType.PUB})
     public ResponseEntity<?> createUserProfile(@Valid @RequestBody CreateUserProfileRequest request) {
 
@@ -40,23 +42,23 @@ public class UserProfileController {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    @GetMapping("/user-profile/{profileName}")
+    @GetMapping("/{profileName}")
     @SessionAuthorize({AdminType.PUB})
     public ResponseEntity<?> getUserProfileByName(@PathVariable ("profileName") String profileName) {
 
-        UserProfileResponse response = userProfileService.getUserProfileByName(profileName);
+        UserProfileInfoResponse response = userProfileService.getUserProfileByName(profileName);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    @GetMapping("/user-profile/{profileID}")
+    @GetMapping("/{profileID}")
     @SessionAuthorize({AdminType.PUB})
     public ResponseEntity<?> getUserProfileByID(@PathVariable ("profileID") String profileID) {
 
-        UserProfileResponse response = userProfileService.getUserProfileByID(profileID);
+        UserProfileInfoResponse response = userProfileService.getUserProfileByID(profileID);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    @PutMapping("/user-profile/{profileID}")
+    @PutMapping("/{profileID}")
     @SessionAuthorize({AdminType.PUB})
     public ResponseEntity<?> editUserProfile(@PathVariable String profileID,
                                              @Valid @RequestBody CreateUserProfileRequest request) {
