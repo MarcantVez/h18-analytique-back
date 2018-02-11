@@ -66,4 +66,3 @@ alter table agentutilisateur add constraint fk_agentutilisateur_no_infodesuivi f
 -- cle table typenavigateur_agent
 alter table typenavigateur_agent add constraint fk_typenavigateur_agent_no_typenavigateur foreign key (numero_typenavigateur) references typenavigateur (numero_typenavigateur);
 alter table typenavigateur_agent add constraint fk_typenavigateur_agent_no_agentutilisateur foreign key (numero_agentutilisateur) references agentutilisateur (numero_agentutilisateur);
-

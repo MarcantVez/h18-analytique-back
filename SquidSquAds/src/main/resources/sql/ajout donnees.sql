@@ -65,8 +65,11 @@ INSERT INTO Orientation VALUES
    'Mobile'
   );
 
-INSERT INTO Orientation_Banniere (numero_banniere, numero_orientation) VALUES
-  (1, 1);
+INSERT INTO Orientation_Banniere VALUES
+  (DEFAULT,
+   (SELECT MAX(numero_banniere) FROM Banniere),
+   (SELECT MAX(numero_orientation) FROM Orientation)
+  );
 
 INSERT INTO Categorie VALUES
   (DEFAULT,
