@@ -96,7 +96,6 @@ target/
 # End of https://www.gitignore.io/api/java,java-web,intellij+all
 .gradle/**
 SquidSquAds/out/**
-SquidSquAds/build/**
 *.class
 .idea/**
 !gradle/wrapper/gradle-wrapper.jar
