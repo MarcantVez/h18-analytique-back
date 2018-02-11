@@ -33,7 +33,6 @@ public class UserProfileService {
 
     /**
      * Find an user profile with name
-     *
      * @param name: name of the profile
      * @return the user profile
      */

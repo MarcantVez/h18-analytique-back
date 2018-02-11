@@ -11,6 +11,7 @@ import com.squidsquads.repository.account.AccountRepository;
 import com.squidsquads.repository.account.WebSiteAdminRepository;
 import com.squidsquads.service.account.AccountService;
 import com.squidsquads.service.account.WebSiteAdminService;
+import com.squidsquads.unit.service.AbstractWebSiteAdminTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
@@ -21,63 +22,19 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class AccountServiceTest {
-
-    private static AccountService accountService;
-    private static WebSiteAdminService webSiteAdminService;
-
-    private static AccountRepository accountRepository;
-    private static WebSiteAdminRepository webSiteAdminRepository;
-
-    private static Account account;
-    private static WebSiteAdmin webSiteAdmin;
-
-    @BeforeClass
-    public static void init() {
-
-        // Instance des services
-        accountService = new AccountService();
-        webSiteAdminService = new WebSiteAdminService();
-
-        // Dummy account
-        account = new Account();
-        account.setAccountID(1);
-        account.setAdminType(AdminType.WEB.toString());
-        account.setEmail("test@test.com");
-        account.setPassword("123");
-        account.setBankAccount("0000 1111 2222 3333");
-        account.setCreatedDate(new Date());
-
-        // Dummy web admin
-        webSiteAdmin = new WebSiteAdmin(account.getAccountID(), "http://wwww.google.ca");
-
-        // Mock account repositery
-        accountRepository = mock(AccountRepository.class);
-        when(accountRepository.findByAccountID(account.getAccountID())).thenReturn(account);
-        when(accountRepository.findByEmail(account.getEmail())).thenReturn(account);
-
-        // Mock web site admin repositery
-        webSiteAdminRepository = mock(WebSiteAdminRepository.class);
-        when(webSiteAdminRepository.findByAccountID(account.getAccountID())).thenReturn(webSiteAdmin);
-        when(webSiteAdminRepository.save(webSiteAdmin)).thenReturn(webSiteAdmin);
-
-        // Assigner les mocks aux instances des services
-        accountService.accountRepository = accountRepository;
-        accountService.webSiteAdminService = webSiteAdminService;
-        webSiteAdminService.webSiteAdminRepository = webSiteAdminRepository;
-    }
+public class AccountServiceTest extends AbstractWebSiteAdminTest {
 
     @Test
     public void loginNoAccountTest() {
 
         // Repositery retourne null comme s'il ne l'a pas trouvé
-        when(accountRepository.findByEmail(account.getEmail())).thenReturn(null);
+        when(super.getAccountRepository().findByEmail(super.getAccount().getEmail())).thenReturn(null);
 
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setEmail("mauvais@email.com");
         loginRequest.setPassword("123");
 
-        AbstractLoginResponse loginResponse = accountService.login(loginRequest);
+        AbstractLoginResponse loginResponse = super.getAccountService().login(loginRequest);
 
         assertTrue(loginResponse instanceof LoginFailedResponse);
         assertFalse(loginResponse.isAuthenticated());
@@ -89,13 +46,13 @@ public class AccountServiceTest {
     public void loginWrongInformationTest() {
 
         // Repositery retourne le bon account mais le mot de passe est mauvais
-        when(accountRepository.findByEmail(account.getEmail())).thenReturn(account);
+        when(super.getAccountRepository().findByEmail(super.getAccount().getEmail())).thenReturn(super.getAccount());
 
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail(account.getEmail());
+        loginRequest.setEmail(super.getAccount().getEmail());
         loginRequest.setPassword("mauvais mot de passe");
 
-        AbstractLoginResponse loginResponse = accountService.login(loginRequest);
+        AbstractLoginResponse loginResponse = super.getAccountService().login(loginRequest);
 
         assertTrue(loginResponse instanceof LoginFailedResponse);
         assertFalse(loginResponse.isAuthenticated());
@@ -107,21 +64,21 @@ public class AccountServiceTest {
     public void loginSuccessful() {
 
         // Repositery retourne le bon account
-        when(accountRepository.findByEmail(account.getEmail())).thenReturn(account);
+        when(super.getAccountRepository().findByEmail(super.getAccount().getEmail())).thenReturn(super.getAccount());
 
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail(account.getEmail());
-        loginRequest.setPassword(account.getPassword());
+        loginRequest.setEmail(super.getAccount().getEmail());
+        loginRequest.setPassword(super.getAccount().getPassword());
 
-        AbstractLoginResponse loginResponse = accountService.login(loginRequest);
+        AbstractLoginResponse loginResponse = super.getAccountService().login(loginRequest);
 
         assertTrue(loginResponse instanceof LoginSucceededResponse);
         assertTrue(loginResponse.isAuthenticated());
         assertEquals(HttpStatus.OK, loginResponse.getStatus());
         assertTrue(((LoginSucceededResponse) loginResponse).isAdminWeb());
         assertFalse(((LoginSucceededResponse) loginResponse).isAdminPub());
-        assertEquals(account.getAccountID(), ((LoginSucceededResponse) loginResponse).getAccountId());
-        assertEquals(account.getEmail(), ((LoginSucceededResponse) loginResponse).getDisplayName());
+        assertEquals(super.getAccount().getAccountID(), ((LoginSucceededResponse) loginResponse).getAccountId());
+        assertEquals(super.getAccount().getEmail(), ((LoginSucceededResponse) loginResponse).getDisplayName());
         assertEquals(32, ((LoginSucceededResponse) loginResponse).getToken().length());
     }
 }

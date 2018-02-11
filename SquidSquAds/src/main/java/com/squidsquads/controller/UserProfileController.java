@@ -29,6 +29,9 @@ public class UserProfileController {
     @Autowired
     UserProfileService userProfileService;
 
+    /**
+     * Create user profile
+     */
     @PostMapping("/create")
     @SessionAuthorize({AdminType.PUB})
     public ResponseEntity<?> createUserProfile(@Valid @RequestBody CreateUserProfileRequest request) {
@@ -37,6 +40,9 @@ public class UserProfileController {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
+    /**
+     * Get User profile with name
+     */
     @GetMapping("/{profileName}")
     @SessionAuthorize(AdminType.PUB)
     public ResponseEntity<?> getUserProfileByName(@PathVariable ("profileName") String profileName) {
@@ -45,6 +51,9 @@ public class UserProfileController {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
+    /**
+     * Get User profile with ID
+     */
     @GetMapping("/{profileID}")
     @SessionAuthorize(AdminType.PUB)
     public ResponseEntity<?> getUserProfileByID(@PathVariable ("profileID") String profileID) {
@@ -53,6 +62,9 @@ public class UserProfileController {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
+    /**
+     * Edit user profile
+     */
     @PutMapping("/{profileID}")
     @SessionAuthorize(AdminType.PUB)
     public ResponseEntity<?> editUserProfile(@PathVariable String profileID,
@@ -62,6 +74,9 @@ public class UserProfileController {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
+    /**
+     * Delete user profile
+     */
     @DeleteMapping("/{profileID}")
     @SessionAuthorize(AdminType.PUB)
     public ResponseEntity<?> deleteUserProfile(@PathVariable String profileID,

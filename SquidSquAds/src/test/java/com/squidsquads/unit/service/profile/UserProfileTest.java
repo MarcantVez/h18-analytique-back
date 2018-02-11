@@ -1,3 +1,7 @@
+package com.squidsquads.unit.service.profile;
+
+import com.squidsquads.unit.service.AbstractPubAdminTest;
+
 /**
  * @author: Dulce Cayetano
  * @Date_Of_Creation: 2018-02-10

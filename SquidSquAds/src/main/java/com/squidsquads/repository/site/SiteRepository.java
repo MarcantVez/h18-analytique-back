@@ -1,6 +1,5 @@
 package com.squidsquads.repository.site;
 
-import com.squidsquads.model.profile.UserProfile;
 import com.squidsquads.model.site.Site;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
