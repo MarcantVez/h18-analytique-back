@@ -23,7 +23,7 @@ import javax.validation.Valid;
  * @Date_of_last_modification:
  **/
 @RestController("UserProfileController")
-@RequestMapping("/user-profile")
+@RequestMapping("/api/user-profile")
 public class UserProfileController {
 
     @Autowired

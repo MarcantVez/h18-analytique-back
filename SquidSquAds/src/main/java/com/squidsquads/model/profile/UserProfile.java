@@ -1,7 +1,6 @@
 package com.squidsquads.model.profile;
 
 
-import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Component;
 import javax.persistence.*;
 import java.util.Date;

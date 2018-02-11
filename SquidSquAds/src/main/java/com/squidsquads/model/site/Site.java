@@ -1,9 +1,7 @@
 package com.squidsquads.model.site;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.stereotype.Component;
-
 import javax.persistence.*;
+import org.springframework.stereotype.Component;
 
 /**
  * @author: Dulce Cayetano
