@@ -18,7 +18,7 @@ public class UserProfile {
     @Column(name = "numero_compte")
     private long accountID;
 
-    @Column(name = "name")
+    @Column(name = "nom")
     private String name;
 
     @Column(name = "description")

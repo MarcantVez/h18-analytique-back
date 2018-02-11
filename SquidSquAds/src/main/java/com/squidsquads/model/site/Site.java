@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Site {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "numero_site")
     private long siteID;
 
