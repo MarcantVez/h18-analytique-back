@@ -2,15 +2,9 @@ package com.squidsquads.form.userProfile.response;
 
 import org.springframework.http.HttpStatus;
 
-/**
- * @author: Dulce Cayetano
- * @Date_Of_Creation: 2018-02-05
- * @Last_modified_by:
- * @Date_of_last_modification:
- **/
 public class CreateUserProfileResponse {
 
-    private static final String SUCCESS = "Le profil d'utilisateur a été crée";
+    private static final String SUCCESS = "Le profil utilisateur a été crée";
     private static final String MISSING_FIELDS = "Tous les champs requis doivent être remplis";
     private static final String EXISTING_PROFILE = "Nom de profil déjà utilisé";
     private static final String INVALID_URL = "URL invalide";
@@ -49,7 +43,7 @@ public class CreateUserProfileResponse {
     }
 
     public CreateUserProfileResponse invalidAccountNumber() {
-        status = HttpStatus.BAD_REQUEST;
+        status = HttpStatus.INTERNAL_SERVER_ERROR;
         message = INVALID_ACCOUNT_NUMBER;
         return this;
     }

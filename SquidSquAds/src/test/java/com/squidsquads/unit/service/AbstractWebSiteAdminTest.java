@@ -14,12 +14,6 @@ import java.util.Date;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * @author: Dulce Cayetano
- * @Date_Of_Creation: 2018-02-08
- * @Last_modified_by:
- * @Date_of_last_modification:
- **/
 
 public class AbstractWebSiteAdminTest {
 
@@ -46,7 +40,7 @@ public class AbstractWebSiteAdminTest {
         account.setEmail("test@test.com");
         account.setPassword("123");
         account.setBankAccount("0000 1111 2222 3333");
-        account.setCreatedDate(new Date());
+        account.setDateCreated(new Date());
 
         // Dummy web admin
         webSiteAdmin = new WebSiteAdmin(account.getAccountID(), "http://wwww.google.ca");

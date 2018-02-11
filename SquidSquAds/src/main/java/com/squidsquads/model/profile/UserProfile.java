@@ -1,28 +1,22 @@
 package com.squidsquads.model.profile;
 
-
 import org.springframework.stereotype.Component;
+
 import javax.persistence.*;
 import java.util.Date;
 
-/**
- * @author: Dulce Cayetano
- * @Date_Of_Creation: 2018-02-05
- * @Last_modified_by:
- * @Date_of_last_modification:
- **/
 @Component
 @Entity
 @Table(name = "profildutilisateur")
 public class UserProfile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "numero_profilutilisateur")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "numero_profildutilisateur")
     private long profileID;
 
     @Column(name = "numero_compte")
-    private int accountNumber;
+    private long accountID;
 
     @Column(name = "name")
     private String name;
@@ -31,24 +25,20 @@ public class UserProfile {
     private String description;
 
     @Column(name = "date_creation")
-    private Date creationTime;
+    private Date dateCreated;
 
+    public UserProfile() {
+    }
 
-    // CONSTRUCTOR
-
-    public UserProfile(){}
-
-    public UserProfile(int accountNumber, String name, String description) {
-        this.accountNumber = accountNumber;
+    public UserProfile(long accountID, String name, String description) {
+        this.accountID = accountID;
         this.name = name;
         this.description = description;
     }
 
-    // JPA required method
-
     @PrePersist
     void creationTimeStamp() {
-        this.creationTime = new Date();
+        this.dateCreated = new Date();
     }
 
     public long getProfileID() {
@@ -59,12 +49,12 @@ public class UserProfile {
         this.profileID = profileID;
     }
 
-    public int getAccountNumber() {
-        return accountNumber;
+    public long getAccountID() {
+        return accountID;
     }
 
-    public void setAccountNumber(int accountNumber) {
-        this.accountNumber = accountNumber;
+    public void setAccountID(long accountID) {
+        this.accountID = accountID;
     }
 
     public String getName() {
@@ -83,11 +73,11 @@ public class UserProfile {
         this.description = description;
     }
 
-    public Date getCreationTime() {
-        return creationTime;
+    public Date getDateCreated() {
+        return dateCreated;
     }
 
-    public void setCreationTime(Date creationTime) {
-        this.creationTime = creationTime;
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 }

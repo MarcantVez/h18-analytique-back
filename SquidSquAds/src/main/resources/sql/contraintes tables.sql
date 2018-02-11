@@ -1,69 +1,69 @@
--- Primary Key
---ALTER TABLE CompteUtilisateur ADD CONSTRAINT pk_compte_utilisateur PRIMARY KEY(Numero_Compte);
---ALTER TABLE Paiement ADD CONSTRAINT pk_paiement PRIMARY KEY(Numero_Paiement);
---ALTER TABLE Campagne ADD CONSTRAINT pk_campagne PRIMARY KEY(Numero_Campagne);
---ALTER TABLE ProfilDUtilisateur ADD CONSTRAINT pk_profildutilisateur PRIMARY KEY(Numero_ProfilDUtilisateur);
---ALTER TABLE Campagne_ProfilDUtilisateur ADD CONSTRAINT pk_campagne_profildutilisateur PRIMARY KEY(Numero_Campagne_ProfilDUtilisateur);
---ALTER TABLE Site ADD CONSTRAINT pk_site PRIMARY KEY(Numero_Site);
---ALTER TABLE Banniere ADD CONSTRAINT pk_banniere PRIMARY KEY(Numero_Banniere);
---ALTER TABLE Orientation ADD CONSTRAINT pk_orientation PRIMARY KEY(Numero_Orientation);
---ALTER TABLE Orientation_Banniere ADD CONSTRAINT pk_orientation_banniere PRIMARY KEY (Numero_Orientation_Banniere);
---ALTER TABLE Visite ADD CONSTRAINT pk_visite PRIMARY KEY(Numero_visite);
---ALTER TABLE Categorie ADD CONSTRAINT pk_categorie PRIMARY KEY(Numero_Categorie);
---ALTER TABLE Categorie_Visite ADD CONSTRAINT pk_categorie_visite PRIMARY KEY (Numero_Categorie_Visite);
---ALTER TABLE Redevance ADD CONSTRAINT pk_redevance PRIMARY KEY(Numero_Redevance);
---ALTER TABLE SiteWebAdmin ADD CONSTRAINT pk_sitewebadmin PRIMARY KEY(Numero_SiteWebAdmin);
---ALTER TABLE InfoDeSuivi ADD CONSTRAINT pk_infodesuivi PRIMARY KEY(Numero_InfoDeSuivi);
---ALTER TABLE AgentUtilisateur ADD CONSTRAINT pk_agentutilisateur PRIMARY KEY(Numero_AgentUtilisateur);
---ALTER TABLE TypeNavigateur ADD CONSTRAINT pk_typenavigateur PRIMARY KEY (Numero_TypeNavigateur);
---ALTER TABLE TypeNavigateur_Agent ADD CONSTRAINT pk_typenavigateur_agent PRIMARY KEY(Numero_TypeNavigateur_Agent);
+-- primary key
+--alter table compteutilisateur add constraint pk_compte_utilisateur primary key(numero_compte);
+--alter table paiement add constraint pk_paiement primary key(numero_paiement);
+--alter table campagne add constraint pk_campagne primary key(numero_campagne);
+--alter table profildutilisateur add constraint pk_profildutilisateur primary key(numero_profildutilisateur);
+--alter table campagne_profildutilisateur add constraint pk_campagne_profildutilisateur primary key(numero_campagne_profildutilisateur);
+--alter table site add constraint pk_site primary key(numero_site);
+--alter table banniere add constraint pk_banniere primary key(numero_banniere);
+--alter table orientation add constraint pk_orientation primary key(numero_orientation);
+--alter table orientation_banniere add constraint pk_orientation_banniere primary key (numero_orientation_banniere);
+--alter table visite add constraint pk_visite primary key(numero_visite);
+--alter table categorie add constraint pk_categorie primary key(numero_categorie);
+--alter table categorie_visite add constraint pk_categorie_visite primary key (numero_categorie_visite);
+--alter table redevance add constraint pk_redevance primary key(numero_redevance);
+--alter table sitewebadmin add constraint pk_sitewebadmin primary key(numero_sitewebadmin);
+--alter table infodesuivi add constraint pk_infodesuivi primary key(numero_infodesuivi);
+--alter table agentutilisateur add constraint pk_agentutilisateur primary key(numero_agentutilisateur);
+--alter table typenavigateur add constraint pk_typenavigateur primary key (numero_typenavigateur);
+--alter table typenavigateur_agent add constraint pk_typenavigateur_agent primary key(numero_typenavigateur_agent);
 
--- Foreign Key
+-- foreign key
 
--- CLE TABLE Paiement
-ALTER TABLE Paiement ADD CONSTRAINT fk_paiement_no_compte FOREIGN KEY (Numero_Compte) REFERENCES CompteUtilisateur (Numero_Compte);
+-- cle table paiement
+alter table paiement add constraint fk_paiement_no_compte foreign key (numero_compte) references compteutilisateur (numero_compte);
 
--- CLE TABLE Campagne
-ALTER TABLE Campagne ADD CONSTRAINT fk_campagne_no_compte FOREIGN KEY (Numero_Compte) REFERENCES CompteUtilisateur (Numero_Compte);
+-- cle table campagne
+alter table campagne add constraint fk_campagne_no_compte foreign key (numero_compte) references compteutilisateur (numero_compte);
 
--- CLE TABLE ProfilDUtilisateur
-ALTER TABLE ProfilDUtilisateur ADD CONSTRAINT fk_profildutilisateur_no_compte FOREIGN KEY (Numero_Compte) REFERENCES CompteUtilisateur (Numero_Compte);
+-- cle table profildutilisateur
+alter table profildutilisateur add constraint fk_profildutilisateur_no_compte foreign key (numero_compte) references compteutilisateur (numero_compte);
 
--- CLE TABLE Campagne_ProfilDUtilisateur
-ALTER TABLE Campagne_ProfilDUtilisateur ADD CONSTRAINT fk_campagne_profildutilisateur_no_profildutilisateur FOREIGN KEY (Numero_ProfilDUtilisateur) REFERENCES ProfilDUtilisateur (Numero_ProfilDUtilisateur);
-ALTER TABLE Campagne_ProfilDUtilisateur ADD CONSTRAINT fk_campagne_profildutilisateur_no_campagne FOREIGN KEY (Numero_Campagne) REFERENCES Campagne (Numero_Campagne);
+-- cle table campagne_profildutilisateur
+alter table campagne_profildutilisateur add constraint fk_campagne_profildutilisateur_no_profildutilisateur foreign key (numero_profildutilisateur) references profildutilisateur (numero_profildutilisateur);
+alter table campagne_profildutilisateur add constraint fk_campagne_profildutilisateur_no_campagne foreign key (numero_campagne) references campagne (numero_campagne);
 
--- CLE TABLE Site
-ALTER TABLE Site ADD CONSTRAINT fk_site_no_profildutilisateur FOREIGN KEY (Numero_ProfilDUtilisateur) REFERENCES ProfilDUtilisateur (Numero_ProfilDUtilisateur);
+-- cle table site
+alter table site add constraint fk_site_no_profildutilisateur foreign key (numero_profildutilisateur) references profildutilisateur (numero_profildutilisateur);
 
--- CLE TABLE Banniere
-ALTER TABLE Banniere ADD CONSTRAINT fk_banniere_no_compte FOREIGN KEY (Numero_Compte) REFERENCES CompteUtilisateur (Numero_Compte);
+-- cle table banniere
+alter table banniere add constraint fk_banniere_no_compte foreign key (numero_compte) references compteutilisateur (numero_compte);
 
--- CLE TABLE Orientation_Banniere
-ALTER TABLE Orientation_Banniere ADD CONSTRAINT fk_orientation_banniere_no_banniere FOREIGN KEY (numero_banniere) REFERENCES Banniere (numero_banniere);
-ALTER TABLE Orientation_Banniere ADD CONSTRAINT fk_orientation_banniere_no_orientation FOREIGN KEY (Numero_Orientation) REFERENCES Orientation (Numero_Orientation);
+-- cle table orientation_banniere
+alter table orientation_banniere add constraint fk_orientation_banniere_no_banniere foreign key (numero_banniere) references banniere (numero_banniere);
+alter table orientation_banniere add constraint fk_orientation_banniere_no_orientation foreign key (numero_orientation) references orientation (numero_orientation);
 
--- CLE TABLE Visite
-ALTER TABLE Visite ADD CONSTRAINT fk_visite_no_banniere FOREIGN KEY (Numero_Banniere) REFERENCES Banniere (Numero_Banniere);
+-- cle table visite
+alter table visite add constraint fk_visite_no_banniere foreign key (numero_banniere) references banniere (numero_banniere);
 
--- CLE TABLE Categorie_Visite
-ALTER TABLE Categorie_Visite ADD CONSTRAINT fk_categorie_visite_no_visite FOREIGN KEY (Numero_Visite) REFERENCES Visite (Numero_Visite);
-ALTER TABLE Categorie_Visite ADD CONSTRAINT fk_categorie_visite_no_categorie FOREIGN KEY (Numero_Categorie) REFERENCES Categorie (Numero_Categorie);
+-- cle table categorie_visite
+alter table categorie_visite add constraint fk_categorie_visite_no_visite foreign key (numero_visite) references visite (numero_visite);
+alter table categorie_visite add constraint fk_categorie_visite_no_categorie foreign key (numero_categorie) references categorie (numero_categorie);
 
--- CLE TABLE Redevance
-ALTER TABLE Redevance ADD CONSTRAINT fk_redevance_no_compte FOREIGN KEY (Numero_Compte) REFERENCES CompteUtilisateur (Numero_Compte);
-ALTER TABLE Redevance ADD CONSTRAINT fk_redevance_no_visite FOREIGN KEY (Numero_Visite) REFERENCES Visite (Numero_Visite);
+-- cle table redevance
+alter table redevance add constraint fk_redevance_no_compte foreign key (numero_compte) references compteutilisateur (numero_compte);
+alter table redevance add constraint fk_redevance_no_visite foreign key (numero_visite) references visite (numero_visite);
 
--- CLE TABLE SiteWebAdmin
-ALTER TABLE SiteWebAdmin ADD CONSTRAINT fk_sitewebadmin_no_compte FOREIGN KEY (Numero_Compte) REFERENCES CompteUtilisateur (Numero_Compte);
+-- cle table sitewebadmin
+alter table sitewebadmin add constraint fk_sitewebadmin_no_compte foreign key (numero_compte) references compteutilisateur (numero_compte);
 
--- CLE TABLE InfoDeSuivi
-ALTER TABLE InfoDeSuivi ADD CONSTRAINT fk_infodesuivi_no_sitewebadmin FOREIGN KEY (Numero_SiteWebAdmin) REFERENCES SiteWebAdmin (Numero_SiteWebAdmin);
+-- cle table infodesuivi
+alter table infodesuivi add constraint fk_infodesuivi_no_sitewebadmin foreign key (numero_sitewebadmin) references sitewebadmin (numero_sitewebadmin);
 
--- CLE TABLE AgentUtilisateur
-ALTER TABLE AgentUtilisateur ADD CONSTRAINT fk_agentutilisateur_no_infodesuivi FOREIGN KEY (Numero_InfoDeSuivi) REFERENCES InfoDeSuivi (Numero_InfoDeSuivi);
+-- cle table agentutilisateur
+alter table agentutilisateur add constraint fk_agentutilisateur_no_infodesuivi foreign key (numero_infodesuivi) references infodesuivi (numero_infodesuivi);
 
--- CLE TABLE TypeNavigateur_Agent
-ALTER TABLE TypeNavigateur_Agent ADD CONSTRAINT fk_typenavigateur_agent_no_typenavigateur FOREIGN KEY (Numero_TypeNavigateur) REFERENCES TypeNavigateur (Numero_TypeNavigateur);
-ALTER TABLE TypeNavigateur_Agent ADD CONSTRAINT fk_typenavigateur_agent_no_agentutilisateur FOREIGN KEY (Numero_AgentUtilisateur) REFERENCES AgentUtilisateur (Numero_AgentUtilisateur);
+-- cle table typenavigateur_agent
+alter table typenavigateur_agent add constraint fk_typenavigateur_agent_no_typenavigateur foreign key (numero_typenavigateur) references typenavigateur (numero_typenavigateur);
+alter table typenavigateur_agent add constraint fk_typenavigateur_agent_no_agentutilisateur foreign key (numero_agentutilisateur) references agentutilisateur (numero_agentutilisateur);
 

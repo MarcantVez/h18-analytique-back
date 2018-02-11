@@ -1,14 +1,9 @@
 package com.squidsquads.model.site;
 
-import javax.persistence.*;
 import org.springframework.stereotype.Component;
 
-/**
- * @author: Dulce Cayetano
- * @Date_Of_Creation: 2018-02-10
- * @Last_modified_by:
- * @Date_of_last_modification:
- **/
+import javax.persistence.*;
+
 @Component
 @Entity
 @Table(name = "site")
@@ -25,7 +20,8 @@ public class Site {
     @Column(name = "url")
     private String url;
 
-    public Site  (){}
+    public Site() {
+    }
 
     public Site(long userProfileID, String url) {
         this.userProfileID = userProfileID;

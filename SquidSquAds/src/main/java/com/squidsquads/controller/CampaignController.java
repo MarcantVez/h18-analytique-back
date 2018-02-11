@@ -9,70 +9,65 @@ import com.squidsquads.model.account.AdminType;
 import com.squidsquads.service.campaign.CampaignService;
 import com.squidsquads.utils.session.SessionAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-/**
- * @author Marc-Antoine Vézina
- * @Date_Of_Creation: 2018-02-01
- */
-
 @RestController("CampaignController")
+@RequestMapping("/campagne")
 public class CampaignController {
 
     @Autowired
     CampaignService campaignService;
 
-    // -------------------Trouver une campagne par ID de compte---------------------------------------------
+    // --- Trouver les campagnes par ID de compte -------------------------- //
 
-    @GetMapping("/campagne")
-    @SessionAuthorize({AdminType.PUB})
+    @GetMapping("")
+    @SessionAuthorize(AdminType.PUB)
     public ResponseEntity<CampaignListResponse> findAllForAuthor(@RequestHeader("Token") String token) {
 
         CampaignListResponse campaignListResponseList = campaignService.findAllForAuthor(token);
         return ResponseEntity.status(campaignListResponseList.getStatus()).body(campaignListResponseList);
     }
 
-    // -------------------Trouver une Campagne---------------------------------------------
+    // --- Ajouter une campagne -------------------------------------------- //
 
-    @GetMapping(value = "/campagne/{id}")
-    @SessionAuthorize({AdminType.PUB})
-    public ResponseEntity<CampaignDetailResponse> findById(@RequestHeader("Token") String token, @PathVariable(value = "id") Long id) {
-
-        CampaignDetailResponse campaignDetail = campaignService.findOneById(token, id);
-        return ResponseEntity.status(campaignDetail.getStatus()).body(campaignDetail);
-    }
-
-    // -------------------Ajouter une Campagne---------------------------------------------
-
-    @PostMapping(value = "/campagne", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @SessionAuthorize({AdminType.PUB})
+    @PostMapping("")
+    @SessionAuthorize(AdminType.PUB)
     public ResponseEntity<CampaignDetailResponse> createCampaign(@RequestHeader("Token") String token, @Valid @RequestBody CreateRequest newCampaign) {
 
         CampaignDetailResponse campaignResponse = campaignService.addCampaign(token, newCampaign);
         return ResponseEntity.status(campaignResponse.getStatus()).body(campaignResponse);
     }
 
-    // -------------------Update une Campagne---------------------------------------------
+    // --- Trouver une campagne -------------------------------------------- //
 
-    @PutMapping(value = "campagne/{id}")
-    @SessionAuthorize({AdminType.PUB})
-    public ResponseEntity<CampaignDetailResponse> updateCampainById(@RequestHeader("Token") String token, @PathVariable(value = "id") Long campaignID, @Valid @RequestBody UpdateRequest updatedCampaign) {
+    @GetMapping("/{campaignID}")
+    @SessionAuthorize(AdminType.PUB)
+    public ResponseEntity<CampaignDetailResponse> findById(@RequestHeader("Token") String token, @PathVariable("campaignID") Long campaignID) {
+
+        CampaignDetailResponse campaignDetail = campaignService.findOneById(token, campaignID);
+        return ResponseEntity.status(campaignDetail.getStatus()).body(campaignDetail);
+    }
+
+    // --- Update une campagne --------------------------------------------- //
+
+    @PutMapping("/{campaignID}")
+    @SessionAuthorize(AdminType.PUB)
+    public ResponseEntity<CampaignDetailResponse> updateCampainById(@RequestHeader("Token") String token, @PathVariable("campaignID") Long campaignID, @Valid @RequestBody UpdateRequest updatedCampaign) {
 
         CampaignDetailResponse campaignResponse = campaignService.updateCampaign(token, campaignID, updatedCampaign);
         return ResponseEntity.status(campaignResponse.getStatus()).body(campaignResponse);
     }
 
-    // -------------------Supprimer une Campagne---------------------------------------------
+    // --- Supprimer une campagne ------------------------------------------ //
 
-    @DeleteMapping(value = "campagne/{id}")
-    @SessionAuthorize({AdminType.PUB})
-    public ResponseEntity<?> deleteCampaignById(@RequestHeader("Token") String token, @PathVariable(value = "id") Long id) {
+    @DeleteMapping("/{campaignID}")
+    @SessionAuthorize(AdminType.PUB)
+    public ResponseEntity<?> deleteCampaignById(@RequestHeader("Token") String token, @PathVariable("campaignID") Long campaignID) {
 
-        CampaignDeleteResponse campaignDeleteResponse = campaignService.deleteCampaignById(token, id);
+        CampaignDeleteResponse campaignDeleteResponse = campaignService.deleteCampaignById(token, campaignID);
         return ResponseEntity.status(campaignDeleteResponse.getStatus()).body(null);
     }
 

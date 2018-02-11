@@ -1,25 +1,25 @@
 package com.squidsquads.service.userProfile;
 
-import com.squidsquads.form.userProfile.request.CreateUserProfileRequest;
-import com.squidsquads.form.userProfile.request.DeleteUserProfileRequest;
+import com.squidsquads.form.userProfile.request.CreateModifyRequest;
 import com.squidsquads.form.userProfile.response.*;
 import com.squidsquads.form.validator.UserProfileValidator;
+import com.squidsquads.model.account.Account;
 import com.squidsquads.model.profile.UserProfile;
 import com.squidsquads.model.site.Site;
+import com.squidsquads.repository.account.AccountRepository;
 import com.squidsquads.repository.site.SiteRepository;
+import com.squidsquads.repository.userProfile.UserProfileRepository;
+import com.squidsquads.utils.DateFormatter;
+import com.squidsquads.utils.session.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import com.squidsquads.repository.userProfile.UserProfileRepository;
+import org.springframework.transaction.annotation.Transactional;
 
-/**
- * @author: Dulce Cayetano
- * @Date_Of_Creation: 2018-02-05
- * @Last_modified_by: Dulce Cayetano
- * @Date_of_last_modification: 2018-02-10
- **/
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserProfileService {
 
@@ -31,144 +31,196 @@ public class UserProfileService {
     @Autowired
     public SiteRepository siteRepository;
 
+    @Autowired
+    public AccountRepository accountRepository;
+
     /**
-     * Find an user profile with name
-     * @param name: name of the profile
-     * @return the user profile
+     * Trouver un profil utilisateur en fonction de son nom et du ID du compte utilisateur
      */
-    private UserProfile findByName(String name) {
-        return userProfileRepository.findByName(name);
+    private UserProfile findByNameAndAccountID(String name, Long accountID) {
+        return userProfileRepository.findByNameAndAccountID(name, accountID);
     }
 
     /**
-     * Find the the user profile with ID
-     *
-     * @param profileID: ID of the user profile
-     * @return the user profile
+     * Trouver un profil utilisateur en fonction de son ID
      */
-    private UserProfile findByProfileID(Long profileID) {
-        return userProfileRepository.findByProfileID(profileID);
+    private UserProfile findByProfileIDAndAccountID(Long profileID, Long accountID) {
+        return userProfileRepository.findByProfileIDAndAccountID(profileID, accountID);
     }
 
 
     /**
-     * Creates a new profile
+     * Créer une profil utilisateur
      */
-    public CreateUserProfileResponse createUserProfile(CreateUserProfileRequest request) {
+    public CreateUserProfileResponse create(String token, CreateModifyRequest request) {
 
-        //Check for missing fields
+        Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
+
+        // Si le compte n'existe pas ici, c'est un probleme serveur
+        if (accountID == SessionManager.NO_SESSION) {
+            logger.error("Un compte basé sur un token de session est introuvable");
+            return new CreateUserProfileResponse().invalidAccountNumber();
+        }
+
+        // Si la requête est incomplète
         if (!UserProfileValidator.isUserProfileRequestComplete(request)) {
             return new CreateUserProfileResponse().fieldsMissing();
         }
-        // Check if the profile already exists
-        if (findByName(request.getName()) != null) {
+        // Si le nom de profile existe déjà pour l'utilisateur courrant
+        if (findByNameAndAccountID(request.getName(), accountID) != null) {
             return new CreateUserProfileResponse().profileAlreadyExists();
         }
 
-        //Check if all the urls are valid
-        for (int i = 0; i < request.getUrl().length; i++) {
-            //profileAlreadyExists
-            if (!UserProfileValidator.isURLValid(request.getUrl()[i])) {
+        // Valider les URLs fournis
+        for (int i = 0; i < request.getUrls().length; i++) {
+            if (!UserProfileValidator.isURLValid(request.getUrls()[i])) {
                 return new CreateUserProfileResponse().invalidURL();
             }
         }
 
-        // Create the profile
-        UserProfile userProfile = userProfileRepository.save(new UserProfile(
-                new Integer(request.getAccountNumber()), request.getName(), request.getDescription())
-        );
+        // Sinon on crée le profil utilisateur
+        UserProfile userProfile = userProfileRepository.save(new UserProfile(accountID, request.getName(), request.getDescription()));
 
-        // Create the sites for the profile
-        for (int i = 0; i < request.getUrl().length; i++) {
-            Site site = siteRepository.save(new Site(userProfile.getProfileID(), request.getUrl()[i]));
+        // Créer les sites pour le profil
+        for (int i = 0; i < request.getUrls().length; i++) {
+            siteRepository.save(new Site(userProfile.getProfileID(), request.getUrls()[i]));
         }
 
         return new CreateUserProfileResponse().success();
     }
 
     /**
-     * Edits existing user profile
+     * Obtenir tous les profils utilisateur d'un admin de publicité
      */
-    public EditUserProfileResponse editUserProfile(CreateUserProfileRequest request) {
+    public ListResponse getAll(String token) {
 
-        // Check if profile exists
-        if (findByProfileID(new Long(request.getName())) != null) {
-            return new EditUserProfileResponse().invalidUser();
+        Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
+
+        // Si le compte n'existe pas ici, c'est un probleme serveur
+        if (accountID == SessionManager.NO_SESSION) {
+            logger.error("Un compte basé sur un token de session est introuvable");
+            return new ListResponse().unauthorized();
         }
-        //Check for missing fields
+
+        List<UserProfile> userProfiles = userProfileRepository.findByAccountID(accountID);
+        List<ListResponseItem> responseList = new ArrayList<>(userProfiles.size());
+
+        for (UserProfile u : userProfiles) {
+            responseList.add(
+                    new ListResponseItem(
+                            u.getProfileID(),
+                            u.getName(),
+                            DateFormatter.DateToString(u.getDateCreated())
+                    )
+            );
+        }
+
+        return new ListResponse().ok(responseList);
+    }
+
+    /**
+     * Obtenir un profil utilisateur en fonction de son ID
+     */
+    public InfoResponse getByID(String token, Long profileID) {
+
+        Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
+
+        // Si le compte n'existe pas ici, c'est un probleme serveur
+        if (accountID == SessionManager.NO_SESSION) {
+            logger.error("Un compte basé sur un token de session est introuvable");
+            return new InfoResponse().failed();
+        }
+
+        UserProfile userProfile = userProfileRepository.findByProfileIDAndAccountID(profileID, accountID);
+
+        // Si le ID du profil n'existe pas
+        if (userProfile == null) {
+            return new InfoResponse().notFound();
+        }
+
+        List<Site> sites = siteRepository.findByUserProfileID(userProfile.getProfileID());
+
+        return new InfoResponse().ok(userProfile, sites);
+    }
+
+    /**
+     * Modifier un profil utilisateur
+     */
+    @Transactional
+    public CreateModifyResponse modify(String token, Long profileID, CreateModifyRequest request) {
+
+        Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
+        Account account = accountRepository.findByAccountID(accountID);
+
+        // Si le compte n'existe pas ici, c'est un probleme serveur
+        if (account == null) {
+            logger.error("Un compte basé sur un token de session est introuvable");
+            return new CreateModifyResponse().invalidAccountNumber();
+        }
+
+        UserProfile userProfile = findByProfileIDAndAccountID(profileID, accountID);
+
+        // Si le ID du profil n'existe pas
+        if (userProfile == null) {
+            return new CreateModifyResponse().notFound();
+        }
+
+        // Si la requête est incomplète
         if (!UserProfileValidator.isUserProfileRequestComplete(request)) {
-            return new EditUserProfileResponse().fieldsMissing();
+            return new CreateModifyResponse().fieldsMissing();
         }
 
-        //Check if all the urls are valid
-        for (int i = 0; i < request.getUrl().length; i++) {
-            //profileAlreadyExists
-            if (!UserProfileValidator.isURLValid(request.getUrl()[i])) {
-                return new EditUserProfileResponse().invalidURL();
+        // Valider les URLs fournis
+        for (int i = 0; i < request.getUrls().length; i++) {
+            if (!UserProfileValidator.isURLValid(request.getUrls()[i])) {
+                return new CreateModifyResponse().invalidURL();
             }
         }
 
-        // Create the profile
-        UserProfile userProfile = userProfileRepository.save(new UserProfile(new Integer(request.getAccountNumber()),
-                request.getName(), request.getDescription())
-        );
+        // Mettre à jour le profil
+        userProfile.setName(request.getName());
+        userProfile.setDescription(request.getDescription());
+        userProfileRepository.save(userProfile);
 
-        // Create the sites for the profile
-        for (int i = 0; i < request.getUrl().length; i++) {
-            Site site = siteRepository.save(new Site(userProfile.getProfileID(), request.getUrl()[i]));
+        // Retirer les anciens sites
+        List<Site> anciensSites = siteRepository.findByUserProfileID(userProfile.getProfileID());
+        siteRepository.delete(anciensSites);
+
+        // Ajouter les nouveaux sites
+        for (int i = 0; i < request.getUrls().length; i++) {
+            siteRepository.save(new Site(userProfile.getProfileID(), request.getUrls()[i]));
         }
 
-        return new EditUserProfileResponse().success();
-    }
-
-    /**
-     * Get user profile with name
-     */
-    public UserProfileInfoResponse getUserProfileByName(String name) {
-
-        // Check if exists
-        if (findByName(name) == null){
-            return new UserProfileInfoResponse(HttpStatus.BAD_REQUEST, "Utilisateur n'existe pas", "",
-                    "");
-        }
-        UserProfile profile = findByName(name);
-        return new UserProfileInfoResponse(HttpStatus.OK, "", name, profile.getDescription());
-    }
-
-    /**
-     * Get user profile with ID
-     */
-    public UserProfileInfoResponse getUserProfileByID(String id) {
-
-        // Check if exists
-        if (findByProfileID(new Long(id)) == null){
-            return new UserProfileInfoResponse(HttpStatus.BAD_REQUEST, "Utilisateur n'existe pas", "",
-                    "");
-        }
-        UserProfile profile = findByProfileID(new Long(id));
-        return new UserProfileInfoResponse(HttpStatus.OK, "", id, profile.getDescription());
+        return new CreateModifyResponse().success();
     }
 
     /**
      * Deletes existing user profile
      */
-    public UserProfileDeleteResponse deleteUserProfile (DeleteUserProfileRequest request){
+    @Transactional
+    public DeleteResponse delete(String token, Long profileID) {
 
-        // Check if profile exists
-        if (userProfileRepository.findByProfileID(new Long(request.getUserProfileID())) == null) {
-            return new UserProfileDeleteResponse().profileNotFound();
-        }
-        userProfileRepository.delete(new Long(request.getUserProfileID()));
+        Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
 
-        for (int i = 0; i < request.getUrl().length; i++){
-            //Check if site exists
-            if(siteRepository.findByUserProfileID(request.getUserProfileID()) == null){
-                return new UserProfileDeleteResponse().profileNotFound();
-            }
-            siteRepository.delete(siteRepository.findByUserProfileID(request.getUserProfileID()));
+        // Si le compte n'existe pas ici, c'est un probleme serveur
+        if (accountID == SessionManager.NO_SESSION) {
+            logger.error("Un compte basé sur un token de session est introuvable");
+            return new DeleteResponse().unauthorized();
         }
 
-        return new UserProfileDeleteResponse().success();
+        UserProfile userProfile = findByProfileIDAndAccountID(profileID, accountID);
+
+        // Si le ID du profil n'existe pas
+        if (userProfile == null) {
+            return new DeleteResponse().notFound();
+        }
+
+        List<Site> sites = siteRepository.findByUserProfileID(userProfile.getProfileID());
+        siteRepository.delete(sites);
+
+        userProfileRepository.delete(userProfile.getProfileID());
+
+        return new DeleteResponse().ok();
     }
 
 

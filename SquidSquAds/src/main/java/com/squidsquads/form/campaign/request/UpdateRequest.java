@@ -1,5 +1,7 @@
 package com.squidsquads.form.campaign.request;
 
+import java.math.BigDecimal;
+
 public class UpdateRequest {
 
     private Long campaignId;
@@ -8,7 +10,7 @@ public class UpdateRequest {
     private Long[] profileIds;
     private String startDate;
     private String endDate;
-    private float budget;
+    private BigDecimal budget;
     private String imageHor;
     private String imageVer;
     private String imageMob;
@@ -37,7 +39,7 @@ public class UpdateRequest {
         return endDate;
     }
 
-    public float getBudget() {
+    public BigDecimal getBudget() {
         return budget;
     }
 

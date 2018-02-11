@@ -4,14 +4,13 @@ import org.springframework.http.HttpStatus;
 
 public class CampaignDeleteResponse {
 
+    private static final String CAMPAGNE_NOT_FOUND = "La campagne n'existe pas";
+    private static final String SUCCESS = "La campagne a été supprimée avec succès";
+
     private HttpStatus status;
+    private String message;
 
     public CampaignDeleteResponse() {
-    }
-
-    public CampaignDeleteResponse notFound() {
-        status = HttpStatus.NOT_FOUND;
-        return this;
     }
 
     public CampaignDeleteResponse unauthorized() {
@@ -19,12 +18,23 @@ public class CampaignDeleteResponse {
         return this;
     }
 
+    public CampaignDeleteResponse notFound() {
+        status = HttpStatus.NOT_FOUND;
+        message = CAMPAGNE_NOT_FOUND;
+        return this;
+    }
+
     public CampaignDeleteResponse ok() {
         status = HttpStatus.OK;
+        message = SUCCESS;
         return this;
     }
 
     public HttpStatus getStatus() {
         return status;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

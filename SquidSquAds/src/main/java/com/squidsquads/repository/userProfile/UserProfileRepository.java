@@ -4,16 +4,14 @@ import com.squidsquads.model.profile.UserProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-/**
- * @author: Dulce Cayetano
- * @Date_Of_Creation: 2018-02-05
- * @Last_modified_by:
- * @Date_of_last_modification:
- **/
+import java.util.List;
+
 @Repository
-public interface UserProfileRepository extends JpaRepository< UserProfile, Long> {
+public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
 
-    UserProfile findByName(String name);
+    List<UserProfile> findByAccountID(Long accountID);
 
-    UserProfile findByProfileID(Long profileID);
+    UserProfile findByNameAndAccountID(String name, Long accountID);
+
+    UserProfile findByProfileIDAndAccountID(Long profileID, Long accountID);
 }

@@ -8,6 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "sitewebadmin")
 public class WebSiteAdmin {
+
     private static final long serialVersionUID = -3009157732242241606L;
 
     @Id

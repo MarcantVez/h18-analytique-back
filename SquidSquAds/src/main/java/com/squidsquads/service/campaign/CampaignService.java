@@ -17,8 +17,8 @@ import com.squidsquads.utils.DateFormatter;
 import com.squidsquads.utils.session.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,8 +27,10 @@ public class CampaignService {
 
     @Autowired
     CampaignRepository campaignRepository;
+
     @Autowired
     CampaignProfileRepository campaignProfileRepository;
+
     @Autowired
     UserProfileRepository profileRepository;
 
@@ -44,13 +46,13 @@ public class CampaignService {
             return new CampaignListResponse().unauthorized();
         }
 
-        List<Campaign> campaigns = campaignRepository.findByAccountId(accountID);
+        List<Campaign> campaigns = campaignRepository.findByAccountID(accountID);
         List<CampaignListResponseItem> responseList = new ArrayList<>();
 
         for (Campaign c : campaigns) {
             responseList.add(
                     new CampaignListResponseItem(
-                            c.getCampaignId(),
+                            c.getCampaignID(),
                             c.getName(),
                             DateFormatter.DateToString(c.getCreationDate())
                     )
@@ -73,7 +75,7 @@ public class CampaignService {
         }
 
         Campaign campaign = campaignRepository.findOne(campaingID);
-        if (campaign == null || campaign.getAccountId() != accountID) {
+        if (campaign == null || campaign.getAccountID() != accountID) {
             return new CampaignDetailResponse().notFound();
         }
 
@@ -150,9 +152,9 @@ public class CampaignService {
                 null,
                 accountID,
                 newCampaign.getName(),
-                newCampaign.getImageHor(),
-                newCampaign.getImageVer(),
-                newCampaign.getImageMob(),
+                newCampaign.getImgHorizontal(),
+                newCampaign.getImgVertical(),
+                newCampaign.getImgMobile(),
                 newCampaign.getRedirectUrl(),
                 DateFormatter.StringToDate(newCampaign.getStartDate()),
                 DateFormatter.StringToDate(newCampaign.getEndDate()),
@@ -163,7 +165,8 @@ public class CampaignService {
         Campaign created = campaignRepository.save(campaign);
 
         for (long id : newCampaign.getProfileIds()) {
-            campaignProfileRepository.save(new CampaignProfile(id, created.getCampaignId()));
+            // TODO : Valider si le profile ID existe
+            campaignProfileRepository.save(new CampaignProfile(id, created.getCampaignID()));
         }
         created.setProfileIds(campaign.getProfileIds());
 
@@ -173,6 +176,7 @@ public class CampaignService {
     /**
      * Supprimer une campagne
      */
+    @Transactional
     public CampaignDeleteResponse deleteCampaignById(String token, Long campaignId) {
 
         Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
@@ -188,10 +192,11 @@ public class CampaignService {
             return new CampaignDeleteResponse().notFound();
         }
 
-        if (!campaign.getAccountId().equals(accountID)) {
+        if (!campaign.getAccountID().equals(accountID)) {
             return new CampaignDeleteResponse().unauthorized();
         }
 
+        campaignProfileRepository.deleteAllByCampaignID(campaignId);
         campaignRepository.delete(campaignId);
 
         return new CampaignDeleteResponse().ok();

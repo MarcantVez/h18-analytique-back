@@ -4,20 +4,22 @@ import com.squidsquads.model.campaign.Campaign;
 import com.squidsquads.utils.DateFormatter;
 import org.springframework.http.HttpStatus;
 
+import java.math.BigDecimal;
+
 public class CampaignDetailResponse {
 
     private Long campaignId;
     private String name;
     private Long accountId;
     private Long[] profileIds;
-    private String creationDate;
-    private String horizontalImg;
-    private String verticalImg;
-    private String mobileImg;
+    private String dateCreated;
+    private String imgHorizontal;
+    private String imgVertical;
+    private String imgMobile;
     private String redirectUrl;
     private String startDate;
     private String endDate;
-    private float budget;
+    private BigDecimal budget;
 
     private HttpStatus status;
     private String message;
@@ -44,14 +46,14 @@ public class CampaignDetailResponse {
     }
 
     public CampaignDetailResponse ok(Campaign c) {
-        campaignId = c.getCampaignId();
+        campaignId = c.getCampaignID();
         name = c.getName();
-        accountId = c.getAccountId();
+        accountId = c.getAccountID();
         profileIds = c.getProfileIds();
-        creationDate = DateFormatter.DateToString(c.getCreationDate());
-        horizontalImg = c.getHorizontalImg();
-        verticalImg = c.getVerticalImg();
-        mobileImg = c.getMobileImg();
+        dateCreated = DateFormatter.DateToString(c.getCreationDate());
+        imgHorizontal = c.getImgHorizontal();
+        imgVertical = c.getImgVertical();
+        imgMobile = c.getImgMobile();
         redirectUrl = c.getRedirectUrl();
         startDate = DateFormatter.DateToString(c.getStartDate());
         endDate = DateFormatter.DateToString(c.getEndDate());
@@ -80,20 +82,20 @@ public class CampaignDetailResponse {
         return profileIds;
     }
 
-    public String getCreationDate() {
-        return creationDate;
+    public String getDateCreated() {
+        return dateCreated;
     }
 
-    public String getHorizontalImg() {
-        return horizontalImg;
+    public String getImgHorizontal() {
+        return imgHorizontal;
     }
 
-    public String getVerticalImg() {
-        return verticalImg;
+    public String getImgVertical() {
+        return imgVertical;
     }
 
-    public String getMobileImg() {
-        return mobileImg;
+    public String getImgMobile() {
+        return imgMobile;
     }
 
     public String getRedirectUrl() {
@@ -108,7 +110,7 @@ public class CampaignDetailResponse {
         return endDate;
     }
 
-    public float getBudget() {
+    public BigDecimal getBudget() {
         return budget;
     }
 

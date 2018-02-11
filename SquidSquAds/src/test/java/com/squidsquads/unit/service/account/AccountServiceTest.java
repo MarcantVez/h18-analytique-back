@@ -4,22 +4,11 @@ import com.squidsquads.form.account.request.LoginRequest;
 import com.squidsquads.form.account.response.AbstractLoginResponse;
 import com.squidsquads.form.account.response.LoginFailedResponse;
 import com.squidsquads.form.account.response.LoginSucceededResponse;
-import com.squidsquads.model.account.Account;
-import com.squidsquads.model.account.AdminType;
-import com.squidsquads.model.account.WebSiteAdmin;
-import com.squidsquads.repository.account.AccountRepository;
-import com.squidsquads.repository.account.WebSiteAdminRepository;
-import com.squidsquads.service.account.AccountService;
-import com.squidsquads.service.account.WebSiteAdminService;
 import com.squidsquads.unit.service.AbstractWebSiteAdminTest;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
-import java.util.Date;
-
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class AccountServiceTest extends AbstractWebSiteAdminTest {
