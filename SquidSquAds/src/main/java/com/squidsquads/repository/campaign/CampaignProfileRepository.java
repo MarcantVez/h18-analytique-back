@@ -9,12 +9,12 @@ import java.util.List;
 @Repository
 public interface CampaignProfileRepository extends CrudRepository<CampaignProfile, Long> {
 
-    List<CampaignProfile> findAllByCampaignID(long campaignId);
+    List<CampaignProfile> findAllByCampaignID(Long campaignID);
 
-    List<CampaignProfile> findAllByProfileID(long profileId);
+    List<CampaignProfile> findAllByProfileID(Long profileID);
 
-    CampaignProfile findByCampaignIDAndProfileID(long campaignId, long ProfileId);
+    CampaignProfile findByCampaignIDAndProfileID(Long campaignID, Long profileID);
 
-    void deleteAllByCampaignID(long campaignId);
+    void deleteAllByCampaignID(Long campaignID);
 
 }

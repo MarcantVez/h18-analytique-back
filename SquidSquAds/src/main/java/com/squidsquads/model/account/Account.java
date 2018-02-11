@@ -1,7 +1,6 @@
 package com.squidsquads.model.account;
 
 import org.springframework.stereotype.Component;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -30,7 +29,7 @@ public class Account {
     private String bankAccount;
 
     @Column(name = "date_creation")
-    private Date createdDate;
+    private Date dateCreated;
 
     // CONSTRUCTOR
 
@@ -48,7 +47,7 @@ public class Account {
 
     @PrePersist
     void createdNow() {
-        this.createdDate = new Date();
+        this.dateCreated = new Date();
     }
 
     public long getAccountID() {
@@ -95,11 +94,11 @@ public class Account {
         this.bankAccount = bankAccount;
     }
 
-    public Date getCreatedDate() {
-        return createdDate;
+    public Date getDateCreated() {
+        return dateCreated;
     }
 
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
     }
 }

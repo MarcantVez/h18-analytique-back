@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AccountService {
@@ -37,7 +38,7 @@ public class AccountService {
     /**
      * Trouver un compte utilisateur en fonction de son ID
      */
-    private Account findByAccountID(long accountID) {
+    public Account findByAccountID(long accountID) {
         return accountRepository.findByAccountID(accountID);
     }
 
@@ -67,6 +68,7 @@ public class AccountService {
     /**
      * Créer un compte administrateur de site web ou de publicité
      */
+    @Transactional
     public CreateResponse create(CreateRequest createRequest) {
 
         // Si le type d'admin n'est pas PUB ou WEB

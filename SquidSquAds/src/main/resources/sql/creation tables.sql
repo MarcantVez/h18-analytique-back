@@ -1,172 +1,172 @@
--- Database: squidsquads
+-- database: squidsquads
 
--- DROP DATABASE squidsquads;
-
-
+-- drop database squidsquads;
 
 
---CREATE DATABASE squidsquads
---WITH
---OWNER = postgres
---ENCODING = 'UTF8'
---LC_COLLATE = 'English_Canada.1252'
---LC_CTYPE = 'English_Canada.1252'
---TABLESPACE = pg_default
---CONNECTION LIMIT = -1;
 
 
-CREATE TABLE CompteUtilisateur
+--create database squidsquads
+--with
+--owner = postgres
+--encoding = 'utf8'
+--lc_collate = 'english_canada.1252'
+--lc_ctype = 'english_canada.1252'
+--tablespace = pg_default
+--connection limit = -1;
+
+
+create table compteutilisateur
 (
-    Numero_Compte		SERIAL PRIMARY KEY,
-    Type_Admin			VARCHAR(3),
-    Courriel			VARCHAR(50),
-    Mot_De_Passe		VARCHAR(50),
-    No_Compte_Banque	VARCHAR(50),
-    Date_Creation		TIMESTAMP
+    numero_compte		serial primary key,
+    type_admin			varchar(3),
+    courriel			varchar(50),
+    mot_de_passe		varchar(50),
+    no_compte_banque	varchar(50),
+    date_creation		timestamp
 );
 
-CREATE TABLE Paiement
+create table paiement
 (
-    Numero_Paiement		SERIAL PRIMARY KEY,
-    Numero_Compte		INTEGER NOT NULL,
-    Montant				MONEY,
-    Date_Paiement		TIMESTAMP
+    numero_paiement		serial primary key,
+    numero_compte		integer not null,
+    montant				numeric(10, 2),
+    date_paiement		timestamp
 );
 
-CREATE TABLE Campagne
+create table campagne
 (
-    Numero_Campagne		SERIAL PRIMARY KEY,
-    Numero_Compte		INTEGER NOT NULL,
-    Nom					VARCHAR(50),
-    Date_Creation		TIMESTAMP,
-    Image_Hor			VARCHAR(100),
-    Image_Ver			VARCHAR(100),
-    Image_Mob			VARCHAR(100),
-    Url_De_Redirection	VARCHAR(100),
-    Date_Debut			TIMESTAMP,
-    Date_Fin			TIMESTAMP,
-    Budget				MONEY
+    numero_campagne		serial primary key,
+    numero_compte		integer not null,
+    nom					varchar(50),
+    date_creation		timestamp,
+    image_hor			varchar(100),
+    image_ver			varchar(100),
+    image_mob			varchar(100),
+    url_de_redirection	varchar(100),
+    date_debut			timestamp,
+    date_fin			timestamp,
+    budget				numeric(10, 2)
 );
 
-CREATE TABLE ProfilDUtilisateur
+create table profildutilisateur
 (
-    Numero_ProfilDUtilisateur	SERIAL PRIMARY KEY,
-    Numero_Compte				INTEGER NOT NULL,
-    Nom							VARCHAR(50),
-    Description					VARCHAR(200),
-    Date_Creation				TIMESTAMP
+    numero_profildutilisateur	serial primary key,
+    numero_compte				integer not null,
+    nom							varchar(50),
+    description					varchar(200),
+    date_creation				timestamp
 );
 
-CREATE TABLE Campagne_ProfilDUtilisateur
+create table campagne_profildutilisateur
 (
-    Numero_Campagne_ProfilDUtilisateur	SERIAL PRIMARY KEY,
-    Numero_Campagne						INTEGER NOT NULL,
-    Numero_ProfilDUtilisateur			INTEGER NOT NULL
+    numero	serial primary key,
+    numero_campagne						integer not null,
+    numero_profildutilisateur			integer not null
 
 );
 
-CREATE TABLE Site
+create table site
 (
-    Numero_Site					SERIAL PRIMARY KEY,
-    Numero_ProfilDUtilisateur	INTEGER NOT NULL,
-    Url							VARCHAR(150)
+    numero_site					serial primary key,
+    numero_profildutilisateur	integer not null,
+    url							varchar(150)
 );
 
-CREATE TABLE Banniere
+create table banniere
 (
-    Numero_Banniere		SERIAL PRIMARY KEY,
-    Numero_Compte		INTEGER NOT NULL,
-    Id_Banniere				VARCHAR(30)
+    numero_banniere		serial primary key,
+    numero_compte		integer not null,
+    id_banniere				varchar(30)
 );
 
-CREATE TABLE Orientation
+create table orientation
 (
-    Numero_Orientation	SERIAL PRIMARY KEY,
-    Nom					VARCHAR(50)
+    numero_orientation	serial primary key,
+    nom					varchar(50)
 );
 
-CREATE TABLE Orientation_Banniere
+create table orientation_banniere
 (
-    Numero_Orientation_Banniere	SERIAL PRIMARY KEY,
-    Numero_Orientation			INTEGER NOT NULL,
-    Numero_Banniere				INTEGER NOT NULL
+    numero_orientation_banniere	serial primary key,
+    numero_orientation			integer not null,
+    numero_banniere				integer not null
 );
 
-CREATE TABLE Visite
+create table visite
 (
-    Numero_Visite		SERIAL PRIMARY KEY,
-    Numero_Banniere		INTEGER NOT NULL,
-    Date_Heure			TIMESTAMP
+    numero_visite		serial primary key,
+    numero_banniere		integer not null,
+    date_heure			timestamp
 );
 
-CREATE TABLE Categorie
+create table categorie
 (
-    Numero_Categorie	SERIAL PRIMARY KEY,
-    Nom					VARCHAR(50)
+    numero_categorie	serial primary key,
+    nom					varchar(50)
 );
 
-CREATE TABLE Categorie_Visite
+create table categorie_visite
 (
-    Numero_Categorie_Visite		SERIAL PRIMARY KEY,
-    Numero_Categorie			INTEGER NOT NULL,
-    Numero_Visite				INTEGER NOT NULL
+    numero_categorie_visite		serial primary key,
+    numero_categorie			integer not null,
+    numero_visite				integer not null
 );
 
-CREATE TABLE Redevance
+create table redevance
 (
-    Numero_Redevance	SERIAL PRIMARY KEY,
-    Numero_Compte		INTEGER NOT NULL,
-    Numero_Visite		INTEGER NOT NULL,
-    Montant				MONEY,
-    Date_Creation		TIMESTAMP,
-    Est_Reclame			BOOLEAN
+    numero_redevance	serial primary key,
+    numero_compte		integer not null,
+    numero_visite		integer not null,
+    montant				numeric(10, 2),
+    date_creation		timestamp,
+    est_reclame			boolean
 );
 
-CREATE TABLE SiteWebAdmin
+create table sitewebadmin
 (
-    Numero_SiteWebAdmin	SERIAL PRIMARY KEY,
-    Numero_Compte		INTEGER NOT NULL,
-    Url					VARCHAR(150)
+    numero_sitewebadmin	serial primary key,
+    numero_compte		integer not null,
+    url					varchar(150)
 );
 
-CREATE TABLE InfoDeSuivi
+create table infodesuivi
 (
-    Numero_InfoDeSuivi		SERIAL PRIMARY KEY,
-    Numero_SiteWebAdmin		INTEGER NOT NULL,
-    Empreinte				VARCHAR(100),
-    UrlActuel				VARCHAR(150),
-    UrlProvenance			VARCHAR(150),
-    Adresse_IPV4			VARCHAR(100),
-    Adresse_IPV6			VARCHAR(100),
-    Taille_Ecran			VARCHAR(100),
-    Langue					VARCHAR(50),
-    TempsEcoule				TIME,
-    Date_Heure				TIMESTAMP
+    numero_infodesuivi		serial primary key,
+    numero_sitewebadmin		integer not null,
+    empreinte				varchar(100),
+    urlactuel				varchar(150),
+    urlprovenance			varchar(150),
+    adresse_ipv4			varchar(100),
+    adresse_ipv6			varchar(100),
+    taille_ecran			varchar(100),
+    langue					varchar(50),
+    tempsecoule				time,
+    date_heure				timestamp
 );
 
-CREATE TABLE AgentUtilisateur
+create table agentutilisateur
 (
-    Numero_AgentUtilisateur		SERIAL PRIMARY KEY,
-    Numero_InfoDeSuivi			INTEGER NOT NULL,
-    AgentUtilisateurBrut		VARCHAR(250),
-    VersionNavigateur			VARCHAR(100),
-    Systeme_Operation			VARCHAR(100),
-    Information_Navigateur		VARCHAR(100),
-    Plateforme					VARCHAR(100),
-    Information_Plateforme		VARCHAR(100),
-    Extension_Navigateur		VARCHAR(100),
-    Date_Heure				TIMESTAMP
+    numero_agentutilisateur		serial primary key,
+    numero_infodesuivi			integer not null,
+    agentutilisateurbrut		varchar(250),
+    versionnavigateur			varchar(100),
+    systeme_operation			varchar(100),
+    information_navigateur		varchar(100),
+    plateforme					varchar(100),
+    information_plateforme		varchar(100),
+    extension_navigateur		varchar(100),
+    date_heure				timestamp
 );
 
-CREATE TABLE TypeNavigateur
+create table typenavigateur
 (
-    Numero_TypeNavigateur	SERIAL PRIMARY KEY,
-    Nom						VARCHAR(50)
+    numero_typenavigateur	serial primary key,
+    nom						varchar(50)
 );
 
-CREATE TABLE TypeNavigateur_Agent
+create table typenavigateur_agent
 (
-    Numero_TypeNavigateur_Agent		SERIAL PRIMARY KEY,
-    Numero_TypeNavigateur			INTEGER NOT NULL,
-    Numero_AgentUtilisateur			INTEGER NOT NULL
+    numero_typenavigateur_agent		serial primary key,
+    numero_typenavigateur			integer not null,
+    numero_agentutilisateur			integer not null
 );

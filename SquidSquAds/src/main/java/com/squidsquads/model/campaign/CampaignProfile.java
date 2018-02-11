@@ -7,8 +7,8 @@ import javax.persistence.*;
 public class CampaignProfile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "numero_campagne_profildutilisateur")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "numero")
     private Long campaignProfileID;
 
     @Column(name = "numero_profildutilisateur")
@@ -17,9 +17,6 @@ public class CampaignProfile {
     @Column(name = "numero_campagne")
     private Long campaignID;
 
-    // CONSTRUCTORS
-
-
     public CampaignProfile() {
     }
 
@@ -27,8 +24,6 @@ public class CampaignProfile {
         this.profileID = profileID;
         this.campaignID = campaignID;
     }
-
-    // GETTERS AND SETTERS
 
     public Long getCampaignProfileID() {
         return campaignProfileID;

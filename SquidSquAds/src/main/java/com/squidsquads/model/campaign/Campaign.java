@@ -1,14 +1,8 @@
 package com.squidsquads.model.campaign;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
-
-/**
- * @author Marc-Antoine Vézina
- * @Date_Of_Creation 2018-02-01
- * @Last_modified_by
- * @Date_of_last_modification
- **/
 
 @Entity
 @Table(name = "campagne")
@@ -17,13 +11,13 @@ public class Campaign {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "numero_campagne")
-    private Long campaignId;
+    private Long campaignID;
 
     @Column(name = "nom")
     private String name;
 
     @Column(name = "numero_compte")
-    private Long accountId;
+    private Long accountID;
 
     private Long[] profileIds;
 
@@ -31,13 +25,13 @@ public class Campaign {
     private Date creationDate;
 
     @Column(name = "image_hor")
-    private String horizontalImg;
+    private String imgHorizontal;
 
     @Column(name = "image_ver")
-    private String verticalImg;
+    private String imgVertical;
 
     @Column(name = "image_mob")
-    private String mobileImg;
+    private String imgMobile;
 
     @Column(name = "url_de_redirection")
     private String redirectUrl;
@@ -49,20 +43,18 @@ public class Campaign {
     private Date endDate;
 
     @Column(name = "budget")
-    private float budget;
-
-    // CONSTRUCTOR
+    private BigDecimal budget;
 
     public Campaign() {
     }
 
-    public Campaign(Long campaignId, Long accountId, String name, String horizontalImg, String verticalImg, String mobileImg, String redirectUrl, Date startDate, Date endDate, float budget, Long[] linkedProfiles) {
-        this.campaignId = campaignId;
-        this.accountId = accountId;
+    public Campaign(Long campaignID, Long accountID, String name, String imgHorizontal, String imgVertical, String imgMobile, String redirectUrl, Date startDate, Date endDate, BigDecimal budget, Long[] linkedProfiles) {
+        this.campaignID = campaignID;
+        this.accountID = accountID;
         this.name = name;
-        this.horizontalImg = horizontalImg;
-        this.verticalImg = verticalImg;
-        this.mobileImg = mobileImg;
+        this.imgHorizontal = imgHorizontal;
+        this.imgVertical = imgVertical;
+        this.imgMobile = imgMobile;
         this.redirectUrl = redirectUrl;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -71,14 +63,12 @@ public class Campaign {
         this.profileIds = linkedProfiles;
     }
 
-    // GETTERS + SETTERS
-
-    public Long getCampaignId() {
-        return campaignId;
+    public Long getCampaignID() {
+        return campaignID;
     }
 
-    public void setCampaignId(Long campaignId) {
-        this.campaignId = campaignId;
+    public void setCampaignID(Long campaignID) {
+        this.campaignID = campaignID;
     }
 
     public String getName() {
@@ -89,8 +79,8 @@ public class Campaign {
         this.name = name;
     }
 
-    public Long getAccountId() {
-        return accountId;
+    public Long getAccountID() {
+        return accountID;
     }
 
     public Date getCreationDate() {
@@ -101,28 +91,28 @@ public class Campaign {
         this.creationDate = creationDate;
     }
 
-    public String getHorizontalImg() {
-        return horizontalImg;
+    public String getImgHorizontal() {
+        return imgHorizontal;
     }
 
-    public void setHorizontalImg(String horizontalImg) {
-        this.horizontalImg = horizontalImg;
+    public void setImgHorizontal(String imgHorizontal) {
+        this.imgHorizontal = imgHorizontal;
     }
 
-    public String getVerticalImg() {
-        return verticalImg;
+    public String getImgVertical() {
+        return imgVertical;
     }
 
-    public void setVerticalImg(String verticalImg) {
-        this.verticalImg = verticalImg;
+    public void setImgVertical(String imgVertical) {
+        this.imgVertical = imgVertical;
     }
 
-    public String getMobileImg() {
-        return mobileImg;
+    public String getImgMobile() {
+        return imgMobile;
     }
 
-    public void setMobileImg(String mobileImg) {
-        this.mobileImg = mobileImg;
+    public void setImgMobile(String imgMobile) {
+        this.imgMobile = imgMobile;
     }
 
     public String getRedirectUrl() {
@@ -149,16 +139,16 @@ public class Campaign {
         this.endDate = endDate;
     }
 
-    public float getBudget() {
+    public BigDecimal getBudget() {
         return budget;
     }
 
-    public void setBudget(float budget) {
+    public void setBudget(BigDecimal budget) {
         this.budget = budget;
     }
 
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
+    public void setAccountID(Long accountID) {
+        this.accountID = accountID;
     }
 
     public Long[] getProfileIds() {
@@ -172,13 +162,13 @@ public class Campaign {
     @Override
     public String toString() {
         return "Campagne{" +
-                "numeroCampagne=" + campaignId + "\"" +
+                "numeroCampagne=" + campaignID + "\"" +
                 "nom=" + name + "\"" +
-                "numeroCompte=" + accountId + "\"" +
+                "numeroCompte=" + accountID + "\"" +
                 "dateCreation=" + creationDate + "\"" +
-                "imageHor=" + horizontalImg + "\"" +
-                "imageVer=" + verticalImg + "\"" +
-                "imageMob=" + mobileImg + "\"" +
+                "imageHor=" + imgHorizontal + "\"" +
+                "imageVer=" + imgVertical + "\"" +
+                "imageMob=" + imgMobile + "\"" +
                 "urlRedirection=" + redirectUrl + "\"" +
                 "dateDebut=" + startDate + "\"" +
                 "dateFin=" + endDate + "\"" +

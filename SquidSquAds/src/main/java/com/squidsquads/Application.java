@@ -9,6 +9,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import javax.annotation.sql.DataSourceDefinition;
+
 @Configuration
 @ComponentScan({"com.squidsquads.config", "com.squidsquads.controller", "com.squidsquads.service", "com.squidsquads.utils"})
 @EnableJpaRepositories("com.squidsquads.repository")

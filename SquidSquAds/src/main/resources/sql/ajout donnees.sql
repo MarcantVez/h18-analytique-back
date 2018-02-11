@@ -129,7 +129,7 @@ INSERT INTO Campagne VALUES
 INSERT INTO ProfilDUtilisateur VALUES
   (DEFAULT,
    (select max(numero_compte) from compteUtilisateur),
-   'nom profil',
+   'name profil',
    'description profil',
    '2018-02-07 18:00'
   );

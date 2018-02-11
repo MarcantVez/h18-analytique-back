@@ -15,7 +15,7 @@ public class WebSiteAdminService {
         return webSiteAdminRepository.findByAccountID(accountID);
     }
 
-    public WebSiteAdmin create(Long accountId, String domain) {
-        return webSiteAdminRepository.save(new WebSiteAdmin(accountId, domain));
+    public WebSiteAdmin create(Long accountID, String domain) {
+        return webSiteAdminRepository.save(new WebSiteAdmin(accountID, domain));
     }
 }

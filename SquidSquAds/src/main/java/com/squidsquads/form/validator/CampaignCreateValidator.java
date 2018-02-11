@@ -11,8 +11,8 @@ public class CampaignCreateValidator {
                 CommonValidator.notEmpty(req.getStartDate()) &&
                 CommonValidator.notEmpty(req.getEndDate()) &&
                 CommonValidator.isPositive(req.getBudget()) &&
-                CommonValidator.notEmpty(req.getImageHor()) &&
-                CommonValidator.notEmpty(req.getImageVer()) &&
-                CommonValidator.notEmpty(req.getImageMob());
+                CommonValidator.notEmpty(req.getImgHorizontal()) &&
+                CommonValidator.notEmpty(req.getImgVertical()) &&
+                CommonValidator.notEmpty(req.getImgMobile());
     }
 }
