@@ -99,3 +99,4 @@ SquidSquAds/out/**
 SquidSquAds/build/**
 *.class
 .idea/**
+!gradle/wrapper/gradle-wrapper.jar

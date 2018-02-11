@@ -44,15 +44,5 @@ dependencies {
     testCompile "org.mockito:mockito-core:2.+"
 }
 
-task stage(type: Copy, dependsOn: [clean, build]) {
-    from jar.archivePath
-    into project.rootDir
-    rename {
-        'squidsquads-backend.jar'
-    }
-}
-stage.mustRunAfter(clean)
-
-clean << {
-    project.file('squidsquads-backend.jar').delete()
-}
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
