@@ -40,7 +40,7 @@ ALTER TABLE Site ADD CONSTRAINT fk_site_no_profildutilisateur FOREIGN KEY (Numer
 ALTER TABLE Banniere ADD CONSTRAINT fk_banniere_no_compte FOREIGN KEY (Numero_Compte) REFERENCES CompteUtilisateur (Numero_Compte);
 
 -- CLE TABLE Orientation_Banniere
-ALTER TABLE Orientation_Banniere ADD CONSTRAINT fk_orientation_banniere_no_banniere FOREIGN KEY (numero_banniere) REFERENCES Banniere (numero_banniere);
+ALTER TABLE Orientation_Banniere ADD CONSTRAINT fk_orientation_banniere_no_banniere FOREIGN KEY (Numero_Banniere) REFERENCES Banniere (Numero_Banniere);
 ALTER TABLE Orientation_Banniere ADD CONSTRAINT fk_orientation_banniere_no_orientation FOREIGN KEY (Numero_Orientation) REFERENCES Orientation (Numero_Orientation);
 
 -- CLE TABLE Visite
