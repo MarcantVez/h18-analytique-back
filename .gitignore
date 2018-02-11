@@ -1,7 +1,8 @@
-build/
 .gradle/
 .idea/
+SquidSquAds/out/
 out/
+build/
 *.iml
 *.ipr
 *.iws
