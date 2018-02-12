@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
 
-public class CampaignDetailResponse {
+public class InfoResponse {
 
     private Long campaignId;
     private String name;
@@ -26,26 +26,10 @@ public class CampaignDetailResponse {
 
     private static final String CREATE_FIELDS_MISSING = "Tous les champs requis doivent être remplis";
 
-    public CampaignDetailResponse() {
+    public InfoResponse() {
     }
 
-    public CampaignDetailResponse unauthorized() {
-        status = HttpStatus.UNAUTHORIZED;
-        return this;
-    }
-
-    public CampaignDetailResponse notFound() {
-        status = HttpStatus.NOT_FOUND;
-        return this;
-    }
-
-    public CampaignDetailResponse fieldsMissing() {
-        status = HttpStatus.BAD_REQUEST;
-        message = CREATE_FIELDS_MISSING;
-        return this;
-    }
-
-    public CampaignDetailResponse ok(Campaign c) {
+    public InfoResponse ok(Campaign c) {
         campaignId = c.getCampaignID();
         name = c.getName();
         accountId = c.getAccountID();
@@ -59,6 +43,22 @@ public class CampaignDetailResponse {
         endDate = DateFormatter.DateToString(c.getEndDate());
         budget = c.getBudget();
         status = HttpStatus.OK;
+        return this;
+    }
+
+    public InfoResponse notFound() {
+        status = HttpStatus.NOT_FOUND;
+        return this;
+    }
+
+    public InfoResponse failed() {
+        status = HttpStatus.INTERNAL_SERVER_ERROR;
+        return this;
+    }
+
+    public InfoResponse fieldsMissing() {
+        status = HttpStatus.BAD_REQUEST;
+        message = CREATE_FIELDS_MISSING;
         return this;
     }
 

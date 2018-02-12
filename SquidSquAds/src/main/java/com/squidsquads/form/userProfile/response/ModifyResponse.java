@@ -2,18 +2,18 @@ package com.squidsquads.form.userProfile.response;
 
 import org.springframework.http.HttpStatus;
 
-public class CreateUserProfileResponse {
+public class ModifyResponse {
 
-    private static final String SUCCESS = "Le profil utilisateur a été crée";
+    private static final String SUCCESS = "Le profil utilisateur a été modifié";
     private static final String MISSING_FIELDS = "Tous les champs requis doivent être remplis";
-    private static final String EXISTING_PROFILE = "Nom de profil déjà utilisé";
+    private static final String PROFILE_NOT_FOUND = "Le profil utilisateur n'existe pas";
     private static final String INVALID_URL = "URL invalide";
     private static final String INVALID_ACCOUNT_NUMBER = "Numéro de compte invalide";
 
     private HttpStatus status;
     private String message;
 
-    public CreateUserProfileResponse() {
+    public ModifyResponse() {
     }
 
     public HttpStatus getStatus() {
@@ -24,33 +24,33 @@ public class CreateUserProfileResponse {
         return message;
     }
 
-    public CreateUserProfileResponse success() {
+    public ModifyResponse ok() {
         status = HttpStatus.OK;
         message = SUCCESS;
         return this;
     }
 
-    public CreateUserProfileResponse fieldsMissing() {
+    public ModifyResponse fieldsMissing() {
         status = HttpStatus.BAD_REQUEST;
         message = MISSING_FIELDS;
         return this;
     }
 
-    public CreateUserProfileResponse profileAlreadyExists() {
-        status = HttpStatus.CONFLICT;
-        message = EXISTING_PROFILE;
-        return this;
-    }
-
-    public CreateUserProfileResponse invalidAccountNumber() {
+    public ModifyResponse failed() {
         status = HttpStatus.INTERNAL_SERVER_ERROR;
         message = INVALID_ACCOUNT_NUMBER;
         return this;
     }
 
-    public CreateUserProfileResponse invalidURL() {
+    public ModifyResponse invalidURL() {
         status = HttpStatus.BAD_REQUEST;
         message = INVALID_URL;
+        return this;
+    }
+
+    public ModifyResponse notFound() {
+        status = HttpStatus.NOT_FOUND;
+        message = PROFILE_NOT_FOUND;
         return this;
     }
 }

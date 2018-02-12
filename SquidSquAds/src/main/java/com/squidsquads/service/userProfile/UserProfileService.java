@@ -52,29 +52,30 @@ public class UserProfileService {
     /**
      * Créer une profil utilisateur
      */
-    public CreateUserProfileResponse create(String token, CreateModifyRequest request) {
+    public CreateResponse create(String token, CreateModifyRequest request) {
 
         Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
 
         // Si le compte n'existe pas ici, c'est un probleme serveur
         if (accountID == SessionManager.NO_SESSION) {
             logger.error("Un compte basé sur un token de session est introuvable");
-            return new CreateUserProfileResponse().invalidAccountNumber();
+            return new CreateResponse().failed();
         }
 
         // Si la requête est incomplète
         if (!UserProfileValidator.isUserProfileRequestComplete(request)) {
-            return new CreateUserProfileResponse().fieldsMissing();
+            return new CreateResponse().fieldsMissing();
         }
+
         // Si le nom de profile existe déjà pour l'utilisateur courrant
         if (findByNameAndAccountID(request.getName(), accountID) != null) {
-            return new CreateUserProfileResponse().profileAlreadyExists();
+            return new CreateResponse().profileAlreadyExists();
         }
 
         // Valider les URLs fournis
         for (int i = 0; i < request.getUrls().length; i++) {
             if (!UserProfileValidator.isURLValid(request.getUrls()[i])) {
-                return new CreateUserProfileResponse().invalidURL();
+                return new CreateResponse().invalidURL();
             }
         }
 
@@ -86,7 +87,7 @@ public class UserProfileService {
             siteRepository.save(new Site(userProfile.getProfileID(), request.getUrls()[i]));
         }
 
-        return new CreateUserProfileResponse().success();
+        return new CreateResponse().ok();
     }
 
     /**
@@ -147,7 +148,7 @@ public class UserProfileService {
      * Modifier un profil utilisateur
      */
     @Transactional
-    public CreateModifyResponse modify(String token, Long profileID, CreateModifyRequest request) {
+    public ModifyResponse modify(String token, Long profileID, CreateModifyRequest request) {
 
         Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
         Account account = accountRepository.findByAccountID(accountID);
@@ -155,25 +156,25 @@ public class UserProfileService {
         // Si le compte n'existe pas ici, c'est un probleme serveur
         if (account == null) {
             logger.error("Un compte basé sur un token de session est introuvable");
-            return new CreateModifyResponse().invalidAccountNumber();
+            return new ModifyResponse().failed();
         }
 
         UserProfile userProfile = findByProfileIDAndAccountID(profileID, accountID);
 
         // Si le ID du profil n'existe pas
         if (userProfile == null) {
-            return new CreateModifyResponse().notFound();
+            return new ModifyResponse().notFound();
         }
 
         // Si la requête est incomplète
         if (!UserProfileValidator.isUserProfileRequestComplete(request)) {
-            return new CreateModifyResponse().fieldsMissing();
+            return new ModifyResponse().fieldsMissing();
         }
 
         // Valider les URLs fournis
         for (int i = 0; i < request.getUrls().length; i++) {
             if (!UserProfileValidator.isURLValid(request.getUrls()[i])) {
-                return new CreateModifyResponse().invalidURL();
+                return new ModifyResponse().invalidURL();
             }
         }
 
@@ -191,7 +192,7 @@ public class UserProfileService {
             siteRepository.save(new Site(userProfile.getProfileID(), request.getUrls()[i]));
         }
 
-        return new CreateModifyResponse().success();
+        return new ModifyResponse().ok();
     }
 
     /**
@@ -205,7 +206,7 @@ public class UserProfileService {
         // Si le compte n'existe pas ici, c'est un probleme serveur
         if (accountID == SessionManager.NO_SESSION) {
             logger.error("Un compte basé sur un token de session est introuvable");
-            return new DeleteResponse().unauthorized();
+            return new DeleteResponse().failed();
         }
 
         UserProfile userProfile = findByProfileIDAndAccountID(profileID, accountID);

@@ -11,4 +11,5 @@ public interface CampaignRepository extends CrudRepository<Campaign, Long> {
 
     List<Campaign> findByAccountID(Long accountID);
 
+    Campaign findByNameAndAccountID(String name, Long accountID);
 }

@@ -2,9 +2,7 @@ package com.squidsquads.controller;
 
 import com.squidsquads.form.campaign.request.CreateRequest;
 import com.squidsquads.form.campaign.request.UpdateRequest;
-import com.squidsquads.form.campaign.response.CampaignDeleteResponse;
-import com.squidsquads.form.campaign.response.CampaignDetailResponse;
-import com.squidsquads.form.campaign.response.CampaignListResponse;
+import com.squidsquads.form.campaign.response.*;
 import com.squidsquads.model.account.AdminType;
 import com.squidsquads.service.campaign.CampaignService;
 import com.squidsquads.utils.session.SessionAuthorize;
@@ -25,40 +23,40 @@ public class CampaignController {
 
     @GetMapping("")
     @SessionAuthorize(AdminType.PUB)
-    public ResponseEntity<CampaignListResponse> findAllForAuthor(@RequestHeader("Token") String token) {
+    public ResponseEntity<?> findAllForAuthor(@RequestHeader("Token") String token) {
 
-        CampaignListResponse campaignListResponseList = campaignService.findAllForAuthor(token);
-        return ResponseEntity.status(campaignListResponseList.getStatus()).body(campaignListResponseList);
+        ListResponse listResponseList = campaignService.getAll(token);
+        return ResponseEntity.status(listResponseList.getStatus()).body(listResponseList);
     }
 
     // --- Ajouter une campagne -------------------------------------------- //
 
     @PostMapping("")
     @SessionAuthorize(AdminType.PUB)
-    public ResponseEntity<CampaignDetailResponse> createCampaign(@RequestHeader("Token") String token, @Valid @RequestBody CreateRequest newCampaign) {
+    public ResponseEntity<?> createCampaign(@RequestHeader("Token") String token, @Valid @RequestBody CreateRequest newCampaign) {
 
-        CampaignDetailResponse campaignResponse = campaignService.addCampaign(token, newCampaign);
-        return ResponseEntity.status(campaignResponse.getStatus()).body(campaignResponse);
+        CreateResponse createResponse = campaignService.create(token, newCampaign);
+        return ResponseEntity.status(createResponse.getStatus()).body(createResponse);
     }
 
     // --- Trouver une campagne -------------------------------------------- //
 
     @GetMapping("/{campaignID}")
     @SessionAuthorize(AdminType.PUB)
-    public ResponseEntity<CampaignDetailResponse> findById(@RequestHeader("Token") String token, @PathVariable("campaignID") Long campaignID) {
+    public ResponseEntity<?> findById(@RequestHeader("Token") String token, @PathVariable("campaignID") Long campaignID) {
 
-        CampaignDetailResponse campaignDetail = campaignService.findOneById(token, campaignID);
-        return ResponseEntity.status(campaignDetail.getStatus()).body(campaignDetail);
+        InfoResponse infoResponse = campaignService.getByID(token, campaignID);
+        return ResponseEntity.status(infoResponse.getStatus()).body(infoResponse);
     }
 
     // --- Update une campagne --------------------------------------------- //
 
     @PutMapping("/{campaignID}")
     @SessionAuthorize(AdminType.PUB)
-    public ResponseEntity<CampaignDetailResponse> updateCampainById(@RequestHeader("Token") String token, @PathVariable("campaignID") Long campaignID, @Valid @RequestBody UpdateRequest updatedCampaign) {
+    public ResponseEntity<?> updateCampainById(@RequestHeader("Token") String token, @PathVariable("campaignID") Long campaignID, @Valid @RequestBody UpdateRequest updatedCampaign) {
 
-        CampaignDetailResponse campaignResponse = campaignService.updateCampaign(token, campaignID, updatedCampaign);
-        return ResponseEntity.status(campaignResponse.getStatus()).body(campaignResponse);
+        ModifyResponse modifyResponse = campaignService.modify(token, campaignID, updatedCampaign);
+        return ResponseEntity.status(modifyResponse.getStatus()).body(modifyResponse);
     }
 
     // --- Supprimer une campagne ------------------------------------------ //
@@ -67,8 +65,8 @@ public class CampaignController {
     @SessionAuthorize(AdminType.PUB)
     public ResponseEntity<?> deleteCampaignById(@RequestHeader("Token") String token, @PathVariable("campaignID") Long campaignID) {
 
-        CampaignDeleteResponse campaignDeleteResponse = campaignService.deleteCampaignById(token, campaignID);
-        return ResponseEntity.status(campaignDeleteResponse.getStatus()).body(null);
+        DeleteResponse deleteResponse = campaignService.delete(token, campaignID);
+        return ResponseEntity.status(deleteResponse.getStatus()).body(deleteResponse);
     }
 
 }

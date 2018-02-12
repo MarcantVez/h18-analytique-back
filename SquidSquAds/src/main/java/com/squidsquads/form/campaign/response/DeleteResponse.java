@@ -2,7 +2,7 @@ package com.squidsquads.form.campaign.response;
 
 import org.springframework.http.HttpStatus;
 
-public class CampaignDeleteResponse {
+public class DeleteResponse {
 
     private static final String CAMPAGNE_NOT_FOUND = "La campagne n'existe pas";
     private static final String SUCCESS = "La campagne a été supprimée avec succès";
@@ -10,23 +10,23 @@ public class CampaignDeleteResponse {
     private HttpStatus status;
     private String message;
 
-    public CampaignDeleteResponse() {
+    public DeleteResponse() {
     }
 
-    public CampaignDeleteResponse unauthorized() {
-        status = HttpStatus.UNAUTHORIZED;
+    public DeleteResponse ok() {
+        status = HttpStatus.OK;
+        message = SUCCESS;
         return this;
     }
 
-    public CampaignDeleteResponse notFound() {
+    public DeleteResponse notFound() {
         status = HttpStatus.NOT_FOUND;
         message = CAMPAGNE_NOT_FOUND;
         return this;
     }
 
-    public CampaignDeleteResponse ok() {
-        status = HttpStatus.OK;
-        message = SUCCESS;
+    public DeleteResponse failed() {
+        status = HttpStatus.INTERNAL_SERVER_ERROR;
         return this;
     }
 

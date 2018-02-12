@@ -12,15 +12,15 @@ public class ListResponse {
     public ListResponse() {
     }
 
-    public ListResponse ok(List<ListResponseItem> items) {
-        this.status = HttpStatus.OK;
-        this.profiles = items;
+    public ListResponse ok(List<ListResponseItem> profiles) {
+        status = HttpStatus.OK;
+        this.profiles = profiles;
         return this;
     }
 
     public ListResponse unauthorized() {
-        this.status = HttpStatus.UNAUTHORIZED;
-        this.profiles = null;
+        status = HttpStatus.UNAUTHORIZED;
+        profiles = null;
         return this;
     }
 

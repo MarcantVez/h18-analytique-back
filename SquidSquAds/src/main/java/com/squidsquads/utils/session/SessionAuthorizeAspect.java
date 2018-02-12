@@ -36,9 +36,16 @@ public class SessionAuthorizeAspect {
                 .currentRequestAttributes())
                 .getRequest();
         String token = request.getHeader("Token");
+
+        // Si la session n'existe pas
+        if (!SessionManager.getInstance().isSessionValid(token)) {
+            logger.info("Un utilisateur non connecté a tenté d'accéder à " + request.getRequestURI());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(FORBIDDEN_SESSION_MESSAGE);
+        }
+
         AdminType adminType = SessionManager.getInstance().getAdminTypeForToken(token);
 
-        // Si la session n'existe pas ou si le type de l'utilisateur n'est pas permis
+        // Si le type de l'utilisateur n'est pas permis
         if (adminType == null || !Arrays.asList(sessionAuthorize.value()).contains(adminType)) {
             logger.info("Un utilisateur ne possédant pas les droits requis a tenté d'accéder à " + request.getRequestURI());
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(FORBIDDEN_SESSION_MESSAGE);

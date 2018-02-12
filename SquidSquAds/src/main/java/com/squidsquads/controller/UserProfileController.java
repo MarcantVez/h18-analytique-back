@@ -19,11 +19,11 @@ public class UserProfileController {
     UserProfileService userProfileService;
 
     // --------------------------------------------------------------------- //
-    @PostMapping("/create")
+    @PostMapping("")
     @SessionAuthorize(AdminType.PUB)
     public ResponseEntity<?> create(@RequestHeader("Token") String token, @Valid @RequestBody CreateModifyRequest request) {
 
-        CreateUserProfileResponse response = userProfileService.create(token, request);
+        CreateResponse response = userProfileService.create(token, request);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
@@ -50,7 +50,7 @@ public class UserProfileController {
     @SessionAuthorize(AdminType.PUB)
     public ResponseEntity<?> modify(@RequestHeader("Token") String token, @PathVariable("profileID") Long profileID, @Valid @RequestBody CreateModifyRequest request) {
 
-        CreateModifyResponse response = userProfileService.modify(token, profileID, request);
+        ModifyResponse response = userProfileService.modify(token, profileID, request);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 

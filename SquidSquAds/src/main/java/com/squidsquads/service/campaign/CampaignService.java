@@ -2,12 +2,8 @@ package com.squidsquads.service.campaign;
 
 import com.squidsquads.form.campaign.request.CreateRequest;
 import com.squidsquads.form.campaign.request.UpdateRequest;
-import com.squidsquads.form.campaign.response.CampaignDeleteResponse;
-import com.squidsquads.form.campaign.response.CampaignDetailResponse;
-import com.squidsquads.form.campaign.response.CampaignListResponse;
-import com.squidsquads.form.campaign.response.CampaignListResponseItem;
+import com.squidsquads.form.campaign.response.*;
 import com.squidsquads.form.validator.CampaignCreateValidator;
-import com.squidsquads.model.account.AdminType;
 import com.squidsquads.model.campaign.Campaign;
 import com.squidsquads.model.campaign.CampaignProfile;
 import com.squidsquads.repository.campaign.CampaignProfileRepository;
@@ -15,6 +11,8 @@ import com.squidsquads.repository.campaign.CampaignRepository;
 import com.squidsquads.repository.userProfile.UserProfileRepository;
 import com.squidsquads.utils.DateFormatter;
 import com.squidsquads.utils.session.SessionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +22,8 @@ import java.util.List;
 
 @Service
 public class CampaignService {
+
+    private static final Logger logger = LoggerFactory.getLogger(CampaignService.class);
 
     @Autowired
     CampaignRepository campaignRepository;
@@ -35,23 +35,31 @@ public class CampaignService {
     UserProfileRepository profileRepository;
 
     /**
+     * Trouver un profil utilisateur en fonction de son ID
+     */
+    private Campaign findByNameAndAccountID(String name, Long accountID) {
+        return campaignRepository.findByNameAndAccountID(name, accountID);
+    }
+
+    /**
      * Trouver les campagnes publicitaires d'un compte
      */
-    public CampaignListResponse findAllForAuthor(String token) {
+    public ListResponse getAll(String token) {
 
         Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
-        AdminType adminType = SessionManager.getInstance().getAdminTypeForToken(token);
 
-        if (accountID == SessionManager.NO_SESSION || adminType != AdminType.PUB) {
-            return new CampaignListResponse().unauthorized();
+        // Si le compte n'a pas de session ici, c'est un probleme serveur
+        if (accountID == SessionManager.NO_SESSION) {
+            logger.error("Un compte basé sur un token de session est introuvable");
+            return new ListResponse().failed();
         }
 
         List<Campaign> campaigns = campaignRepository.findByAccountID(accountID);
-        List<CampaignListResponseItem> responseList = new ArrayList<>();
+        List<ListResponseItem> responseList = new ArrayList<>();
 
         for (Campaign c : campaigns) {
             responseList.add(
-                    new CampaignListResponseItem(
+                    new ListResponseItem(
                             c.getCampaignID(),
                             c.getName(),
                             DateFormatter.DateToString(c.getCreationDate())
@@ -59,24 +67,25 @@ public class CampaignService {
             );
         }
 
-        return new CampaignListResponse().ok(responseList);
+        return new ListResponse().ok(responseList);
     }
 
     /**
      * Trouver une campagne publicitaire par son identificateur
      */
-    public CampaignDetailResponse findOneById(String token, Long campaingID) {
+    public InfoResponse getByID(String token, Long campaingID) {
 
         Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
-        AdminType adminType = SessionManager.getInstance().getAdminTypeForToken(token);
 
-        if (accountID == SessionManager.NO_SESSION || adminType != AdminType.PUB) {
-            return new CampaignDetailResponse().unauthorized();
+        // Si le compte n'a pas de session ici, c'est un probleme serveur
+        if (accountID == SessionManager.NO_SESSION) {
+            logger.error("Un compte basé sur un token de session est introuvable");
+            return new InfoResponse().failed();
         }
 
         Campaign campaign = campaignRepository.findOne(campaingID);
         if (campaign == null || campaign.getAccountID() != accountID) {
-            return new CampaignDetailResponse().notFound();
+            return new InfoResponse().notFound();
         }
 
         // GET linked profiles for campaign
@@ -88,24 +97,25 @@ public class CampaignService {
         }
         campaign.setProfileIds(profileIDs);
 
-        return new CampaignDetailResponse().ok(campaign);
+        return new InfoResponse().ok(campaign);
     }
 
     /**
      * Modifier une campagne
      */
     @Transactional
-    public CampaignDetailResponse updateCampaign(String token, Long campaignID, UpdateRequest updatedCampaign) {
+    public ModifyResponse modify(String token, Long campaignID, UpdateRequest updatedCampaign) {
 
         Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
-        AdminType adminType = SessionManager.getInstance().getAdminTypeForToken(token);
 
-        if (accountID == SessionManager.NO_SESSION || adminType != AdminType.PUB) {
-            return new CampaignDetailResponse().unauthorized();
+        // Si le compte n'a pas de session ici, c'est un probleme serveur
+        if (accountID == SessionManager.NO_SESSION) {
+            logger.error("Un compte basé sur un token de session est introuvable");
+            return new ModifyResponse().failed();
         }
 
         if (campaignID != updatedCampaign.getCampaignId()) {
-            return new CampaignDetailResponse().fieldsMissing();
+            return new ModifyResponse().fieldsMissing();
         }
 
         Campaign campaign = new Campaign(
@@ -127,78 +137,85 @@ public class CampaignService {
             campaignProfileRepository.save(new CampaignProfile(id, updatedCampaign.getCampaignId()));
         }
 
-        Campaign updated = campaignRepository.save(campaign);
+        campaignRepository.save(campaign);
 
-        return new CampaignDetailResponse().ok(updated);
+        return new ModifyResponse().ok();
     }
 
     /**
      * Créer une campagne
      */
-    public CampaignDetailResponse addCampaign(String token, CreateRequest newCampaign) {
+    @Transactional
+    public CreateResponse create(String token, CreateRequest request) {
 
         Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
-        AdminType adminType = SessionManager.getInstance().getAdminTypeForToken(token);
 
-        if (accountID == SessionManager.NO_SESSION || adminType != AdminType.PUB) {
-            return new CampaignDetailResponse().unauthorized();
+        // Si le compte n'a pas de session ici, c'est un probleme serveur
+        if (accountID == SessionManager.NO_SESSION) {
+            logger.error("Un compte basé sur un token de session est introuvable");
+            return new CreateResponse().failed();
         }
 
-        if (!CampaignCreateValidator.isCreateRequestComplete(newCampaign)) {
-            return new CampaignDetailResponse().fieldsMissing();
+        if (!CampaignCreateValidator.isCreateRequestComplete(request)) {
+            return new CreateResponse().fieldsMissing();
+        }
+
+        // Si le nom de profile existe déjà pour l'utilisateur courrant
+        if (findByNameAndAccountID(request.getName(), accountID) != null) {
+            return new CreateResponse().campaignAlreadyExists();
         }
 
         Campaign campaign = new Campaign(
                 null,
                 accountID,
-                newCampaign.getName(),
-                newCampaign.getImgHorizontal(),
-                newCampaign.getImgVertical(),
-                newCampaign.getImgMobile(),
-                newCampaign.getRedirectUrl(),
-                DateFormatter.StringToDate(newCampaign.getStartDate()),
-                DateFormatter.StringToDate(newCampaign.getEndDate()),
-                newCampaign.getBudget(),
-                newCampaign.getProfileIds()
+                request.getName(),
+                request.getImgHorizontal(),
+                request.getImgVertical(),
+                request.getImgMobile(),
+                request.getRedirectUrl(),
+                DateFormatter.StringToDate(request.getStartDate()),
+                DateFormatter.StringToDate(request.getEndDate()),
+                request.getBudget(),
+                request.getProfileIds()
         );
 
         Campaign created = campaignRepository.save(campaign);
 
-        for (long id : newCampaign.getProfileIds()) {
-            // TODO : Valider si le profile ID existe
+        for (long id : request.getProfileIds()) {
+            // TODO : Valider si le profil ID existe
             campaignProfileRepository.save(new CampaignProfile(id, created.getCampaignID()));
         }
-        created.setProfileIds(campaign.getProfileIds());
 
-        return new CampaignDetailResponse().ok(created);
+        return new CreateResponse().ok();
     }
 
     /**
      * Supprimer une campagne
      */
     @Transactional
-    public CampaignDeleteResponse deleteCampaignById(String token, Long campaignId) {
+    public DeleteResponse delete(String token, Long campaignId) {
 
         Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
-        AdminType adminType = SessionManager.getInstance().getAdminTypeForToken(token);
 
-        if (accountID == SessionManager.NO_SESSION || adminType != AdminType.PUB) {
-            return new CampaignDeleteResponse().unauthorized();
+        // Si le compte n'a pas de session ici, c'est un probleme serveur
+        if (accountID == SessionManager.NO_SESSION) {
+            logger.error("Un compte basé sur un token de session est introuvable");
+            return new DeleteResponse().failed();
         }
 
         Campaign campaign = campaignRepository.findOne(campaignId);
 
         if (campaign == null) {
-            return new CampaignDeleteResponse().notFound();
+            return new DeleteResponse().notFound();
         }
 
         if (!campaign.getAccountID().equals(accountID)) {
-            return new CampaignDeleteResponse().unauthorized();
+            return new DeleteResponse().failed();
         }
 
         campaignProfileRepository.deleteAllByCampaignID(campaignId);
         campaignRepository.delete(campaignId);
 
-        return new CampaignDeleteResponse().ok();
+        return new DeleteResponse().ok();
     }
 }

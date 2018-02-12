@@ -16,15 +16,11 @@ public class InfoResponse {
     public InfoResponse() {
     }
 
-    public InfoResponse(HttpStatus status, String name, String description, Site[] urls) {
-        this.status = status;
-        this.name = name;
-        this.description = description;
-        this.urls = urls;
-    }
-
-    public InfoResponse failed() {
-        status = HttpStatus.INTERNAL_SERVER_ERROR;
+    public InfoResponse ok(UserProfile userProfile, List<Site> sites) {
+        status = HttpStatus.OK;
+        name = userProfile.getName();
+        description = userProfile.getDescription();
+        urls = sites.toArray(new Site[0]);
         return this;
     }
 
@@ -33,11 +29,8 @@ public class InfoResponse {
         return this;
     }
 
-    public InfoResponse ok(UserProfile userProfile, List<Site> sites) {
-        status = HttpStatus.OK;
-        name = userProfile.getName();
-        description = userProfile.getDescription();
-        urls = sites.toArray(new Site[0]);
+    public InfoResponse failed() {
+        status = HttpStatus.INTERNAL_SERVER_ERROR;
         return this;
     }
 
