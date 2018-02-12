@@ -114,27 +114,27 @@ public class CampaignService {
             return new ModifyResponse().failed();
         }
 
-        if (campaignID != updatedCampaign.getCampaignId()) {
-            return new ModifyResponse().fieldsMissing();
+        if (campaignRepository.findByCampaignID(campaignID) == null) {
+            return new ModifyResponse().notFound();
         }
 
         Campaign campaign = new Campaign(
-                updatedCampaign.getCampaignId(),
+                campaignID,
                 accountID,
                 updatedCampaign.getName(),
-                updatedCampaign.getImageHor(),
-                updatedCampaign.getImageVer(),
-                updatedCampaign.getImageMob(),
+                updatedCampaign.getImgHorizontal(),
+                updatedCampaign.getImgVertical(),
+                updatedCampaign.getImgMobile(),
                 updatedCampaign.getRedirectUrl(),
                 DateFormatter.StringToDate(updatedCampaign.getStartDate()),
                 DateFormatter.StringToDate(updatedCampaign.getEndDate()),
                 updatedCampaign.getBudget(),
                 updatedCampaign.getProfileIds()
         );
-        campaignProfileRepository.deleteAllByCampaignID(updatedCampaign.getCampaignId());
+        campaignProfileRepository.deleteAllByCampaignID(campaignID);
 
         for (long id : updatedCampaign.getProfileIds()) {
-            campaignProfileRepository.save(new CampaignProfile(id, updatedCampaign.getCampaignId()));
+            campaignProfileRepository.save(new CampaignProfile(id, campaignID));
         }
 
         campaignRepository.save(campaign);

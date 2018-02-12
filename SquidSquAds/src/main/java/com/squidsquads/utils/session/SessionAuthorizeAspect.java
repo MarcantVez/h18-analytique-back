@@ -63,4 +63,16 @@ public class SessionAuthorizeAspect {
         }
         return value;
     }
+
+    private class SessionAuthorizeAspectResponse {
+        private String message;
+
+        public SessionAuthorizeAspectResponse(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
 }

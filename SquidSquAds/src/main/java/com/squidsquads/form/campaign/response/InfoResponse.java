@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 
 public class InfoResponse {
 
-    private Long campaignId;
     private String name;
     private Long accountId;
     private Long[] profileIds;
@@ -30,7 +29,6 @@ public class InfoResponse {
     }
 
     public InfoResponse ok(Campaign c) {
-        campaignId = c.getCampaignID();
         name = c.getName();
         accountId = c.getAccountID();
         profileIds = c.getProfileIds();
@@ -64,10 +62,6 @@ public class InfoResponse {
 
     public HttpStatus getStatus() {
         return status;
-    }
-
-    public Long getCampaignId() {
-        return campaignId;
     }
 
     public String getName() {

@@ -4,20 +4,15 @@ import java.math.BigDecimal;
 
 public class UpdateRequest {
 
-    private Long campaignId;
     private String name;
     private String redirectUrl;
     private Long[] profileIds;
     private String startDate;
     private String endDate;
     private BigDecimal budget;
-    private String imageHor;
-    private String imageVer;
-    private String imageMob;
-
-    public Long getCampaignId() {
-        return campaignId;
-    }
+    private String imgHorizontal;
+    private String imgVertical;
+    private String imgMobile;
 
     public String getName() {
         return name;
@@ -43,15 +38,15 @@ public class UpdateRequest {
         return budget;
     }
 
-    public String getImageHor() {
-        return imageHor;
+    public String getImgHorizontal() {
+        return imgHorizontal;
     }
 
-    public String getImageVer() {
-        return imageVer;
+    public String getImgVertical() {
+        return imgVertical;
     }
 
-    public String getImageMob() {
-        return imageMob;
+    public String getImgMobile() {
+        return imgMobile;
     }
 }
