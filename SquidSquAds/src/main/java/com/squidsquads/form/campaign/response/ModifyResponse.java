@@ -8,6 +8,7 @@ public class ModifyResponse {
     private static final String MISSING_FIELDS = "Tous les champs requis doivent être remplis";
     private static final String CAMPAIGN_NOT_FOUND = "Le profil utilisateur n'existe pas";
     private static final String INVALID_ACCOUNT_NUMBER = "Numéro de compte invalide";
+    private static final String INVALID_DATE_FORMAT = "Le format de date fournis est invalide, utilisez le format \"yyyy-MM-dd\"";
 
     private HttpStatus status;
     private String message;
@@ -38,6 +39,12 @@ public class ModifyResponse {
     public ModifyResponse failed() {
         status = HttpStatus.INTERNAL_SERVER_ERROR;
         message = INVALID_ACCOUNT_NUMBER;
+        return this;
+    }
+
+    public ModifyResponse invalidDateFormat() {
+        status = HttpStatus.BAD_REQUEST;
+        message = INVALID_DATE_FORMAT;
         return this;
     }
 
