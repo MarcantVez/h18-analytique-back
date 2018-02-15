@@ -191,8 +191,7 @@ public class CampaignService {
         Campaign created = campaignRepository.save(campaign);
 
         for (long id : request.getProfileIds()) {
-            // TODO : Valider si le profil ID existe
-            if(profileRepository.findByAccountID(id) != null) {
+            if(profileRepository.findByProfileIDAndAccountID(id, accountID) != null) {
                 campaignProfileRepository.save(new CampaignProfile(id, created.getCampaignID()));
             }
         }
