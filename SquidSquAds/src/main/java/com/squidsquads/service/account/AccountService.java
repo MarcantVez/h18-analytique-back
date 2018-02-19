@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Service
 public class AccountService {
@@ -47,10 +48,14 @@ public class AccountService {
      */
     public AbstractLoginResponse login(LoginRequest loginRequest) {
 
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
         Account account = findByEmail(loginRequest.getEmail());
 
+        Boolean passwordMatch = encoder.matches(account.getPassword(),loginRequest.getPassword());
+
         // Si le compte n'existe pas ou le mot de passe n'est pas le bon
-        if (account == null || !account.getPassword().equals(loginRequest.getPassword())) {
+        if (account == null || !passwordMatch) {
             return new LoginFailedResponse();
         }
 
@@ -98,11 +103,13 @@ public class AccountService {
             return new CreateResponse().emailAlreadyUsed();
         }
 
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
         // Sinon on crée le compte utilisateur
         Account account = accountRepository.save(new Account(
                 createRequest.getAdminType(),
                 createRequest.getEmail(),
-                createRequest.getPassword(),
+                encoder.encode(createRequest.getPassword()), //encryption du mot de passe
                 createRequest.getBank()
         ));
 
