@@ -1,7 +1,8 @@
 package com.squidsquads.model.traffic;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalTime;
 
 @Entity
@@ -37,15 +38,15 @@ public class TrackingInfo {
     private String language;
 
     @Column(name= "tempsecoule")
-    private LocalTime timeSpent;
+    private int timeSpent;
 
     @Column(name= "date_heure")
-    private LocalDateTime dateTime;
+    private Timestamp dateTime;
 
     public TrackingInfo() {
     }
 
-    public TrackingInfo(Long adminWebSiteId, String fingerprint, String currentUrl, String previousUrl, String ipv4Address, String ipv6Address, String screenSize, String language, LocalTime timeSpent) {
+    public TrackingInfo(Long adminWebSiteId, String fingerprint, String currentUrl, String previousUrl, String ipv4Address, String ipv6Address, String screenSize, String language, int timeSpent) {
         this.adminWebSiteId = adminWebSiteId;
         this.fingerprint = fingerprint;
         this.currentUrl = currentUrl;
@@ -55,7 +56,8 @@ public class TrackingInfo {
         this.screenSize = screenSize;
         this.language = language;
         this.timeSpent = timeSpent;
-        this.dateTime = LocalDateTime.now();
+        Instant now = Instant.now();
+        this.dateTime = Timestamp.from(now);
     }
 
     public Long getTrackingInfoId() {
@@ -94,11 +96,11 @@ public class TrackingInfo {
         return language;
     }
 
-    public LocalTime getTimeSpent() {
+    public int getTimeSpent() {
         return timeSpent;
     }
 
-    public LocalDateTime getDateTime() {
+    public Timestamp getDateTime() {
         return dateTime;
     }
 }

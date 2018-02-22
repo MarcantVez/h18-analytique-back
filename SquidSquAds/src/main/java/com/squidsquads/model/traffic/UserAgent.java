@@ -1,6 +1,8 @@
 package com.squidsquads.model.traffic;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -36,7 +38,7 @@ public class UserAgent {
     private String browserPlugins;
 
     @Column(name = "date_heure")
-    private LocalDateTime dateTime;
+    private Timestamp dateTime;
 
     public UserAgent() {
     }
@@ -50,7 +52,8 @@ public class UserAgent {
         this.platform = platform;
         this.platformInfo = platformInfo;
         this.browserPlugins = browserPlugins;
-        this.dateTime = LocalDateTime.now();
+        Instant now = Instant.now();
+        this.dateTime = Timestamp.from(now);
     }
 
     public Long getId() {
@@ -89,7 +92,7 @@ public class UserAgent {
         return browserPlugins;
     }
 
-    public LocalDateTime getDateTime() {
+    public Timestamp getDateTime() {
         return dateTime;
     }
 

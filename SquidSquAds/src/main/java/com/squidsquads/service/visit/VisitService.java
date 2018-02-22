@@ -21,13 +21,13 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Enumeration;
 
 @Service
 public class VisitService {
-    private static final Logger logger = LoggerFactory.getLogger(CampaignService.class);
     private UserAgentParser parser;
 
     @Autowired
@@ -70,15 +70,6 @@ public class VisitService {
         String platform = capabilities.getPlatform();
         String platformVersion = capabilities.getPlatformVersion();
 
-        logger.error("strUserAgent : " + strUserAgent);
-        logger.error("remoteAddr : " + remoteIPv4Addr);
-        logger.error("browser : " + browser);
-        logger.error("browserType : " + browserType);
-        logger.error("browserVersion : " + browserVersion);
-        logger.error("deviceType : " + deviceType);
-        logger.error("platform : " + platform);
-        logger.error("platformVersion : " + platformVersion);
-
         // TODO add repository operations
         BrowserType type = browserTypeRepository.findByName(browser);
         if (type == null){
@@ -86,7 +77,7 @@ public class VisitService {
         }
 
         TrackingInfo info = new TrackingInfo(
-                null, // TODO add AdminSiteWebID ?
+                1L, // TODO add AdminSiteWebID ?
                 null, // TODO calculer l'empreinte
                 request.getHeader("host"),
                 null, // TODO add previous url in requests headers
@@ -94,7 +85,7 @@ public class VisitService {
                 null, // TODO peut seulement avoir un ou l'autre...
                 null, // Screen size not in http
                 acceptLanguage,
-                null // TODO cannot know time spent...
+                1 // TODO cannot know time spent...
         );
         info = trackingInfoRepository.save(info);
 

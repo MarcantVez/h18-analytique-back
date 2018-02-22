@@ -140,7 +140,7 @@ create table infodesuivi
     adresse_ipv6			varchar(100),
     taille_ecran			varchar(100),
     langue					varchar(50),
-    tempsecoule				time,
+    tempsecoule				INTEGER,
     date_heure				timestamp
 );
 
