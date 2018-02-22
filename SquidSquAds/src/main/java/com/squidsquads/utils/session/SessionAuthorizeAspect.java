@@ -40,7 +40,7 @@ public class SessionAuthorizeAspect {
         // Si la session n'existe pas
         if (!SessionManager.getInstance().isSessionValid(token)) {
             logger.info("Un utilisateur non connecté a tenté d'accéder à " + request.getRequestURI());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(FORBIDDEN_SESSION_MESSAGE);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new SessionAuthorizeAspectResponse(FORBIDDEN_SESSION_MESSAGE));
         }
 
         AdminType adminType = SessionManager.getInstance().getAdminTypeForToken(token);
@@ -48,7 +48,7 @@ public class SessionAuthorizeAspect {
         // Si le type de l'utilisateur n'est pas permis
         if (adminType == null || !Arrays.asList(sessionAuthorize.value()).contains(adminType)) {
             logger.info("Un utilisateur ne possédant pas les droits requis a tenté d'accéder à " + request.getRequestURI());
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(FORBIDDEN_SESSION_MESSAGE);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new SessionAuthorizeAspectResponse(FORBIDDEN_SESSION_MESSAGE));
         }
 
         // Renouvellement de la date d'expiration de la session
@@ -67,7 +67,7 @@ public class SessionAuthorizeAspect {
     private class SessionAuthorizeAspectResponse {
         private String message;
 
-        public SessionAuthorizeAspectResponse(String message) {
+        private SessionAuthorizeAspectResponse(String message) {
             this.message = message;
         }
 
