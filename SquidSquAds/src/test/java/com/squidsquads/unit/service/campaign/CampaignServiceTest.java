@@ -1,7 +1,8 @@
 package com.squidsquads.unit.service.campaign;
 
 import com.squidsquads.form.campaign.request.CreateRequest;
-import com.squidsquads.form.campaign.response.CreateResponse;
+import com.squidsquads.form.campaign.request.UpdateRequest;
+import com.squidsquads.form.campaign.response.*;
 import com.squidsquads.model.account.Account;
 import com.squidsquads.model.campaign.Campaign;
 import com.squidsquads.model.campaign.CampaignProfile;
@@ -105,6 +106,103 @@ public class CampaignServiceTest extends AbstractPubAdminTest {
         CreateResponse response = getCampaignService().create(accountToken, request);
         assertEquals(CreateResponse.SUCCESS, response.getMessage());
         assertEquals(HttpStatus.OK, response.getStatus());
+    }
+
+    @Test
+    public void testGetAll(){
+        when(getCampaignService().campaignRepository.findByAccountID(2L)).thenReturn(getCampaignList());
+        ListResponse response = getCampaignService().getAll(accountToken);
+        assertEquals(response.getCampaigns().size(), getCampaignList().size());
+        assertEquals(HttpStatus.OK, response.getStatus());
+    }
+
+    @Test
+    public void testGetById(){
+        when(getCampaignService().campaignRepository.findOne(2L)).thenReturn(getCampaign1());
+        when(getCampaignService().campaignProfileRepository.findAllByCampaignID(2L)).thenReturn(getCampaignProfilesByCampaign());
+        InfoResponse response = getCampaignService().getByID(accountToken, 2L);
+        assertEquals(response.getProfileIds().length, getCampaign1().getProfileIds().length);
+        assertEquals(response.getName(), getCampaign1().getName());
+        assertEquals(HttpStatus.OK, response.getStatus());
+    }
+
+    @Test
+    public void testGetByWrongId(){
+        when(getCampaignService().campaignRepository.findOne(2L)).thenReturn(null);
+        InfoResponse response = getCampaignService().getByID(accountToken, 2L);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatus());
+    }
+
+    @Test
+    public void testModifyWrongId(){
+        when(getCampaignService().campaignRepository.findOne(2L)).thenReturn(null);
+        UpdateRequest updateRequest = new UpdateRequest();
+        ModifyResponse response = getCampaignService().modify(accountToken, 2L, updateRequest);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatus());
+        assertEquals(ModifyResponse.CAMPAIGN_NOT_FOUND, response.getMessage());
+    }
+
+    @Test
+    public void testModifyWrongDate(){
+        when(getCampaignService().campaignRepository.findOne(2L)).thenReturn(getCampaign1());
+        UpdateRequest updateRequest = new UpdateRequest();
+        updateRequest.setStartDate("WRONG_DATE");
+        updateRequest.setEndDate("WRONG_DATE");
+        ModifyResponse response = getCampaignService().modify(accountToken, 2L, updateRequest);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
+        assertEquals(ModifyResponse.INVALID_DATE_FORMAT, response.getMessage());
+    }
+
+    @Test
+    public void testModifyMissingFields(){
+        when(getCampaignService().campaignRepository.findOne(2L)).thenReturn(getCampaign1());
+        UpdateRequest updateRequest = new UpdateRequest();
+        updateRequest.setStartDate("2018-02-23");
+        updateRequest.setEndDate("2018-03-23");
+        ModifyResponse response = getCampaignService().modify(accountToken, 2L, updateRequest);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatus());
+        assertEquals(ModifyResponse.MISSING_FIELDS, response.getMessage());
+    }
+
+    @Test
+    public void testModifyCorrect(){
+        when(getCampaignService().campaignRepository.findOne(2L)).thenReturn(getCampaign1());
+        UpdateRequest updateRequest = new UpdateRequest();
+        updateRequest.setBudget(BigDecimal.valueOf(100));
+        updateRequest.setName("updated");
+        updateRequest.setProfileIds(new Long[]{1L,2L,4L});
+        updateRequest.setImgHorizontal("hor");
+        updateRequest.setImgVertical("vert");
+        updateRequest.setImgMobile("mobile");
+        updateRequest.setRedirectUrl("url");
+        updateRequest.setStartDate("2018-02-23");
+        updateRequest.setEndDate("2018-03-23");
+        ModifyResponse response = getCampaignService().modify(accountToken, 2L, updateRequest);
+        assertEquals(HttpStatus.OK, response.getStatus());
+        assertEquals(ModifyResponse.SUCCESS, response.getMessage());
+    }
+
+    @Test
+    public void testDeleteNotFound(){
+        when(getCampaignService().campaignRepository.findOne(2L)).thenReturn(null);
+        DeleteResponse response = getCampaignService().delete(accountToken, 2L);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatus());
+        assertEquals(DeleteResponse.CAMPAGNE_NOT_FOUND, response.getMessage());
+    }
+
+    @Test
+    public void testDeleteUnauthorized(){
+        when(getCampaignService().campaignRepository.findOne(4L)).thenReturn(getCampaign4());
+        DeleteResponse response = getCampaignService().delete(accountToken, 4L);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatus());
+    }
+
+    @Test
+    public void testWorkingDelete(){
+        when(getCampaignService().campaignRepository.findOne(2L)).thenReturn(getCampaign1());
+        DeleteResponse response = getCampaignService().delete(accountToken, 2L);
+        assertEquals(HttpStatus.OK, response.getStatus());
+        assertEquals(DeleteResponse.SUCCESS, response.getMessage());
     }
 
 

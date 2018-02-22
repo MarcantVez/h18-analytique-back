@@ -26,7 +26,7 @@ public class AbstractPubAdminTest {
     static CampaignProfileRepository campaignProfileRepository;
     static UserProfileRepository userProfileRepository;
 
-    static Campaign campaign1, campaign2, campaign3;
+    static Campaign campaign1, campaign2, campaign3, campaign4;
     static UserProfile profile1, profile2;
     static List<UserProfile> profileList;
     static CampaignProfile campaignProfile1, campaignProfile2, campaignProfile3, campaignProfile4;
@@ -62,6 +62,9 @@ public class AbstractPubAdminTest {
         );
         campaign3.setProfileIds(new Long[]{1L});
         campaignProfile4 = new CampaignProfile(1L, 3L);
+        campaign4 = new Campaign(
+                4L, 3L, "test3", "http://testH.ts", "http://testV.ts", "http://testM.ts", "http://redire.ct", new Date(), new Date(), BigDecimal.valueOf(3000), new Long[]{2L, 3L}
+        );
 
         profile1 = new UserProfile(2L, "old", "people aged over 65");
         profile2 = new UserProfile(2L, "young", "teenagers to young adults");
@@ -98,7 +101,27 @@ public class AbstractPubAdminTest {
         return userProfileRepository;
     }
 
+    public static List<UserProfile> getProfileList() {
+        return profileList;
+    }
+
+    public static List<Campaign> getCampaignList() {
+        return campaignList;
+    }
+
+    public static List<CampaignProfile> getCampaignProfilesByProfile() {
+        return campaignProfilesByProfile;
+    }
+
+    public static List<CampaignProfile> getCampaignProfilesByCampaign() {
+        return campaignProfilesByCampaign;
+    }
+
     public static Campaign getCampaign1() {
         return campaign1;
+    }
+
+    public static Campaign getCampaign4() {
+        return campaign4;
     }
 }

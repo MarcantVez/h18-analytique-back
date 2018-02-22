@@ -4,11 +4,11 @@ import org.springframework.http.HttpStatus;
 
 public class ModifyResponse {
 
-    private static final String SUCCESS = "La campagne publicitaire a été modifié";
-    private static final String MISSING_FIELDS = "Tous les champs requis doivent être remplis";
-    private static final String CAMPAIGN_NOT_FOUND = "Le profil utilisateur n'existe pas";
-    private static final String INVALID_ACCOUNT_NUMBER = "Numéro de compte invalide";
-    private static final String INVALID_DATE_FORMAT = "Le format de date fournis est invalide, utilisez le format \"yyyy-MM-dd\"";
+    public static final String SUCCESS = "La campagne publicitaire a été modifié";
+    public static final String MISSING_FIELDS = "Tous les champs requis doivent être remplis";
+    public static final String CAMPAIGN_NOT_FOUND = "Le profil utilisateur n'existe pas";
+    public static final String INVALID_ACCOUNT_NUMBER = "Numéro de compte invalide";
+    public static final String INVALID_DATE_FORMAT = "Le format de date fournis est invalide, utilisez le format \"yyyy-MM-dd\"";
 
     private HttpStatus status;
     private String message;

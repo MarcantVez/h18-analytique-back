@@ -113,35 +113,42 @@ public class CampaignService {
             logger.error("Un compte basé sur un token de session est introuvable");
             return new ModifyResponse().failed();
         }
-        if (campaignRepository.findByCampaignID(campaignID) == null) {
+        if (campaignRepository.findOne(campaignID) == null) {
             return new ModifyResponse().notFound();
         }
-        Date startDate = DateFormatter.StringToDate(updatedCampaign.getStartDate());
-        Date endDate = DateFormatter.StringToDate(updatedCampaign.getEndDate());
-        if(startDate == null || endDate == null){
-            return new ModifyResponse().invalidDateFormat();
+
+        try {
+            Date startDate = DateFormatter.StringToDate(updatedCampaign.getStartDate());
+            Date endDate = DateFormatter.StringToDate(updatedCampaign.getEndDate());
+            if (startDate == null || endDate == null) {
+                return new ModifyResponse().invalidDateFormat();
+            }
+
+            Campaign campaign = new Campaign(
+                    campaignID,
+                    accountID,
+                    updatedCampaign.getName(),
+                    updatedCampaign.getImgHorizontal(),
+                    updatedCampaign.getImgVertical(),
+                    updatedCampaign.getImgMobile(),
+                    updatedCampaign.getRedirectUrl(),
+                    startDate,
+                    endDate,
+                    updatedCampaign.getBudget(),
+                    updatedCampaign.getProfileIds()
+            );
+            campaignProfileRepository.deleteAllByCampaignID(campaignID);
+
+            for (long id : updatedCampaign.getProfileIds()) {
+                campaignProfileRepository.save(new CampaignProfile(id, campaignID));
+            }
+
+            campaignRepository.save(campaign);
+
+        } catch (NullPointerException npe){
+            return new ModifyResponse().fieldsMissing();
         }
 
-        Campaign campaign = new Campaign(
-                campaignID,
-                accountID,
-                updatedCampaign.getName(),
-                updatedCampaign.getImgHorizontal(),
-                updatedCampaign.getImgVertical(),
-                updatedCampaign.getImgMobile(),
-                updatedCampaign.getRedirectUrl(),
-                startDate,
-                endDate,
-                updatedCampaign.getBudget(),
-                updatedCampaign.getProfileIds()
-        );
-        campaignProfileRepository.deleteAllByCampaignID(campaignID);
-
-        for (long id : updatedCampaign.getProfileIds()) {
-            campaignProfileRepository.save(new CampaignProfile(id, campaignID));
-        }
-
-        campaignRepository.save(campaign);
 
         return new ModifyResponse().ok();
     }
