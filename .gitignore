@@ -100,3 +100,4 @@ SquidSquAds/out/**
 .idea/**
 !SquidSquAds/build/libs/squidsquads-backend-0.1.5.jar
 !gradle/wrapper/gradle-wrapper.jar
+h18-analytique-back.iml
