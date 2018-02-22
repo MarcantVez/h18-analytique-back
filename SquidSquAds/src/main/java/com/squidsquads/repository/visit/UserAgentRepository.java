@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface UserAgentRepository  extends CrudRepository<UserAgent, Long> {
-    List<UserAgent> findAllByUserAgentString(String userAgentStr);
+    UserAgent findByUserAgentString(String userAgentStr);
 }
