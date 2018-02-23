@@ -1,16 +1,21 @@
 package com.squidsquads.unit.service;
 
+
+
+import com.squidsquads.model.account.Account;
+import com.squidsquads.model.account.WebSiteAdmin;
 import com.squidsquads.model.campaign.Campaign;
 import com.squidsquads.model.campaign.CampaignProfile;
 import com.squidsquads.model.profile.UserProfile;
+import com.squidsquads.repository.account.AccountRepository;
+import com.squidsquads.repository.account.WebSiteAdminRepository;
 import com.squidsquads.repository.campaign.CampaignProfileRepository;
 import com.squidsquads.repository.campaign.CampaignRepository;
 import com.squidsquads.repository.userProfile.UserProfileRepository;
+import com.squidsquads.service.account.AccountService;
+import com.squidsquads.service.account.WebSiteAdminService;
 import com.squidsquads.service.campaign.CampaignService;
-import com.squidsquads.utils.session.SessionManager;
 import org.junit.BeforeClass;
-import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -36,7 +41,6 @@ public class AbstractPubAdminTest {
 
     @BeforeClass
     public static void init() {
-
         // Instance des services
         campaignService = new CampaignService();
 
@@ -121,7 +125,17 @@ public class AbstractPubAdminTest {
         return campaign1;
     }
 
+
     public static Campaign getCampaign4() {
         return campaign4;
     }
+
+    private static AccountService accountService;
+    private static WebSiteAdminService webSiteAdminService;
+
+    private static AccountRepository accountRepository;
+    private static WebSiteAdminRepository webSiteAdminRepository;
+
+    private static Account account;
+    private static WebSiteAdmin webSiteAdmin;
 }
