@@ -10,10 +10,10 @@ import java.time.LocalDateTime;
 public class UserAgent {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "numero_agentutilisateur")
+    @Column(name = "id_agentutilisateur")
     private Long id;
 
-    @Column(name = "numero_infodesuivi")
+    @Column(name = "id_infodesuivi")
     private Long trackingInfoId;
 
     @Column(name = "agentutilisateurbrut")
@@ -21,6 +21,9 @@ public class UserAgent {
 
     @Column(name = "versionnavigateur")
     private String browserVersion;
+
+    @Column(name = "navigateur")
+    private String navigateur;
 
     @Column(name = "systeme_operation")
     private String operatingSystem;
@@ -43,10 +46,11 @@ public class UserAgent {
     public UserAgent() {
     }
 
-    public UserAgent(Long trackingInfoId, String userAgentString, String browserVersion, String operatingSystem, String browserInfo, String platform, String platformInfo, String browserPlugins) {
+    public UserAgent(Long trackingInfoId, String userAgentString, String browserVersion, String navigateur, String operatingSystem, String browserInfo, String platform, String platformInfo, String browserPlugins) {
         this.trackingInfoId = trackingInfoId;
         this.userAgentString = userAgentString;
         this.browserVersion = browserVersion;
+        this.navigateur = navigateur;
         this.operatingSystem = operatingSystem;
         this.browserInfo = browserInfo;
         this.platform = platform;
@@ -70,6 +74,10 @@ public class UserAgent {
 
     public String getBrowserVersion() {
         return browserVersion;
+    }
+
+    public String getNavigateur() {
+        return navigateur;
     }
 
     public String getOperatingSystem() {

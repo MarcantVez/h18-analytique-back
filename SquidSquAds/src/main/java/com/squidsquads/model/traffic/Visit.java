@@ -8,11 +8,14 @@ import java.time.LocalDateTime;
 public class Visit {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name="numero_visite")
+    @Column(name="id_visite")
     private Long visitId;
 
-    @Column(name="numero_banniere")
-    private Long bannerId;
+    @Column(name="est_Cliquee")
+    private boolean estCliquee;
+
+    @Column(name="est_Ciblee")
+    private boolean estCiblee;
 
     @Column(name="date_heure")
     private LocalDateTime dateTime;
@@ -20,8 +23,9 @@ public class Visit {
     public Visit() {
     }
 
-    public Visit(Long bannerId) {
-        this.bannerId = bannerId;
+    public Visit(boolean estCliquee, boolean estCiblee) {
+        this.estCliquee = estCliquee;
+        this.estCiblee = estCiblee;
         this.dateTime = LocalDateTime.now();
     }
 
@@ -29,8 +33,12 @@ public class Visit {
         return visitId;
     }
 
-    public Long getBannerId() {
-        return bannerId;
+    public boolean getEstCiblee() {
+        return estCiblee;
+    }
+
+    public boolean getEstCliquee() {
+        return estCliquee;
     }
 
     public LocalDateTime getDateTime() {

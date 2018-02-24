@@ -4,30 +4,18 @@ import com.blueconic.browscap.*;
 import com.squidsquads.form.visit.request.VisitRequest;
 import com.squidsquads.form.visit.response.CookieCreationResponse;
 import com.squidsquads.form.visit.response.VisitResponse;
-import com.squidsquads.model.traffic.BrowserType;
-import com.squidsquads.model.traffic.BrowserTypeAgent;
 import com.squidsquads.model.traffic.TrackingInfo;
 import com.squidsquads.model.traffic.UserAgent;
-import com.squidsquads.repository.visit.BrowserTypeAgentRepository;
-import com.squidsquads.repository.visit.BrowserTypeRepository;
 import com.squidsquads.repository.visit.TrackingInfoRepository;
 import com.squidsquads.repository.visit.UserAgentRepository;
-import com.squidsquads.service.campaign.CampaignService;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Enumeration;
 
 @Service
 public class VisitService {
@@ -35,10 +23,6 @@ public class VisitService {
 
     @Autowired
     private HttpServletRequest request;
-    @Autowired
-    private BrowserTypeAgentRepository browserTypeAgentRepository;
-    @Autowired
-    private BrowserTypeRepository browserTypeRepository;
     @Autowired
     private TrackingInfoRepository trackingInfoRepository;
     @Autowired
@@ -88,11 +72,6 @@ public class VisitService {
         String platform = capabilities.getPlatform();
         String platformVersion = capabilities.getPlatformVersion();
 
-        BrowserType type = browserTypeRepository.findByName(browser);
-        if (type == null) {
-            type = browserTypeRepository.save(new BrowserType(browser));
-        }
-
         TrackingInfo info = new TrackingInfo(
                 1L, // TODO add AdminSiteWebID ?
                 null, // TODO calculer l'empreinte
@@ -112,6 +91,7 @@ public class VisitService {
                     info.getTrackingInfoId(),
                     strUserAgent,
                     browserVersion,
+                    browser,
                     platform,
                     browserType,
                     deviceType,
@@ -120,8 +100,5 @@ public class VisitService {
             );
             agent = userAgentRepository.save(agent);
         }
-
-        BrowserTypeAgent browserTypeAgent = new BrowserTypeAgent(type.getBrowserTypeId(), agent.getId());
-        browserTypeAgentRepository.save(browserTypeAgent);
     }
 }
