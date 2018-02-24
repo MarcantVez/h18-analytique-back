@@ -4,10 +4,12 @@ import com.blueconic.browscap.*;
 import com.squidsquads.form.visit.request.VisitRequest;
 import com.squidsquads.form.visit.response.CookieCreationResponse;
 import com.squidsquads.form.visit.response.VisitResponse;
+import com.squidsquads.model.traffic.FingerPrint;
 import com.squidsquads.model.traffic.TrackingInfo;
 import com.squidsquads.model.traffic.UserAgent;
 import com.squidsquads.repository.visit.TrackingInfoRepository;
 import com.squidsquads.repository.visit.UserAgentRepository;
+import com.squidsquads.utils.Serializer;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,15 +56,13 @@ public class VisitService {
     }
 
     public CookieCreationResponse createIdentity(VisitRequest visitRequest) {
-        String fingerPrintContent = "";
-        String fingerprint = DigestUtils.md5Hex(fingerPrintContent).toUpperCase();
-        return new CookieCreationResponse().ok(fingerprint);
-    }
-
-
-    private void processRequest(){
         String strUserAgent = request.getHeader("User-Agent");
         String acceptLanguage = request.getHeader("accept-language");
+        FingerPrint fingerprint = new FingerPrint(
+            visitRequest.getScreenWidth(), visitRequest.getScreenHeight(), visitRequest.getCanvasFingerprint(), visitRequest.getTimezone(), strUserAgent, acceptLanguage
+        );
+        String fingerPrintHash = Serializer.serialize(fingerprint);
+
         String remoteIPv4Addr = request.getRemoteAddr(); // requires option -Djava.net.preferIPv4Stack=true for IPV4, sinon pas constant
         Capabilities capabilities = parser.parse(strUserAgent);
         String browser = capabilities.getBrowser();
@@ -74,12 +74,12 @@ public class VisitService {
 
         TrackingInfo info = new TrackingInfo(
                 1L, // TODO add AdminSiteWebID ?
-                null, // TODO calculer l'empreinte
+                fingerPrintHash,
                 request.getHeader("host"),
-                null, // TODO add previous url in requests headers
+                null, // TODO find last url from that fingerprint
                 remoteIPv4Addr,
                 null, // TODO peut seulement avoir un ou l'autre...
-                null, // TODO Screen size not in http
+                visitRequest.getScreenSize(),
                 acceptLanguage,
                 1 // TODO cannot know time spent...
         );
@@ -100,5 +100,11 @@ public class VisitService {
             );
             agent = userAgentRepository.save(agent);
         }
+        return new CookieCreationResponse().ok(fingerPrintHash);
+    }
+
+
+    private void processRequest(){
+
     }
 }
