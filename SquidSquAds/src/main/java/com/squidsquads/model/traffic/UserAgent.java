@@ -13,9 +13,6 @@ public class UserAgent {
     @Column(name = "id_agentutilisateur")
     private Long id;
 
-    @Column(name = "id_infodesuivi")
-    private Long trackingInfoId;
-
     @Column(name = "agentutilisateurbrut")
     private String userAgentString;
 
@@ -46,8 +43,7 @@ public class UserAgent {
     public UserAgent() {
     }
 
-    public UserAgent(Long trackingInfoId, String userAgentString, String browserVersion, String browser, String operatingSystem, String browserInfo, String platform, String platformInfo, String browserPlugins) {
-        this.trackingInfoId = trackingInfoId;
+    public UserAgent(String userAgentString, String browserVersion, String browser, String operatingSystem, String browserInfo, String platform, String platformInfo, String browserPlugins) {
         this.userAgentString = userAgentString;
         this.browserVersion = browserVersion;
         this.browser = browser;
@@ -62,10 +58,6 @@ public class UserAgent {
 
     public Long getId() {
         return id;
-    }
-
-    public Long getTrackingInfoId() {
-        return trackingInfoId;
     }
 
     public String getUserAgentString() {

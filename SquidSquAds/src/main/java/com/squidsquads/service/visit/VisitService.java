@@ -10,6 +10,7 @@ import com.squidsquads.model.traffic.UserAgent;
 import com.squidsquads.repository.visit.TrackingInfoRepository;
 import com.squidsquads.repository.visit.UserAgentRepository;
 import com.squidsquads.utils.Serializer;
+import com.squidsquads.utils.TimeSpentCalculator;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,15 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @Service
 public class VisitService {
     private UserAgentParser parser;
+
+    @Autowired
+    private TimeSpentCalculator calculator;
 
     @Autowired
     private HttpServletRequest request;
@@ -51,8 +56,28 @@ public class VisitService {
         String fingerprint = request.getHeader("cookie");
         if(fingerprint != null) {
             String strUserAgent = request.getHeader("User-Agent");
+            String acceptLanguage = request.getHeader("accept-language");
+            UserAgent targetAgent = userAgentRepository.findByUserAgentString(strUserAgent);
+            TrackingInfo lastInfo = trackingInfoRepository.findFirstByFingerprintOrderByDateTimeDesc(fingerprint);
 
+            if(targetAgent == null) {
+                targetAgent = createAgent(strUserAgent);
+            }
 
+            TrackingInfo info = new TrackingInfo(
+                    1L, // TODO add AdminSiteWebID ?
+                    targetAgent.getId(),
+                    fingerprint,
+                    request.getHeader("host"),
+                    lastInfo.getCurrentUrl(),
+                    lastInfo.getIpv4Address(),
+                    null, // TODO peut seulement avoir un ou l'autre...
+                    lastInfo.getScreenSize(),
+                    acceptLanguage,
+                    calculator.calculateTimeFromNow(lastInfo.getDateTime())
+            );
+
+            trackingInfoRepository.save(info);
 
         }
         return new VisitResponse().ok();
@@ -61,48 +86,53 @@ public class VisitService {
     public CookieCreationResponse createIdentity(VisitRequest visitRequest) {
         String strUserAgent = request.getHeader("User-Agent");
         String acceptLanguage = request.getHeader("accept-language");
+        String remoteIPv4Addr = request.getRemoteAddr(); // requires option -Djava.net.preferIPv4Stack=true for IPV4, sinon pas constant
+
         FingerPrint fingerprint = new FingerPrint(
             visitRequest.getScreenWidth(), visitRequest.getScreenHeight(), visitRequest.getCanvasFingerprint(), visitRequest.getTimezone(), strUserAgent, acceptLanguage
         );
         String fingerPrintHash = Serializer.serialize(fingerprint);
 
-        String remoteIPv4Addr = request.getRemoteAddr(); // requires option -Djava.net.preferIPv4Stack=true for IPV4, sinon pas constant
-        Capabilities capabilities = parser.parse(strUserAgent);
-        String browser = capabilities.getBrowser();
-        String browserType = capabilities.getBrowserType();
-        String browserVersion = capabilities.getValue(BrowsCapField.BROWSER_VERSION);
-        String deviceType = capabilities.getDeviceType();
-        String platform = capabilities.getPlatform();
-        String platformVersion = capabilities.getPlatformVersion();
+        UserAgent agent = userAgentRepository.findByUserAgentString(strUserAgent);
+        if (agent == null) {
+            agent = createAgent(strUserAgent);
+        }
 
         TrackingInfo info = new TrackingInfo(
                 1L, // TODO add AdminSiteWebID ?
+                agent.getId(),
                 fingerPrintHash,
                 request.getHeader("host"),
-                null, // TODO find last url from that fingerprint
+                null, // TODO null because first visit ?
                 remoteIPv4Addr,
-                null, // TODO peut seulement avoir un ou l'autre...
+                null,
                 visitRequest.getScreenSize(),
                 acceptLanguage,
                 1 // TODO cannot know time spent...
         );
-        info = trackingInfoRepository.save(info);
-
-        UserAgent agent = userAgentRepository.findByUserAgentString(strUserAgent);
-        if (agent == null) {
-            agent = new UserAgent(
-                    info.getTrackingInfoId(),
-                    strUserAgent,
-                    browserVersion,
-                    browser,
-                    platform,
-                    browserType,
-                    deviceType,
-                    platformVersion,
-                    null // TODO on a pas les infos des plugins par http...
-            );
-            agent = userAgentRepository.save(agent);
-        }
+        trackingInfoRepository.save(info);
         return new CookieCreationResponse().ok(fingerPrintHash);
+    }
+
+    /**
+     * Utility method to create user agent object from string
+     * @param strUserAgent the user agent string
+     * @return a UserAgent object
+     */
+    private UserAgent createAgent(String strUserAgent) {
+        Capabilities capabilities = parser.parse(strUserAgent);
+
+        UserAgent agent = new UserAgent(
+                strUserAgent,
+                capabilities.getValue(BrowsCapField.BROWSER_VERSION),
+                capabilities.getBrowser(),
+                capabilities.getPlatform(),
+                capabilities.getBrowserType(),
+                capabilities.getDeviceType(),
+                capabilities.getPlatformVersion(),
+                null // TODO on a pas les infos des plugins par http...
+        );
+
+        return  userAgentRepository.save(agent);
     }
 }

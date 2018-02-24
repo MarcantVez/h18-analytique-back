@@ -16,6 +16,9 @@ public class TrackingInfo {
     @Column(name= "id_sitewebadmin")
     private Long adminWebSiteId;
 
+    @Column(name= "id_agentutilisateur")
+    private Long userAgentId;
+
     @Column(name= "empreinte")
     private String fingerprint;
 
@@ -46,8 +49,9 @@ public class TrackingInfo {
     public TrackingInfo() {
     }
 
-    public TrackingInfo(Long adminWebSiteId, String fingerprint, String currentUrl, String previousUrl, String ipv4Address, String ipv6Address, String screenSize, String language, int timeSpent) {
+    public TrackingInfo(Long adminWebSiteId, Long userAgentId, String fingerprint, String currentUrl, String previousUrl, String ipv4Address, String ipv6Address, String screenSize, String language, int timeSpent) {
         this.adminWebSiteId = adminWebSiteId;
+        this.userAgentId = userAgentId;
         this.fingerprint = fingerprint;
         this.currentUrl = currentUrl;
         this.previousUrl = previousUrl;
@@ -102,5 +106,13 @@ public class TrackingInfo {
 
     public Timestamp getDateTime() {
         return dateTime;
+    }
+
+    public Long getUserAgentId() {
+        return userAgentId;
+    }
+
+    public void setDateTime(Timestamp dateTime) {
+        this.dateTime = dateTime;
     }
 }
