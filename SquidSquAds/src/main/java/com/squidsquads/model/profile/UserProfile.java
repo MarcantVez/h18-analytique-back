@@ -12,10 +12,10 @@ public class UserProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "numero_profildutilisateur")
+    @Column(name = "id_profildutilisateur")
     private long profileID;
 
-    @Column(name = "numero_compte")
+    @Column(name = "id_compte")
     private long accountID;
 
     @Column(name = "nom")

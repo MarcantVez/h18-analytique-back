@@ -10,13 +10,13 @@ public class Campaign {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "numero_campagne")
+    @Column(name = "id_campagne")
     private Long campaignID;
 
     @Column(name = "nom")
     private String name;
 
-    @Column(name = "numero_compte")
+    @Column(name = "id_compte")
     private Long accountID;
 
     private Long[] profileIds;

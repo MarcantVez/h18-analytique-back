@@ -8,13 +8,13 @@ public class CampaignProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "numero")
+    @Column(name = "Id_Campagne_ProfilDUtilisateur")
     private Long campaignProfileID;
 
-    @Column(name = "numero_profildutilisateur")
+    @Column(name = "id_profildutilisateur")
     private Long profileID;
 
-    @Column(name = "numero_campagne")
+    @Column(name = "id_campagne")
     private Long campaignID;
 
     public CampaignProfile() {
