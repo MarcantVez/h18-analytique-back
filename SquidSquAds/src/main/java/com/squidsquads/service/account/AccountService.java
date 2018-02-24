@@ -52,7 +52,8 @@ public class AccountService {
 
         Account account = findByEmail(loginRequest.getEmail());
 
-        Boolean passwordMatch = encoder.matches(account.getPassword(),loginRequest.getPassword());
+        //To generate a encoded password http://www.devglan.com/online-tools/bcrypt-hash-generator
+        Boolean passwordMatch = encoder.matches(loginRequest.getPassword(),account.getPassword());
 
         // Si le compte n'existe pas ou le mot de passe n'est pas le bon
         if (account == null || !passwordMatch) {
