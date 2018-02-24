@@ -13,7 +13,7 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "numero_compte")
+    @Column(name = "id_compte")
     private long accountID;
 
     @Column(name = "type_admin")
