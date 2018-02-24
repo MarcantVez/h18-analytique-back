@@ -2,8 +2,8 @@
 --ALTER TABLE CompteUtilisateur ADD CONSTRAINT pk_compte_utilisateur PRIMARY KEY(Id_Compte);
 --ALTER TABLE Paiement ADD CONSTRAINT pk_paiement PRIMARY KEY(Id_Paiement);
 --ALTER TABLE Campagne ADD CONSTRAINT pk_campagne PRIMARY KEY(Id_Campagne);
---ALTER TABLE ProfilDUtilisateur ADD CONSTRAINT pk_profildutilisateur PRIMARY KEY(Id_ProfilDUtilisateur);
---ALTER TABLE Campagne_ProfilDUtilisateur ADD CONSTRAINT pk_campagne_profildutilisateur PRIMARY KEY(Id_Campagne_ProfilDUtilisateur);
+--ALTER TABLE ProfilUtilisateur ADD CONSTRAINT pk_profilutilisateur PRIMARY KEY(Id_ProfilUtilisateur);
+--ALTER TABLE Campagne_ProfilUtilisateur ADD CONSTRAINT pk_campagne_profilutilisateur PRIMARY KEY(Id_Campagne_ProfilUtilisateur);
 --ALTER TABLE Site ADD CONSTRAINT pk_site PRIMARY KEY(Id_Site);
 --ALTER TABLE Banniere ADD CONSTRAINT pk_banniere PRIMARY KEY(Id_Banniere);
 --ALTER TABLE Visite ADD CONSTRAINT pk_visite PRIMARY KEY(Id_visite);
@@ -20,15 +20,15 @@ ALTER TABLE Paiement ADD CONSTRAINT fk_paiement_no_compte FOREIGN KEY (Id_Compte
 -- CLE TABLE Campagne
 ALTER TABLE Campagne ADD CONSTRAINT fk_campagne_no_compte FOREIGN KEY (Id_Compte) REFERENCES CompteUtilisateur (Id_Compte);
 
--- CLE TABLE ProfilDUtilisateur
-ALTER TABLE ProfilDUtilisateur ADD CONSTRAINT fk_profildutilisateur_no_compte FOREIGN KEY (Id_Compte) REFERENCES CompteUtilisateur (Id_Compte);
+-- CLE TABLE ProfilUtilisateur
+ALTER TABLE ProfilUtilisateur ADD CONSTRAINT fk_profilutilisateur_no_compte FOREIGN KEY (Id_Compte) REFERENCES CompteUtilisateur (Id_Compte);
 
--- CLE TABLE Campagne_ProfilDUtilisateur
-ALTER TABLE Campagne_ProfilDUtilisateur ADD CONSTRAINT fk_campagne_profildutilisateur_no_profildutilisateur FOREIGN KEY (Id_ProfilDUtilisateur) REFERENCES ProfilDUtilisateur (Id_ProfilDUtilisateur);
-ALTER TABLE Campagne_ProfilDUtilisateur ADD CONSTRAINT fk_campagne_profildutilisateur_no_campagne FOREIGN KEY (Id_Campagne) REFERENCES Campagne (Id_Campagne);
+-- CLE TABLE Campagne_ProfilUtilisateur
+ALTER TABLE Campagne_ProfilUtilisateur ADD CONSTRAINT fk_campagne_profilutilisateur_no_profilutilisateur FOREIGN KEY (Id_ProfilUtilisateur) REFERENCES ProfilUtilisateur (Id_ProfilUtilisateur);
+ALTER TABLE Campagne_ProfilUtilisateur ADD CONSTRAINT fk_campagne_profilutilisateur_no_campagne FOREIGN KEY (Id_Campagne) REFERENCES Campagne (Id_Campagne);
 
 -- CLE TABLE Site
-ALTER TABLE Site ADD CONSTRAINT fk_site_no_profildutilisateur FOREIGN KEY (Id_ProfilDUtilisateur) REFERENCES ProfilDUtilisateur (Id_ProfilDUtilisateur);
+ALTER TABLE Site ADD CONSTRAINT fk_site_no_profilutilisateur FOREIGN KEY (id_profilutilisateur) REFERENCES ProfilUtilisateur (Id_ProfilUtilisateur);
 
 -- CLE TABLE Banniere
 ALTER TABLE Banniere ADD CONSTRAINT fk_banniere_no_compte FOREIGN KEY (Id_Compte) REFERENCES CompteUtilisateur (Id_Compte);
@@ -49,6 +49,4 @@ ALTER TABLE SiteWebAdmin ADD CONSTRAINT fk_sitewebadmin_no_compte FOREIGN KEY (I
 
 -- CLE TABLE InfoDeSuivi
 ALTER TABLE InfoDeSuivi ADD CONSTRAINT fk_infodesuivi_no_sitewebadmin FOREIGN KEY (Id_SiteWebAdmin) REFERENCES SiteWebAdmin (Id_SiteWebAdmin);
-
--- CLE TABLE AgentUtilisateur
-ALTER TABLE AgentUtilisateur ADD CONSTRAINT fk_agentutilisateur_no_infodesuivi FOREIGN KEY (Id_InfoDeSuivi) REFERENCES InfoDeSuivi (Id_InfoDeSuivi);
+ALTER TABLE InfoDeSuivi ADD CONSTRAINT fk_infodesuivi_no_agentutilisateur FOREIGN KEY (id_agentutilisateur) REFERENCES agentutilisateur (id_agentutilisateur);

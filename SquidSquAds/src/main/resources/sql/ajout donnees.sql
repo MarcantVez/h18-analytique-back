@@ -4,11 +4,25 @@ INSERT INTO compteUtilisateur VALUES
 
 
 INSERT INTO SiteWebAdmin VALUES
-  (DEFAULT,(select max(numero_compte) from compteUtilisateur),'https://www.siteWebA.com');
+  (DEFAULT,(select max(compteutilisateur.id_compte) from compteUtilisateur),'https://www.siteWebA.com');
+
+
+INSERT INTO AgentUtilisateur VALUES
+  (DEFAULT,
+   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
+   '63.0.3239.132',
+   'Windows NT 10.0',
+   'Chrome/63.0.3239.132 Safari/537.36',
+   'Win64',
+   'x64',
+   'Chrome',
+   '2018-02-07 18:00'
+  );
 
 INSERT INTO InfoDeSuivi VALUES
   (DEFAULT,
-    (select max(numero_compte) from compteUtilisateur),
+    (select max(id_agentutilisateur) from agentutilisateur),
+    (select max(id_compte) from compteUtilisateur),
     'e908f5b5ec9dedf0cb5bd964e1206f55',
     'https://www.siteWebA.com/produit/5',
     'https://www.siteWebA.com/produit/',
@@ -20,101 +34,49 @@ INSERT INTO InfoDeSuivi VALUES
     '2018-02-07 18:00'
   );
 
-INSERT INTO AgentUtilisateur VALUES
-  (DEFAULT,
-   (SELECT MAX(numero_InfoDeSuivi) FROM InfoDeSuivi),
-   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
-   '63.0.3239.132',
-   'Windows NT 10.0',
-   'Chrome/63.0.3239.132 Safari/537.36',
-   'Win64',
-   'x64',
-   '',
-   '2018-02-07 18:00'
-  );
 
-INSERT INTO TypeNavigateur VALUES
+INSERT INTO Banniere VALUES
   (DEFAULT,
-   'Chrome'
-  );
-
-INSERT INTO TypeNavigateur_Agent VALUES
-  (DEFAULT,
-   (SELECT MAX(numero_AgentUtilisateur) FROM AgentUtilisateur),
-   (SELECT MAX(numero_TypeNavigateur) FROM TypeNavigateur)
+   (select max(compteutilisateur.id_compte) from compteUtilisateur),
+   'Horizontal'
   );
 
 INSERT INTO Banniere VALUES
   (DEFAULT,
-   (select max(numero_compte) from compteUtilisateur),
-   'FFF000'
-  );
-
-INSERT INTO Orientation VALUES
-  (DEFAULT,
-   'Horizontal'
-  );
-
-INSERT INTO Orientation VALUES
-  (DEFAULT,
+   (select max(compteutilisateur.id_compte) from compteUtilisateur),
    'Vertical'
   );
 
-INSERT INTO Orientation VALUES
+INSERT INTO Banniere VALUES
   (DEFAULT,
+   (select max(compteutilisateur.id_compte) from compteUtilisateur),
    'Mobile'
   );
 
-INSERT INTO Orientation_Banniere VALUES
-  (DEFAULT,
-   (SELECT MAX(numero_banniere) FROM Banniere),
-   (SELECT MAX(numero_orientation) FROM Orientation)
-  );
-
-INSERT INTO Categorie VALUES
-  (DEFAULT,
-   'Une publicitée qui a été vue');
-
-INSERT INTO Categorie VALUES
-  (DEFAULT,
-   'Une publicitée qui a été vue par un profil');
-
-INSERT INTO Categorie VALUES
-  (DEFAULT,
-   'Une publicitée qui a été cliquée');
-
-INSERT INTO Categorie VALUES
-  (DEFAULT,
-   'Une publicitée qui a été cliquée par un profil');
 
 INSERT INTO Visite VALUES
   (DEFAULT,
-   (SELECT MAX(numero_banniere) FROM Banniere),
+   (SELECT MAX(banniere.id_banniere) FROM Banniere),
    '2018-02-07 18:00'
   );
 
-INSERT INTO Categorie_Visite VALUES
-  (DEFAULT,
-   (SELECT MAX(numero_categorie) FROM Categorie),
-   (SELECT MAX(numero_visite) FROM Visite)
-  );
 
 INSERT INTO Redevance VALUES
   (DEFAULT,
-   (select max(numero_compte) from compteUtilisateur),
-   (SELECT MAX(numero_visite) FROM Visite)
+   (select max(compteutilisateur.id_compte) from compteUtilisateur),
+   (SELECT MAX(visite.id_visite) FROM Visite)
   );
 
 INSERT INTO Paiement VALUES
   (DEFAULT,
-   (select max(numero_compte) from compteUtilisateur),
+   (select max(compteutilisateur.id_compte) from compteUtilisateur),
    25,
    '2018-02-07 18:00'
   );
 
 INSERT INTO Campagne VALUES
   (DEFAULT,
-    (select max(numero_compte) from compteUtilisateur),
+    (select max(compteutilisateur.id_compte) from compteUtilisateur),
     'Campagne Alpha',
     '2018-02-07 18:00',
     'horizontal.jpg',
@@ -126,23 +88,23 @@ INSERT INTO Campagne VALUES
     200000
   );
 
-INSERT INTO ProfilDUtilisateur VALUES
+INSERT INTO ProfilUtilisateur VALUES
   (DEFAULT,
-   (select max(numero_compte) from compteUtilisateur),
+   (select max(compteutilisateur.id_compte) from compteUtilisateur),
    'name profil',
    'description profil',
    '2018-02-07 18:00'
   );
 
-INSERT INTO Campagne_ProfilDutilisateur VALUES
+INSERT INTO Campagne_ProfilUtilisateur VALUES
   (DEFAULT,
-   (SELECT MAX(numero_campagne) FROM Campagne),
-   (SELECT MAX(numero_profildutilisateur) FROM ProfilDUtilisateur)
+   (SELECT MAX(id_compte) FROM Campagne),
+   (SELECT MAX(profilutilisateur.id_profilutilisateur) FROM ProfilUtilisateur)
   );
 
 INSERT INTO Site VALUES
   (DEFAULT,
-   (SELECT MAX(numero_profildutilisateur) FROM ProfilDUtilisateur),
+   (SELECT MAX(profilutilisateur.id_profilutilisateur) FROM ProfilUtilisateur),
    'https://www.siteWebA.com/produitB'
   );
 

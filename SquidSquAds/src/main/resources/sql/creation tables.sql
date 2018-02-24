@@ -48,26 +48,26 @@ CREATE TABLE Campagne
     Budget				MONEY
 );
 
-CREATE TABLE ProfilDUtilisateur
+CREATE TABLE ProfilUtilisateur
 (
-    Id_ProfilDUtilisateur	SERIAL PRIMARY KEY,
+    Id_ProfilUtilisateur	SERIAL PRIMARY KEY,
     Id_Compte				INTEGER NOT NULL,
     Nom							VARCHAR(50),
     Description					VARCHAR(200),
     Date_Creation				TIMESTAMP
 );
 
-CREATE TABLE Campagne_ProfilDUtilisateur
+CREATE TABLE Campagne_ProfilUtilisateur
 (
-    Id_Campagne_ProfilDUtilisateur	SERIAL PRIMARY KEY,
-    Id_ProfilDUtilisateur			INTEGER NOT NULL,
+    Id_Campagne_ProfilUtilisateur	SERIAL PRIMARY KEY,
+    Id_ProfilUtilisateur			INTEGER NOT NULL,
     Id_Campagne						INTEGER NOT NULL
 );
 
 CREATE TABLE Site
 (
     Id_Site					SERIAL PRIMARY KEY,
-    Id_ProfilDUtilisateur	INTEGER NOT NULL,
+    Id_ProfilUtilisateur	INTEGER NOT NULL,
     Url							VARCHAR(150)
 );
 
@@ -114,6 +114,7 @@ CREATE TABLE SiteWebAdmin
 CREATE TABLE InfoDeSuivi
 (
     Id_InfoDeSuivi		SERIAL PRIMARY KEY,
+    Id_AgentUtilisateur	INTEGER NOT NULL,
     Id_SiteWebAdmin		INTEGER NOT NULL,
     Empreinte				VARCHAR(100),
     UrlActuel				VARCHAR(150),
@@ -129,14 +130,13 @@ CREATE TABLE InfoDeSuivi
 CREATE TABLE AgentUtilisateur
 (
     Id_AgentUtilisateur		SERIAL PRIMARY KEY,
-    Id_InfoDeSuivi			INTEGER NOT NULL,
-    AgentUtilisateurBrut		VARCHAR(250),
-    VersionNavigateur			VARCHAR(100),
-    Systeme_Operation			VARCHAR(100),
-    Information_Navigateur		VARCHAR(100),
-    Plateforme					VARCHAR(100),
-    Information_Plateforme		VARCHAR(100),
-    Extension_Navigateur		VARCHAR(100),
-    Navigateur 					VARCHAR(100),
+    AgentUtilisateurBrut		VARCHAR(350),
+    VersionNavigateur			VARCHAR(150),
+    Systeme_Operation			VARCHAR(150),
+    Information_Navigateur		VARCHAR(150),
+    Plateforme					VARCHAR(150),
+    Information_Plateforme		VARCHAR(150),
+    Extension_Navigateur		VARCHAR(150),
+    Navigateur 					VARCHAR(150),
     Date_Heure				TIMESTAMP
 );
