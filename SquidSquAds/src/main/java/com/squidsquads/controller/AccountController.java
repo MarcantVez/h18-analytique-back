@@ -7,8 +7,11 @@ import com.squidsquads.form.account.response.AbstractLoginResponse;
 import com.squidsquads.form.account.response.CreateResponse;
 import com.squidsquads.form.account.response.InfoResponse;
 import com.squidsquads.form.account.response.ResetPasswordResponse;
+import com.squidsquads.form.campaign.response.ListResponse;
+import com.squidsquads.form.visit.response.BannerListResponse;
 import com.squidsquads.model.account.AdminType;
 import com.squidsquads.service.account.AccountService;
+import com.squidsquads.service.visit.BannerService;
 import com.squidsquads.utils.session.SessionAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +25,9 @@ public class AccountController {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    BannerService bannerService;
 
     // --------------------------------------------------------------------- //
     @PostMapping("/login")
@@ -55,5 +61,14 @@ public class AccountController {
 
         ResetPasswordResponse rpr = accountService.resetPassword(token, resetPasswordRequest);
         return ResponseEntity.status(rpr.getStatus()).body(rpr);
+    }
+
+    // --------------------------------------------------------------------- //
+    @GetMapping("/banner")
+    @SessionAuthorize(AdminType.WEB)
+    public ResponseEntity<?> findAllForAuthor(@RequestHeader("Token") String token) {
+
+        BannerListResponse listResponseList = bannerService.getAll(token);
+        return ResponseEntity.status(listResponseList.getStatus()).body(listResponseList);
     }
 }
