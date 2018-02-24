@@ -1,6 +1,7 @@
 package com.squidsquads.service.visit;
 
 import com.blueconic.browscap.*;
+import com.squidsquads.form.visit.request.VisitRequest;
 import com.squidsquads.form.visit.response.CookieCreationResponse;
 import com.squidsquads.form.visit.response.VisitResponse;
 import com.squidsquads.model.traffic.BrowserType;
@@ -63,59 +64,64 @@ public class VisitService {
         // check if cookie, if not : ignore...
         String cookie = request.getHeader("cookie");
         if(cookie != null) {
-            String strUserAgent = request.getHeader("User-Agent");
-            String acceptLanguage = request.getHeader("accept-language");
-            String remoteIPv4Addr = request.getRemoteAddr(); // requires option -Djava.net.preferIPv4Stack=true for IPV4, sinon pas constant
-            Capabilities capabilities = parser.parse(strUserAgent);
-            String browser = capabilities.getBrowser();
-            String browserType = capabilities.getBrowserType();
-            String browserVersion = capabilities.getValue(BrowsCapField.BROWSER_VERSION);
-            String deviceType = capabilities.getDeviceType();
-            String platform = capabilities.getPlatform();
-            String platformVersion = capabilities.getPlatformVersion();
-
-            BrowserType type = browserTypeRepository.findByName(browser);
-            if (type == null) {
-                type = browserTypeRepository.save(new BrowserType(browser));
-            }
-
-            TrackingInfo info = new TrackingInfo(
-                    1L, // TODO add AdminSiteWebID ?
-                    null, // TODO calculer l'empreinte
-                    request.getHeader("host"),
-                    null, // TODO add previous url in requests headers
-                    remoteIPv4Addr,
-                    null, // TODO peut seulement avoir un ou l'autre...
-                    null, // TODO Screen size not in http
-                    acceptLanguage,
-                    1 // TODO cannot know time spent...
-            );
-            info = trackingInfoRepository.save(info);
-
-            UserAgent agent = userAgentRepository.findByUserAgentString(strUserAgent);
-            if (agent == null) {
-                agent = new UserAgent(
-                        info.getTrackingInfoId(),
-                        strUserAgent,
-                        browserVersion,
-                        platform,
-                        browserType,
-                        deviceType,
-                        platformVersion,
-                        null // TODO on a pas les infos des plugins par http...
-                );
-                agent = userAgentRepository.save(agent);
-            }
-
-            BrowserTypeAgent browserTypeAgent = new BrowserTypeAgent(type.getBrowserTypeId(), agent.getId());
-            browserTypeAgentRepository.save(browserTypeAgent);
+            processRequest();
         }
         return new VisitResponse().ok();
     }
 
-    public CookieCreationResponse createIdentity() {
+    public CookieCreationResponse createIdentity(VisitRequest visitRequest) {
         String fingerPrintContent = "";
         String fingerprint = DigestUtils.md5Hex(fingerPrintContent).toUpperCase();
         return new CookieCreationResponse().ok(fingerprint);
+    }
+
+
+    private void processRequest(){
+        String strUserAgent = request.getHeader("User-Agent");
+        String acceptLanguage = request.getHeader("accept-language");
+        String remoteIPv4Addr = request.getRemoteAddr(); // requires option -Djava.net.preferIPv4Stack=true for IPV4, sinon pas constant
+        Capabilities capabilities = parser.parse(strUserAgent);
+        String browser = capabilities.getBrowser();
+        String browserType = capabilities.getBrowserType();
+        String browserVersion = capabilities.getValue(BrowsCapField.BROWSER_VERSION);
+        String deviceType = capabilities.getDeviceType();
+        String platform = capabilities.getPlatform();
+        String platformVersion = capabilities.getPlatformVersion();
+
+        BrowserType type = browserTypeRepository.findByName(browser);
+        if (type == null) {
+            type = browserTypeRepository.save(new BrowserType(browser));
+        }
+
+        TrackingInfo info = new TrackingInfo(
+                1L, // TODO add AdminSiteWebID ?
+                null, // TODO calculer l'empreinte
+                request.getHeader("host"),
+                null, // TODO add previous url in requests headers
+                remoteIPv4Addr,
+                null, // TODO peut seulement avoir un ou l'autre...
+                null, // TODO Screen size not in http
+                acceptLanguage,
+                1 // TODO cannot know time spent...
+        );
+        info = trackingInfoRepository.save(info);
+
+        UserAgent agent = userAgentRepository.findByUserAgentString(strUserAgent);
+        if (agent == null) {
+            agent = new UserAgent(
+                    info.getTrackingInfoId(),
+                    strUserAgent,
+                    browserVersion,
+                    platform,
+                    browserType,
+                    deviceType,
+                    platformVersion,
+                    null // TODO on a pas les infos des plugins par http...
+            );
+            agent = userAgentRepository.save(agent);
+        }
+
+        BrowserTypeAgent browserTypeAgent = new BrowserTypeAgent(type.getBrowserTypeId(), agent.getId());
+        browserTypeAgentRepository.save(browserTypeAgent);
     }
 }
