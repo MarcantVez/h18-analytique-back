@@ -10,10 +10,10 @@ import java.time.LocalTime;
 public class TrackingInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name= "numero_infodesuivi")
+    @Column(name= "id_infodesuivi")
     private Long TrackingInfoId;
 
-    @Column(name= "numero_sitewebadmin")
+    @Column(name= "id_sitewebadmin")
     private Long adminWebSiteId;
 
     @Column(name= "empreinte")
