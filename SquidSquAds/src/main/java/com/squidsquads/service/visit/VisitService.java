@@ -14,8 +14,10 @@ import com.squidsquads.utils.TimeSpentCalculator;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.WebUtils;
 
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -55,8 +57,9 @@ public class VisitService {
 
     public VisitResponse processVisit(){
         // check if cookie, if not : ignore...
-        String fingerprint = request.getHeader("cookie");
-        if(fingerprint != null) {
+        Cookie cookie = WebUtils.getCookie(request, "_squidsquads");
+        if(cookie != null) {
+            String fingerprint = cookie.getValue();
             String strUserAgent = request.getHeader("User-Agent");
             String acceptLanguage = request.getHeader("accept-language");
             UserAgent targetAgent = userAgentRepository.findByUserAgentString(strUserAgent);
