@@ -14,10 +14,8 @@ public class Serializer {
             ObjectOutput out = new ObjectOutputStream(bos);
             out.writeObject(toSerialize);
             out.flush();
-            byte[] yourBytes = bos.toByteArray();
-            String encoded = Base64.getEncoder().encodeToString(yourBytes);
-            String hash = DigestUtils.md5Hex(encoded);;
-            return hash;
+            String encoded = Base64.getEncoder().encodeToString(bos.toByteArray());
+            return DigestUtils.md5Hex(encoded);
         } catch (IOException e) {
             return null;
         }
