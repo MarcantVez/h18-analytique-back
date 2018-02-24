@@ -23,7 +23,7 @@ public class UserAgent {
     private String browserVersion;
 
     @Column(name = "navigateur")
-    private String navigateur;
+    private String browser;
 
     @Column(name = "systeme_operation")
     private String operatingSystem;
@@ -46,11 +46,11 @@ public class UserAgent {
     public UserAgent() {
     }
 
-    public UserAgent(Long trackingInfoId, String userAgentString, String browserVersion, String navigateur, String operatingSystem, String browserInfo, String platform, String platformInfo, String browserPlugins) {
+    public UserAgent(Long trackingInfoId, String userAgentString, String browserVersion, String browser, String operatingSystem, String browserInfo, String platform, String platformInfo, String browserPlugins) {
         this.trackingInfoId = trackingInfoId;
         this.userAgentString = userAgentString;
         this.browserVersion = browserVersion;
-        this.navigateur = navigateur;
+        this.browser = browser;
         this.operatingSystem = operatingSystem;
         this.browserInfo = browserInfo;
         this.platform = platform;
@@ -76,10 +76,6 @@ public class UserAgent {
         return browserVersion;
     }
 
-    public String getNavigateur() {
-        return navigateur;
-    }
-
     public String getOperatingSystem() {
         return operatingSystem;
     }
@@ -102,6 +98,10 @@ public class UserAgent {
 
     public Timestamp getDateTime() {
         return dateTime;
+    }
+
+    public String getBrowser() {
+        return browser;
     }
 
     @Override

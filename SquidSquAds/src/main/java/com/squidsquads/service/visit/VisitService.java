@@ -48,9 +48,12 @@ public class VisitService {
 
     public VisitResponse processVisit(){
         // check if cookie, if not : ignore...
-        String cookie = request.getHeader("cookie");
-        if(cookie != null) {
-            processRequest();
+        String fingerprint = request.getHeader("cookie");
+        if(fingerprint != null) {
+            String strUserAgent = request.getHeader("User-Agent");
+
+
+
         }
         return new VisitResponse().ok();
     }
@@ -101,10 +104,5 @@ public class VisitService {
             agent = userAgentRepository.save(agent);
         }
         return new CookieCreationResponse().ok(fingerPrintHash);
-    }
-
-
-    private void processRequest(){
-
     }
 }
