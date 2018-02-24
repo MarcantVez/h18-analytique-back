@@ -115,7 +115,7 @@ public class VisitService {
 
     public CookieCreationResponse createIdentity() {
         String fingerPrintContent = "";
-        String fingerprint = DigestUtils.md5Hex(fingerprintContent).toUpperCase();
+        String fingerprint = DigestUtils.md5Hex(fingerPrintContent).toUpperCase();
         return new CookieCreationResponse().ok(fingerprint);
     }
 }
