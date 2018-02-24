@@ -160,9 +160,12 @@ public class AccountService {
             logger.error("Un compte basé sur un token de session est introuvable");
             return new ResetPasswordResponse().failed();
         }
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        Boolean passwordMatch = encoder.matches(rpr.getOldPassword(),account.getPassword());
 
         // Si l'ancien mot de passe n'est pas le bon
-        if (!rpr.getOldPassword().equals(account.getPassword())) {
+        if (!passwordMatch) {
             return new ResetPasswordResponse().wrongOldPassword();
         }
 
@@ -171,7 +174,7 @@ public class AccountService {
             return new ResetPasswordResponse().wrongNewPasswords();
         }
 
-        account.setPassword(rpr.getNewPassword());
+        account.setPassword(encoder.encode(rpr.getNewPassword()));
         accountRepository.save(account);
 
         return new ResetPasswordResponse().ok();
