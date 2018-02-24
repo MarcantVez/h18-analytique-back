@@ -123,7 +123,7 @@ CREATE TABLE InfoDeSuivi
     Adresse_IPV6			VARCHAR(100),
     Taille_Ecran			VARCHAR(100),
     Langue					VARCHAR(50),
-    TempsEcoule				TIME,
+    TempsEcoule				INTEGER,
     Date_Heure				TIMESTAMP
 );
 

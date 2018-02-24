@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
@@ -36,7 +37,8 @@ public class VisitService {
     private UserAgentRepository userAgentRepository;
 
     public VisitService() throws IOException, ParseException {
-        parser = new UserAgentService().loadParser(
+        parser = new UserAgentService()
+            .loadParser(
                 Arrays.asList(
                         BrowsCapField.BROWSER,
                         BrowsCapField.BROWSER_TYPE,
@@ -64,21 +66,37 @@ public class VisitService {
                 targetAgent = createAgent(strUserAgent);
             }
 
-            TrackingInfo info = new TrackingInfo(
-                    1L, // TODO add AdminSiteWebID ?
-                    targetAgent.getId(),
-                    fingerprint,
-                    request.getHeader("host"),
-                    lastInfo.getCurrentUrl(),
-                    lastInfo.getIpv4Address(),
-                    null, // TODO peut seulement avoir un ou l'autre...
-                    lastInfo.getScreenSize(),
-                    acceptLanguage,
-                    calculator.calculateTimeFromNow(lastInfo.getDateTime())
-            );
+            TrackingInfo info;
+
+            if(lastInfo != null){
+                info = new TrackingInfo(
+                        1L, // TODO add AdminSiteWebID ?
+                        targetAgent.getId(),
+                        fingerprint,
+                        request.getHeader("host"),
+                        lastInfo.getCurrentUrl(),
+                        lastInfo.getIpv4Address(),
+                        null, // TODO peut seulement avoir un ou l'autre...
+                        lastInfo.getScreenSize(),
+                        acceptLanguage,
+                        calculator.calculateTimeFromNow(lastInfo.getDateTime())
+                );
+            } else {
+                info = new TrackingInfo(
+                        1L, // TODO add AdminSiteWebID ?
+                        targetAgent.getId(),
+                        fingerprint,
+                        request.getHeader("host"),
+                        null,
+                        request.getRemoteAddr(),
+                        null, // TODO peut seulement avoir un ou l'autre...
+                        null,
+                        acceptLanguage,
+                        0
+                );
+            }
 
             trackingInfoRepository.save(info);
-
         }
         return new VisitResponse().ok();
     }
