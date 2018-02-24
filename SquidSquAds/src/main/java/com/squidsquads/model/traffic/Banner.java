@@ -13,15 +13,23 @@ public class Banner {
     @Column(name="orientation")
     private String orientation;
 
+    @Column(name = "id_compte")
+    private long accountID;
+
     public Banner() {
     }
 
-    public Banner(String orientation) {
+    public Banner(Long accountID, String orientation) {
+        this.accountID = accountID;
         this.orientation = orientation;
     }
 
     public Long getBannerId() {
         return bannerId;
+    }
+
+    public Long getAccountID() {
+        return accountID;
     }
 
     public String getOrientation() {
