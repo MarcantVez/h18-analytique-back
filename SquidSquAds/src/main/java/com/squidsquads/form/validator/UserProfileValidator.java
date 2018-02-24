@@ -2,12 +2,6 @@ package com.squidsquads.form.validator;
 
 import com.squidsquads.form.userProfile.request.CreateModifyRequest;
 
-/**
- * @author: Dulce Cayetano
- * @Date_Of_Creation: 2018-02-06
- * @Last_modified_by:
- * @Date_of_last_modification:
- **/
 public class UserProfileValidator {
 
     public static boolean isUserProfileRequestComplete(CreateModifyRequest req) {

@@ -6,18 +6,19 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "visite")
 public class Visit {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name="id_visite")
+    @Column(name = "id_visite")
     private Long visitId;
 
-    @Column(name="est_Cliquee")
+    @Column(name = "est_Cliquee")
     private boolean estCliquee;
 
-    @Column(name="est_Ciblee")
+    @Column(name = "est_Ciblee")
     private boolean estCiblee;
 
-    @Column(name="date_heure")
+    @Column(name = "date_heure")
     private LocalDateTime dateTime;
 
     public Visit() {

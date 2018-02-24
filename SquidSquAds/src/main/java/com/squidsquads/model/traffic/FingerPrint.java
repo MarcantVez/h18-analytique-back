@@ -2,7 +2,8 @@ package com.squidsquads.model.traffic;
 
 import java.io.Serializable;
 
-public class FingerPrint implements Serializable{
+public class FingerPrint implements Serializable {
+
     private int screenWidth;
     private int screenHeight;
     private String canvasFingerprint;

@@ -1,4 +1,4 @@
-package com.squidsquads.form.visit.response;
+package com.squidsquads.form.account.response;
 
 import org.springframework.http.HttpStatus;
 

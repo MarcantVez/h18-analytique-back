@@ -7,12 +7,12 @@ import java.util.Date;
 
 @Component
 @Entity
-@Table(name = "profildutilisateur")
+@Table(name = "profilutilisateur")
 public class UserProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id_profildutilisateur")
+    @Column(name = "id_profilutilisateur")
     private long profileID;
 
     @Column(name = "id_compte")

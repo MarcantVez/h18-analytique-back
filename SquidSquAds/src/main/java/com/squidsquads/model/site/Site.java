@@ -14,7 +14,7 @@ public class Site {
     @Column(name = "id_site")
     private long siteID;
 
-    @Column(name = "id_profildutilisateur")
+    @Column(name = "id_profilutilisateur")
     private long userProfileID;
 
     @Column(name = "url")

@@ -3,11 +3,11 @@ package com.squidsquads.model.traffic;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "agentutilisateur")
 public class UserAgent {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id_agentutilisateur")

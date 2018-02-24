@@ -11,21 +11,23 @@ import com.squidsquads.repository.visit.TrackingInfoRepository;
 import com.squidsquads.repository.visit.UserAgentRepository;
 import com.squidsquads.utils.Serializer;
 import com.squidsquads.utils.TimeSpentCalculator;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
 
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @Service
 public class VisitService {
+
+    public static final String SQUIDSQUADS_COOKIE = "_squidsquads";
+    private static final String HEADER_USER_AGENT = "User-Agent";
+    private static final String HEADER_ACCEPT_LANGUAGE = "accept-language";
+    private static final String HEADER_REFERER = "referer";
+
     private UserAgentParser parser;
 
     @Autowired
@@ -33,118 +35,167 @@ public class VisitService {
 
     @Autowired
     private HttpServletRequest request;
+
     @Autowired
     private TrackingInfoRepository trackingInfoRepository;
+
     @Autowired
     private UserAgentRepository userAgentRepository;
 
     public VisitService() throws IOException, ParseException {
-        parser = new UserAgentService()
-            .loadParser(
-                Arrays.asList(
-                        BrowsCapField.BROWSER,
-                        BrowsCapField.BROWSER_TYPE,
-                        BrowsCapField.BROWSER_VERSION,
-                        BrowsCapField.DEVICE_TYPE,
-                        BrowsCapField.DEVICE_BRAND_NAME,
-                        BrowsCapField.DEVICE_NAME,
-                        BrowsCapField.PLATFORM,
-                        BrowsCapField.PLATFORM_VERSION,
-                        BrowsCapField.PLATFORM_MAKER
-                )
-        );
+        parser = new UserAgentService().loadParser(Arrays.asList(
+                BrowsCapField.BROWSER,
+                BrowsCapField.BROWSER_TYPE,
+                BrowsCapField.BROWSER_VERSION,
+                BrowsCapField.DEVICE_TYPE,
+                BrowsCapField.DEVICE_BRAND_NAME,
+                BrowsCapField.DEVICE_NAME,
+                BrowsCapField.PLATFORM,
+                BrowsCapField.PLATFORM_VERSION,
+                BrowsCapField.PLATFORM_MAKER
+        ));
     }
 
-    public VisitResponse processVisit(){
-        // check if cookie, if not : ignore...
-        Cookie cookie = WebUtils.getCookie(request, "_squidsquads");
-        if(cookie != null) {
-            String fingerprint = cookie.getValue();
-            String strUserAgent = request.getHeader("User-Agent");
-            String acceptLanguage = request.getHeader("accept-language");
-            UserAgent targetAgent = userAgentRepository.findByUserAgentString(strUserAgent);
-            TrackingInfo lastInfo = trackingInfoRepository.findFirstByFingerprintOrderByDateTimeDesc(fingerprint);
+    /**
+     * Lorsqu'un visiteur se rend sur une page qui contient notre processus de tracking,
+     * un GET est envoyé au serveur. Cette méthode traite ce GET en question pour faire
+     * de l'historique de navigation pour l'administrateur du site Web.
+     */
+    public VisitResponse processVisit(Long siteWebAdminID) {
 
-            if(targetAgent == null) {
-                targetAgent = createAgent(strUserAgent);
-            }
+        // Vérifier la présence du cookie de tracking
+        Cookie cookie = WebUtils.getCookie(request, SQUIDSQUADS_COOKIE);
 
-            TrackingInfo info;
-
-            if(lastInfo != null){
-                info = new TrackingInfo(
-                        1L, // TODO add AdminSiteWebID ?
-                        targetAgent.getId(),
-                        fingerprint,
-                        request.getHeader("host"),
-                        lastInfo.getCurrentUrl(),
-                        lastInfo.getIpv4Address(),
-                        null, // TODO peut seulement avoir un ou l'autre...
-                        lastInfo.getScreenSize(),
-                        acceptLanguage,
-                        calculator.calculateTimeFromNow(lastInfo.getDateTime())
-                );
-            } else {
-                info = new TrackingInfo(
-                        1L, // TODO add AdminSiteWebID ?
-                        targetAgent.getId(),
-                        fingerprint,
-                        request.getHeader("host"),
-                        null,
-                        request.getRemoteAddr(),
-                        null, // TODO peut seulement avoir un ou l'autre...
-                        null,
-                        acceptLanguage,
-                        0
-                );
-            }
-
-            trackingInfoRepository.save(info);
+        // Si le cookie n'est pas présent, c'est que l'empreinte du visiteur n'a pas encore
+        // été générée. Le traitement se fera alors dans createIdentity suite à un POST.
+        if (cookie == null) {
+            return new VisitResponse().ok();
         }
+
+        // Récupérer le cookie et des headers dans la requête
+        String fingerprint = cookie.getValue();
+        String hdrUserAgent = request.getHeader(HEADER_USER_AGENT);
+        String hdrAcceptLanguage = request.getHeader(HEADER_ACCEPT_LANGUAGE);
+        String hdrReferer = request.getHeader(HEADER_REFERER);
+        String hdrRemoteAddr = request.getRemoteAddr();
+
+        // Il se peut que l'enregistrement de l'AgentUtilisateur soit déjà présent si ce
+        // n'est pas la première fois qu'on track le visiteur.
+        UserAgent targetAgent = userAgentRepository.findByUserAgentString(hdrUserAgent);
+
+        // Si le fingerprint existe déjà, poursuivre le tracking de l'utilisateur
+        TrackingInfo lastInfo = trackingInfoRepository.findFirstByFingerprintOrderByDateTimeDesc(fingerprint);
+
+        if (targetAgent == null) {
+            targetAgent = createAgent(hdrUserAgent);
+        }
+
+        TrackingInfo info;
+
+        String previousUrl = null;
+        String screenSize = null;
+        int timeSpent = 1;
+
+        // Lier le tracking entre les différentes pages du site
+        if (lastInfo != null) {
+            previousUrl = lastInfo.getCurrentUrl();
+            screenSize = lastInfo.getScreenSize();
+            timeSpent = calculator.calculateTimeFromNow(lastInfo.getDateTime());
+        }
+
+        info = new TrackingInfo(
+                siteWebAdminID,
+                targetAgent.getId(),
+                fingerprint,
+                hdrReferer,
+                previousUrl,
+                hdrRemoteAddr,
+                null,
+                screenSize,
+                hdrAcceptLanguage,
+                timeSpent
+        );
+
+        trackingInfoRepository.save(info);
+
         return new VisitResponse().ok();
     }
 
+    /**
+     * Lorsqu'un visiteur se rend sur une page qui contient notre processus de tracking,
+     * un POST est envoyé au serveur si l'utilisateur n'a pas le cookie de tracking.
+     */
     public CookieCreationResponse createIdentity(VisitRequest visitRequest) {
-        String strUserAgent = request.getHeader("User-Agent");
-        String acceptLanguage = request.getHeader("accept-language");
-        String remoteIPv4Addr = request.getRemoteAddr(); // requires option -Djava.net.preferIPv4Stack=true for IPV4, sinon pas constant
 
+        // Récupérer des headers dans la requête
+        String hdrUserAgent = request.getHeader(HEADER_USER_AGENT);
+        String hdrAcceptLanguage = request.getHeader(HEADER_ACCEPT_LANGUAGE);
+        String hdrReferer = request.getHeader(HEADER_REFERER);
+        String hdrRemoteAddr = request.getRemoteAddr(); // requires option -Djava.net.preferIPv4Stack=true for IPV4, sinon pas constant
+
+        // Bâtir le fingerprint de l'utilisateur
         FingerPrint fingerprint = new FingerPrint(
-            visitRequest.getScreenWidth(), visitRequest.getScreenHeight(), visitRequest.getCanvasFingerprint(), visitRequest.getTimezone(), strUserAgent, acceptLanguage
+                visitRequest.getScreenWidth(),
+                visitRequest.getScreenHeight(),
+                visitRequest.getCanvasFingerprint(),
+                visitRequest.getTimezone(),
+                hdrUserAgent,
+                hdrAcceptLanguage
         );
+
+        // Sérialiser ce fingerprint pour qu'il soit inséré dans les cookies du visiteur
         String fingerPrintHash = Serializer.serialize(fingerprint);
 
-        UserAgent agent = userAgentRepository.findByUserAgentString(strUserAgent);
-        if (agent == null) {
-            agent = createAgent(strUserAgent);
+        // Il se peut que l'enregistrement de l'AgentUtilisateur soit déjà présent si ce
+        // n'est pas la première fois qu'on track le visiteur.
+        UserAgent targetAgent = userAgentRepository.findByUserAgentString(hdrUserAgent);
+
+        // Si le fingerprint existe déjà, poursuivre le tracking de l'utilisateur
+        TrackingInfo lastInfo = trackingInfoRepository.findFirstByFingerprintOrderByDateTimeDesc(fingerPrintHash);
+
+        if (targetAgent == null) {
+            targetAgent = createAgent(hdrUserAgent);
+        }
+
+        String previousUrl = null;
+        int timeSpent = 1;
+
+        // Lier le tracking entre les différentes pages du site
+        if (lastInfo != null) {
+            previousUrl = lastInfo.getCurrentUrl();
+            timeSpent = calculator.calculateTimeFromNow(lastInfo.getDateTime());
         }
 
         TrackingInfo info = new TrackingInfo(
-                1L, // TODO add AdminSiteWebID ?
-                agent.getId(),
+                visitRequest.getUserId(),
+                targetAgent.getId(),
                 fingerPrintHash,
-                request.getHeader("host"),
-                null, // TODO null because first visit ?
-                remoteIPv4Addr,
+                hdrReferer,
+                previousUrl,
+                hdrRemoteAddr,
                 null,
                 visitRequest.getScreenSize(),
-                acceptLanguage,
-                1 // TODO cannot know time spent...
+                hdrAcceptLanguage,
+                timeSpent
         );
+
         trackingInfoRepository.save(info);
+
         return new CookieCreationResponse().ok(fingerPrintHash);
     }
 
     /**
      * Utility method to create user agent object from string
-     * @param strUserAgent the user agent string
+     *
+     * @param hdrUserAgent the user agent string
      * @return a UserAgent object
      */
-    private UserAgent createAgent(String strUserAgent) {
-        Capabilities capabilities = parser.parse(strUserAgent);
+    private UserAgent createAgent(String hdrUserAgent) {
+
+        Capabilities capabilities = parser.parse(hdrUserAgent);
 
         UserAgent agent = new UserAgent(
-                strUserAgent,
+                hdrUserAgent,
                 capabilities.getValue(BrowsCapField.BROWSER_VERSION),
                 capabilities.getBrowser(),
                 capabilities.getPlatform(),
@@ -154,6 +205,6 @@ public class VisitService {
                 null // TODO on a pas les infos des plugins par http...
         );
 
-        return  userAgentRepository.save(agent);
+        return userAgentRepository.save(agent);
     }
 }

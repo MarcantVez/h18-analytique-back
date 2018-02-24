@@ -1,17 +1,17 @@
 package com.squidsquads.unit.utils;
 
-import com.squidsquads.form.visit.request.VisitRequest;
 import com.squidsquads.model.traffic.FingerPrint;
 import com.squidsquads.utils.Serializer;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 
 public class SerializerTest {
 
     @Test
-    public void testSerializeDuplicate(){
+    public void testSerializeDuplicate() {
         FingerPrint fingerPrint = new FingerPrint();
         fingerPrint.setCanvasFingerprint("6101AE99");
         fingerPrint.setScreenHeight(1440);
@@ -27,7 +27,7 @@ public class SerializerTest {
     }
 
     @Test
-    public void testSerializeSameInfo(){
+    public void testSerializeSameInfo() {
         FingerPrint fingerPrint = new FingerPrint();
         fingerPrint.setCanvasFingerprint("6101AE99");
         fingerPrint.setScreenHeight(1440);
@@ -49,7 +49,7 @@ public class SerializerTest {
     }
 
     @Test
-    public void testSerializeDifferentInfo(){
+    public void testSerializeDifferentInfo() {
         FingerPrint fingerPrint = new FingerPrint();
         fingerPrint.setCanvasFingerprint("6101AE99");
         fingerPrint.setScreenHeight(1080);
@@ -69,7 +69,5 @@ public class SerializerTest {
 
         assertNotEquals("The element should have the same hash", hash1, hash2);
     }
-
-
 
 }

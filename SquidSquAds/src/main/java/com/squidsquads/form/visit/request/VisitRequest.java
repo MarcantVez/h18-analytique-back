@@ -1,12 +1,18 @@
 package com.squidsquads.form.visit.request;
 
 public class VisitRequest {
+
+    private Long userId;
     private boolean doNotTrack;
     private int screenWidth;
     private int screenHeight;
     private boolean cookieEnabled;
     private String canvasFingerprint;
     private String timezone;
+
+    public Long getUserId() {
+        return userId;
+    }
 
     public boolean isDoNotTrack() {
         return doNotTrack;
@@ -30,6 +36,10 @@ public class VisitRequest {
 
     public String getTimezone() {
         return timezone;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public void setDoNotTrack(boolean doNotTrack) {
@@ -56,7 +66,7 @@ public class VisitRequest {
         this.timezone = timezone;
     }
 
-    public String getScreenSize(){
+    public String getScreenSize() {
         return this.screenWidth + "x" + this.screenHeight;
     }
 }

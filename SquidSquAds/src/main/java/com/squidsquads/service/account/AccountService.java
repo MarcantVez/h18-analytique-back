@@ -8,7 +8,6 @@ import com.squidsquads.form.validator.AccountValidator;
 import com.squidsquads.model.account.Account;
 import com.squidsquads.model.account.AdminType;
 import com.squidsquads.model.account.WebSiteAdmin;
-import com.squidsquads.model.traffic.Banner;
 import com.squidsquads.model.traffic.Orientation;
 import com.squidsquads.repository.account.AccountRepository;
 import com.squidsquads.service.visit.BannerService;
@@ -128,7 +127,7 @@ public class AccountService {
      */
     public InfoResponse getInfo(String token) {
 
-        long accountId = SessionManager.getInstance().getAccountIdForToken(token);
+        Long accountId = SessionManager.getInstance().getAccountIdForToken(token);
         Account account = findByAccountID(accountId);
 
         // Si le compte n'existe pas ici, c'est un probleme serveur
@@ -153,7 +152,7 @@ public class AccountService {
      */
     public ResetPasswordResponse resetPassword(String token, ResetPasswordRequest rpr) {
 
-        long accountId = SessionManager.getInstance().getAccountIdForToken(token);
+        Long accountId = SessionManager.getInstance().getAccountIdForToken(token);
         Account account = findByAccountID(accountId);
 
         // Si le compte n'existe pas ici, c'est un probleme serveur

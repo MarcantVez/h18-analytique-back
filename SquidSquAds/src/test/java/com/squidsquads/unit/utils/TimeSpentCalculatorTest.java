@@ -2,7 +2,6 @@ package com.squidsquads.unit.utils;
 
 import com.squidsquads.utils.TimeSpentCalculator;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -15,7 +14,7 @@ public class TimeSpentCalculatorTest {
     private TimeSpentCalculator calculator = new TimeSpentCalculator();
 
     @Test
-    public void testCalculateTimeFromNow(){
+    public void testCalculateTimeFromNow() {
         try {
             Instant instant1 = Instant.now();
             Timestamp timestamp1 = Timestamp.from(instant1);
