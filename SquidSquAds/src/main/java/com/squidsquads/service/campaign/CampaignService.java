@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -26,13 +27,13 @@ public class CampaignService {
     private static final Logger logger = LoggerFactory.getLogger(CampaignService.class);
 
     @Autowired
-    CampaignRepository campaignRepository;
+    public CampaignRepository campaignRepository;
 
     @Autowired
-    CampaignProfileRepository campaignProfileRepository;
+    public CampaignProfileRepository campaignProfileRepository;
 
     @Autowired
-    UserProfileRepository profileRepository;
+    public UserProfileRepository profileRepository;
 
     /**
      * Trouver un profil utilisateur en fonction de son ID
@@ -107,37 +108,47 @@ public class CampaignService {
     public ModifyResponse modify(String token, Long campaignID, UpdateRequest updatedCampaign) {
 
         Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
-
         // Si le compte n'a pas de session ici, c'est un probleme serveur
         if (accountID == SessionManager.NO_SESSION) {
             logger.error("Un compte basé sur un token de session est introuvable");
             return new ModifyResponse().failed();
         }
-
-        if (campaignRepository.findByCampaignID(campaignID) == null) {
+        if (campaignRepository.findOne(campaignID) == null) {
             return new ModifyResponse().notFound();
         }
 
-        Campaign campaign = new Campaign(
-                campaignID,
-                accountID,
-                updatedCampaign.getName(),
-                updatedCampaign.getImgHorizontal(),
-                updatedCampaign.getImgVertical(),
-                updatedCampaign.getImgMobile(),
-                updatedCampaign.getRedirectUrl(),
-                DateFormatter.StringToDate(updatedCampaign.getStartDate()),
-                DateFormatter.StringToDate(updatedCampaign.getEndDate()),
-                updatedCampaign.getBudget(),
-                updatedCampaign.getProfileIds()
-        );
-        campaignProfileRepository.deleteAllByCampaignID(campaignID);
+        try {
+            Date startDate = DateFormatter.StringToDate(updatedCampaign.getStartDate());
+            Date endDate = DateFormatter.StringToDate(updatedCampaign.getEndDate());
+            if (startDate == null || endDate == null) {
+                return new ModifyResponse().invalidDateFormat();
+            }
 
-        for (long id : updatedCampaign.getProfileIds()) {
-            campaignProfileRepository.save(new CampaignProfile(id, campaignID));
+            Campaign campaign = new Campaign(
+                    campaignID,
+                    accountID,
+                    updatedCampaign.getName(),
+                    updatedCampaign.getImgHorizontal(),
+                    updatedCampaign.getImgVertical(),
+                    updatedCampaign.getImgMobile(),
+                    updatedCampaign.getRedirectUrl(),
+                    startDate,
+                    endDate,
+                    updatedCampaign.getBudget(),
+                    updatedCampaign.getProfileIds()
+            );
+            campaignProfileRepository.deleteAllByCampaignID(campaignID);
+
+            for (long id : updatedCampaign.getProfileIds()) {
+                campaignProfileRepository.save(new CampaignProfile(id, campaignID));
+            }
+
+            campaignRepository.save(campaign);
+
+        } catch (NullPointerException npe){
+            return new ModifyResponse().fieldsMissing();
         }
 
-        campaignRepository.save(campaign);
 
         return new ModifyResponse().ok();
     }
@@ -164,6 +175,11 @@ public class CampaignService {
         if (findByNameAndAccountID(request.getName(), accountID) != null) {
             return new CreateResponse().campaignAlreadyExists();
         }
+        Date startDate = DateFormatter.StringToDate(request.getStartDate());
+        Date endDate = DateFormatter.StringToDate(request.getEndDate());
+        if(startDate == null || endDate == null){
+            return new CreateResponse().invalidDateFormat();
+        }
 
         Campaign campaign = new Campaign(
                 null,
@@ -173,8 +189,8 @@ public class CampaignService {
                 request.getImgVertical(),
                 request.getImgMobile(),
                 request.getRedirectUrl(),
-                DateFormatter.StringToDate(request.getStartDate()),
-                DateFormatter.StringToDate(request.getEndDate()),
+                startDate,
+                endDate,
                 request.getBudget(),
                 request.getProfileIds()
         );
@@ -182,8 +198,9 @@ public class CampaignService {
         Campaign created = campaignRepository.save(campaign);
 
         for (long id : request.getProfileIds()) {
-            // TODO : Valider si le profil ID existe
-            campaignProfileRepository.save(new CampaignProfile(id, created.getCampaignID()));
+            if(profileRepository.findByProfileIDAndAccountID(id, accountID) != null) {
+                campaignProfileRepository.save(new CampaignProfile(id, created.getCampaignID()));
+            }
         }
 
         return new CreateResponse().ok();
