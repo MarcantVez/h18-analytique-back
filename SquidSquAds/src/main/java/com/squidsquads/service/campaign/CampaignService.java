@@ -42,6 +42,15 @@ public class CampaignService {
     }
 
     /**
+     * Retourne une campagne publicitaire aléatoire
+     */
+    public Campaign getRandom() {
+
+        Iterable<Campaign> campaigns = campaignRepository.findAll();
+        return campaigns.iterator().next();
+    }
+
+    /**
      * Trouver les campagnes publicitaires d'un compte
      */
     public ListResponse getAll(String token) {

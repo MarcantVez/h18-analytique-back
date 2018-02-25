@@ -9,7 +9,7 @@ public class Banner {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id_banniere")
-    private Long bannerId;
+    private Long bannerID;
 
     @Column(name = "orientation")
     private String orientation;
@@ -26,7 +26,7 @@ public class Banner {
     }
 
     public Long getBannerId() {
-        return bannerId;
+        return bannerID;
     }
 
     public Long getAccountID() {

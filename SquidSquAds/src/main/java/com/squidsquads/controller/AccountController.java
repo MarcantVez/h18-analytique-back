@@ -63,7 +63,7 @@ public class AccountController {
     @SessionAuthorize(AdminType.WEB)
     public ResponseEntity<?> findAllForAuthor(@RequestHeader("Token") String token) {
 
-        BannerListResponse listResponseList = bannerService.getAll(token);
-        return ResponseEntity.status(listResponseList.getStatus()).body(listResponseList);
+        BannerListResponse response = bannerService.getAll(token);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 }
