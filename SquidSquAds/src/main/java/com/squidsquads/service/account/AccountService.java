@@ -52,11 +52,16 @@ public class AccountService {
 
         Account account = findByEmail(loginRequest.getEmail());
 
-        //To generate a encoded password http://www.devglan.com/online-tools/bcrypt-hash-generator
-        Boolean passwordMatch = encoder.matches(loginRequest.getPassword(),account.getPassword());
+        // Si le compte n'existe pas
+        if (account == null) {
+            return new LoginFailedResponse();
+        }
 
-        // Si le compte n'existe pas ou le mot de passe n'est pas le bon
-        if (account == null || !passwordMatch) {
+        //To generate a encoded password http://www.devglan.com/online-tools/bcrypt-hash-generator
+        Boolean passwordMatch = encoder.matches(loginRequest.getPassword(), account.getPassword());
+
+        // Si le mot de passe n'est pas le bon
+        if (!passwordMatch) {
             return new LoginFailedResponse();
         }
 

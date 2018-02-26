@@ -57,7 +57,7 @@ public class AccountServiceTest extends AbstractWebSiteAdminTest {
 
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setEmail(super.getAccount().getEmail());
-        loginRequest.setPassword(super.getAccount().getPassword());
+        loginRequest.setPassword("123");
 
         AbstractLoginResponse loginResponse = super.getAccountService().login(loginRequest);
 
