@@ -11,10 +11,10 @@ public class Site {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "numero_site")
+    @Column(name = "id_site")
     private long siteID;
 
-    @Column(name = "numero_profildutilisateur")
+    @Column(name = "id_profilutilisateur")
     private long userProfileID;
 
     @Column(name = "url")

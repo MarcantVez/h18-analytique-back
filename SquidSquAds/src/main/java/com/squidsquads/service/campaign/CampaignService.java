@@ -3,7 +3,7 @@ package com.squidsquads.service.campaign;
 import com.squidsquads.form.campaign.request.CreateRequest;
 import com.squidsquads.form.campaign.request.UpdateRequest;
 import com.squidsquads.form.campaign.response.*;
-import com.squidsquads.form.validator.CampaignCreateValidator;
+import com.squidsquads.form.validator.CampaignValidator;
 import com.squidsquads.model.campaign.Campaign;
 import com.squidsquads.model.campaign.CampaignProfile;
 import com.squidsquads.repository.campaign.CampaignProfileRepository;
@@ -43,6 +43,15 @@ public class CampaignService {
     }
 
     /**
+     * Retourne une campagne publicitaire aléatoire
+     */
+    public Campaign getRandom() {
+
+        List<Campaign> campaigns = campaignRepository.findAll();
+        return campaigns.size() > 0 ? campaigns.get(0) : null;
+    }
+
+    /**
      * Trouver les campagnes publicitaires d'un compte
      */
     public ListResponse getAll(String token) {
@@ -74,7 +83,7 @@ public class CampaignService {
     /**
      * Trouver une campagne publicitaire par son identificateur
      */
-    public InfoResponse getByID(String token, Long campaingID) {
+    public InfoResponse getByID(String token, Long campaignID) {
 
         Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
 
@@ -84,13 +93,13 @@ public class CampaignService {
             return new InfoResponse().failed();
         }
 
-        Campaign campaign = campaignRepository.findOne(campaingID);
-        if (campaign == null || campaign.getAccountID() != accountID) {
+        Campaign campaign = campaignRepository.findOne(campaignID);
+        if (campaign == null || !accountID.equals(campaign.getAccountID())) {
             return new InfoResponse().notFound();
         }
 
         // GET linked profiles for campaign
-        List<CampaignProfile> profiles = campaignProfileRepository.findAllByCampaignID(campaingID);
+        List<CampaignProfile> profiles = campaignProfileRepository.findAllByCampaignID(campaignID);
         Long[] profileIDs = new Long[profiles.size()];
 
         for (int i = 0; i < profiles.size(); i++) {
@@ -117,6 +126,10 @@ public class CampaignService {
             return new ModifyResponse().notFound();
         }
 
+        if (!CampaignValidator.isUpdateRequestComplete(updatedCampaign)) {
+            return new ModifyResponse().fieldsMissing();
+        }
+
         try {
             Date startDate = DateFormatter.StringToDate(updatedCampaign.getStartDate());
             Date endDate = DateFormatter.StringToDate(updatedCampaign.getEndDate());
@@ -139,13 +152,14 @@ public class CampaignService {
             );
             campaignProfileRepository.deleteAllByCampaignID(campaignID);
 
+
             for (long id : updatedCampaign.getProfileIds()) {
                 campaignProfileRepository.save(new CampaignProfile(id, campaignID));
             }
 
             campaignRepository.save(campaign);
 
-        } catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
             return new ModifyResponse().fieldsMissing();
         }
 
@@ -167,7 +181,7 @@ public class CampaignService {
             return new CreateResponse().failed();
         }
 
-        if (!CampaignCreateValidator.isCreateRequestComplete(request)) {
+        if (!CampaignValidator.isCreateRequestComplete(request)) {
             return new CreateResponse().fieldsMissing();
         }
 
@@ -177,7 +191,7 @@ public class CampaignService {
         }
         Date startDate = DateFormatter.StringToDate(request.getStartDate());
         Date endDate = DateFormatter.StringToDate(request.getEndDate());
-        if(startDate == null || endDate == null){
+        if (startDate == null || endDate == null) {
             return new CreateResponse().invalidDateFormat();
         }
 
@@ -197,8 +211,8 @@ public class CampaignService {
 
         Campaign created = campaignRepository.save(campaign);
 
-        for (long id : request.getProfileIds()) {
-            if(profileRepository.findByProfileIDAndAccountID(id, accountID) != null) {
+        for (Long id : request.getProfileIds()) {
+            if (profileRepository.findByProfileIDAndAccountID(id, accountID) != null) {
                 campaignProfileRepository.save(new CampaignProfile(id, created.getCampaignID()));
             }
         }

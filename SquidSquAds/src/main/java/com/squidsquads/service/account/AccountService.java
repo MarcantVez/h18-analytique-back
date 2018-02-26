@@ -8,7 +8,9 @@ import com.squidsquads.form.validator.AccountValidator;
 import com.squidsquads.model.account.Account;
 import com.squidsquads.model.account.AdminType;
 import com.squidsquads.model.account.WebSiteAdmin;
+import com.squidsquads.model.traffic.Orientation;
 import com.squidsquads.repository.account.AccountRepository;
+import com.squidsquads.service.visit.BannerService;
 import com.squidsquads.utils.session.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,9 @@ public class AccountService {
 
     @Autowired
     public WebSiteAdminService webSiteAdminService;
+
+    @Autowired
+    public BannerService bannerService;
 
     /**
      * Trouver un compte utilisateur en fonction de son email
@@ -119,9 +124,12 @@ public class AccountService {
                 createRequest.getBank()
         ));
 
-        // Entité supplémentaire pour les admins web
+        // Entités supplémentaires pour les admins web
         if (AdminType.WEB == AdminType.valueOf(createRequest.getAdminType())) {
             webSiteAdminService.create(account.getAccountID(), createRequest.getDomain());
+            bannerService.create(account.getAccountID(), Orientation.HOR.name());
+            bannerService.create(account.getAccountID(), Orientation.VER.name());
+            bannerService.create(account.getAccountID(), Orientation.MOB.name());
         }
 
         return new CreateResponse().ok();
@@ -132,7 +140,7 @@ public class AccountService {
      */
     public InfoResponse getInfo(String token) {
 
-        long accountId = SessionManager.getInstance().getAccountIdForToken(token);
+        Long accountId = SessionManager.getInstance().getAccountIdForToken(token);
         Account account = findByAccountID(accountId);
 
         // Si le compte n'existe pas ici, c'est un probleme serveur
@@ -157,7 +165,7 @@ public class AccountService {
      */
     public ResetPasswordResponse resetPassword(String token, ResetPasswordRequest rpr) {
 
-        long accountId = SessionManager.getInstance().getAccountIdForToken(token);
+        Long accountId = SessionManager.getInstance().getAccountIdForToken(token);
         Account account = findByAccountID(accountId);
 
         // Si le compte n'existe pas ici, c'est un probleme serveur

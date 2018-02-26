@@ -1,7 +1,5 @@
 package com.squidsquads.unit.service;
 
-
-
 import com.squidsquads.model.account.Account;
 import com.squidsquads.model.account.WebSiteAdmin;
 import com.squidsquads.model.campaign.Campaign;

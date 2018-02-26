@@ -1,13 +1,13 @@
 package com.squidsquads.repository.campaign;
 
 import com.squidsquads.model.campaign.CampaignProfile;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface CampaignProfileRepository extends CrudRepository<CampaignProfile, Long> {
+public interface CampaignProfileRepository extends JpaRepository<CampaignProfile, Long> {
 
     List<CampaignProfile> findAllByCampaignID(Long campaignID);
 

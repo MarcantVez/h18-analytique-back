@@ -3,12 +3,10 @@ package com.squidsquads.controller;
 import com.squidsquads.form.account.request.CreateRequest;
 import com.squidsquads.form.account.request.LoginRequest;
 import com.squidsquads.form.account.request.ResetPasswordRequest;
-import com.squidsquads.form.account.response.AbstractLoginResponse;
-import com.squidsquads.form.account.response.CreateResponse;
-import com.squidsquads.form.account.response.InfoResponse;
-import com.squidsquads.form.account.response.ResetPasswordResponse;
+import com.squidsquads.form.account.response.*;
 import com.squidsquads.model.account.AdminType;
 import com.squidsquads.service.account.AccountService;
+import com.squidsquads.service.visit.BannerService;
 import com.squidsquads.utils.session.SessionAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +20,9 @@ public class AccountController {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    BannerService bannerService;
 
     // --------------------------------------------------------------------- //
     @PostMapping("/login")
@@ -55,5 +56,14 @@ public class AccountController {
 
         ResetPasswordResponse rpr = accountService.resetPassword(token, resetPasswordRequest);
         return ResponseEntity.status(rpr.getStatus()).body(rpr);
+    }
+
+    // --------------------------------------------------------------------- //
+    @GetMapping("/banner")
+    @SessionAuthorize(AdminType.WEB)
+    public ResponseEntity<?> findAllForAuthor(@RequestHeader("Token") String token) {
+
+        BannerListResponse response = bannerService.getAll(token);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 }

@@ -13,10 +13,10 @@ public class WebSiteAdmin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "numero_sitewebadmin")
+    @Column(name = "id_sitewebadmin")
     private long webSiteAdminID;
 
-    @Column(name = "numero_compte")
+    @Column(name = "id_compte")
     private long accountID;
 
     @Column(name = "url")

@@ -3,18 +3,18 @@ package com.squidsquads.model.campaign;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "campagne_profildutilisateur")
+@Table(name = "campagne_profilutilisateur")
 public class CampaignProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "numero")
+    @Column(name = "Id_Campagne_ProfilUtilisateur")
     private Long campaignProfileID;
 
-    @Column(name = "numero_profildutilisateur")
+    @Column(name = "id_profilutilisateur")
     private Long profileID;
 
-    @Column(name = "numero_campagne")
+    @Column(name = "id_campagne")
     private Long campaignID;
 
     public CampaignProfile() {

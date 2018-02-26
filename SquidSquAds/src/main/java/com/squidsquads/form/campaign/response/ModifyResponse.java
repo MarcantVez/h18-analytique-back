@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public class ModifyResponse {
 
-    public static final String SUCCESS = "La campagne publicitaire a été modifié";
+    public static final String SUCCESS = "La campagne publicitaire a été modifiée";
     public static final String MISSING_FIELDS = "Tous les champs requis doivent être remplis";
     public static final String CAMPAIGN_NOT_FOUND = "Le profil utilisateur n'existe pas";
     public static final String INVALID_ACCOUNT_NUMBER = "Numéro de compte invalide";

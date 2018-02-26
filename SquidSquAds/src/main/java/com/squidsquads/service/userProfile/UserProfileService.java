@@ -52,6 +52,7 @@ public class UserProfileService {
     /**
      * Créer une profil utilisateur
      */
+    @Transactional
     public CreateResponse create(String token, CreateModifyRequest request) {
 
         Long accountID = SessionManager.getInstance().getAccountIdForToken(token);
