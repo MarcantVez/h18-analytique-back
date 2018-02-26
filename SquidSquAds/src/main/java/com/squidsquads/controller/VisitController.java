@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/visit")
 public class VisitController {
 
+    private static final String DOMAIN_NAME = ".squidsquads-backend-dev.herokuapp.com";
+
     @Autowired
     VisitService visitService;
 
@@ -34,7 +36,7 @@ public class VisitController {
         // Création du Cookie
         Cookie cookie = new Cookie(VisitService.SQUIDSQUADS_COOKIE, response.getFingerprint());
         cookie.setMaxAge(2678400); // 1 mois
-        cookie.setDomain(".squidsquads.site");
+        cookie.setDomain(DOMAIN_NAME);
         cookie.setPath("/");
         cookie.setSecure(false);
         cookie.setHttpOnly(false);
