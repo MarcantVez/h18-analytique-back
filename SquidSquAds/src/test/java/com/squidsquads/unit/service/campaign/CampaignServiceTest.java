@@ -146,6 +146,13 @@ public class CampaignServiceTest extends AbstractPubAdminTest {
     public void testModifyWrongDate(){
         when(getCampaignService().campaignRepository.findOne(2L)).thenReturn(getCampaign1());
         UpdateRequest updateRequest = new UpdateRequest();
+        updateRequest.setBudget(BigDecimal.valueOf(100));
+        updateRequest.setName("updated");
+        updateRequest.setProfileIds(new Long[]{1L,2L,4L});
+        updateRequest.setImgHorizontal("hor");
+        updateRequest.setImgVertical("vert");
+        updateRequest.setImgMobile("mobile");
+        updateRequest.setRedirectUrl("url");
         updateRequest.setStartDate("WRONG_DATE");
         updateRequest.setEndDate("WRONG_DATE");
         ModifyResponse response = getCampaignService().modify(accountToken, 2L, updateRequest);
