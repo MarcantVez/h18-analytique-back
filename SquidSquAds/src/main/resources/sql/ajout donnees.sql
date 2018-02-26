@@ -67,8 +67,8 @@ INSERT INTO Orientation VALUES
 
 INSERT INTO Orientation_Banniere VALUES
   (DEFAULT,
-   (SELECT MAX(numero_banniere) FROM Banniere),
-   (SELECT MAX(numero_orientation) FROM Orientation)
+   (SELECT MAX(numero_orientation) FROM Orientation),
+   (SELECT MAX(numero_banniere) FROM Banniere)
   );
 
 INSERT INTO Categorie VALUES

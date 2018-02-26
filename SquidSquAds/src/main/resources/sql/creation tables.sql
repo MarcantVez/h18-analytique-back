@@ -20,7 +20,7 @@ create table compteutilisateur
     numero_compte		serial primary key,
     type_admin			varchar(3),
     courriel			varchar(50),
-    mot_de_passe		varchar(50),
+    mot_de_passe		varchar(60),
     no_compte_banque	varchar(50),
     date_creation		timestamp
 );
