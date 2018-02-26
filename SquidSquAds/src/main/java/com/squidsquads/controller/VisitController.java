@@ -34,7 +34,7 @@ public class VisitController {
         // Création du Cookie
         Cookie cookie = new Cookie(VisitService.SQUIDSQUADS_COOKIE, response.getFingerprint());
         cookie.setMaxAge(2678400); // 1 mois
-        cookie.setDomain("localhost");
+        cookie.setDomain(".squidsquads.site");
         cookie.setPath("/");
         cookie.setSecure(false);
         cookie.setHttpOnly(false);
