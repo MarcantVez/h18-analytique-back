@@ -1,12 +1,12 @@
 package com.squidsquads.repository.visit;
 
 import com.squidsquads.model.traffic.UserAgent;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-public interface UserAgentRepository  extends CrudRepository<UserAgent, Long> {
+public interface UserAgentRepository extends JpaRepository<UserAgent, Long> {
+
     UserAgent findByUserAgentString(String userAgentStr);
+
 }

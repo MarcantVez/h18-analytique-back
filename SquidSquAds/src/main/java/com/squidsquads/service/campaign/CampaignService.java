@@ -46,8 +46,8 @@ public class CampaignService {
      */
     public Campaign getRandom() {
 
-        Iterable<Campaign> campaigns = campaignRepository.findAll();
-        return campaigns.iterator().next();
+        List<Campaign> campaigns = campaignRepository.findAll();
+        return campaigns.size() > 0 ? campaigns.get(0) : null;
     }
 
     /**
