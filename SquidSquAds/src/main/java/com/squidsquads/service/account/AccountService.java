@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Service
 public class AccountService {
@@ -52,10 +53,20 @@ public class AccountService {
      */
     public AbstractLoginResponse login(LoginRequest loginRequest) {
 
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
         Account account = findByEmail(loginRequest.getEmail());
 
-        // Si le compte n'existe pas ou le mot de passe n'est pas le bon
-        if (account == null || !account.getPassword().equals(loginRequest.getPassword())) {
+        // Si le compte n'existe pas
+        if (account == null) {
+            return new LoginFailedResponse();
+        }
+
+        //To generate a encoded password http://www.devglan.com/online-tools/bcrypt-hash-generator
+        Boolean passwordMatch = encoder.matches(loginRequest.getPassword(), account.getPassword());
+
+        // Si le mot de passe n'est pas le bon
+        if (!passwordMatch) {
             return new LoginFailedResponse();
         }
 
@@ -103,11 +114,13 @@ public class AccountService {
             return new CreateResponse().emailAlreadyUsed();
         }
 
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
         // Sinon on crée le compte utilisateur
         Account account = accountRepository.save(new Account(
                 createRequest.getAdminType(),
                 createRequest.getEmail(),
-                createRequest.getPassword(),
+                encoder.encode(createRequest.getPassword()), //encryption du mot de passe
                 createRequest.getBank()
         ));
 
@@ -160,9 +173,12 @@ public class AccountService {
             logger.error("Un compte basé sur un token de session est introuvable");
             return new ResetPasswordResponse().failed();
         }
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        Boolean passwordMatch = encoder.matches(rpr.getOldPassword(),account.getPassword());
 
         // Si l'ancien mot de passe n'est pas le bon
-        if (!rpr.getOldPassword().equals(account.getPassword())) {
+        if (!passwordMatch) {
             return new ResetPasswordResponse().wrongOldPassword();
         }
 
@@ -171,7 +187,7 @@ public class AccountService {
             return new ResetPasswordResponse().wrongNewPasswords();
         }
 
-        account.setPassword(rpr.getNewPassword());
+        account.setPassword(encoder.encode(rpr.getNewPassword()));
         accountRepository.save(account);
 
         return new ResetPasswordResponse().ok();

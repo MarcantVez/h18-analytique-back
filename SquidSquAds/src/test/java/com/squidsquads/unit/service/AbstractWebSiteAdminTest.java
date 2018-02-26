@@ -38,7 +38,7 @@ public class AbstractWebSiteAdminTest {
         account.setAccountID(1);
         account.setAdminType(AdminType.WEB.toString());
         account.setEmail("test@test.com");
-        account.setPassword("123");
+        account.setPassword("$2a$10$s.oRmPd1ATjGOHh0caIBHOXh26N9ft7/XYOdYEapBuuTGr/7UEiRi");
         account.setBankAccount("0000 1111 2222 3333");
         account.setDateCreated(new Date());
 

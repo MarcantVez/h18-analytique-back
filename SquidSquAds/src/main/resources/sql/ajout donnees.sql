@@ -53,6 +53,27 @@ INSERT INTO Banniere VALUES
    'Mobile'
   );
 
+INSERT INTO Orientation_Banniere VALUES
+  (DEFAULT,
+   (SELECT MAX(numero_orientation) FROM Orientation),
+   (SELECT MAX(numero_banniere) FROM Banniere)
+  );
+
+INSERT INTO Categorie VALUES
+  (DEFAULT,
+   'Une publicitée qui a été vue');
+
+INSERT INTO Categorie VALUES
+  (DEFAULT,
+   'Une publicitée qui a été vue par un profil');
+
+INSERT INTO Categorie VALUES
+  (DEFAULT,
+   'Une publicitée qui a été cliquée');
+
+INSERT INTO Categorie VALUES
+  (DEFAULT,
+   'Une publicitée qui a été cliquée par un profil');
 
 INSERT INTO Visite VALUES
   (DEFAULT,

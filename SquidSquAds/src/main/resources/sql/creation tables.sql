@@ -20,7 +20,7 @@ CREATE TABLE CompteUtilisateur
     Id_Compte		SERIAL PRIMARY KEY,
     Type_Admin			VARCHAR(3),
     Courriel			VARCHAR(50),
-    Mot_De_Passe		VARCHAR(50),
+    Mot_De_Passe		VARCHAR(60),
     No_Compte_Banque	VARCHAR(50),
     Date_Creation		TIMESTAMP
 );

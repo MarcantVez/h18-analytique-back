@@ -92,8 +92,6 @@ hs_err_pid*
 ## ignoring target file
 target/
 
-
-# End of https://www.gitignore.io/api/java,java-web,intellij+all
 .gradle/**
 SquidSquAds/out/**
 *.class

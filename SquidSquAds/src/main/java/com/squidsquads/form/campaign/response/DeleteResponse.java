@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 
 public class DeleteResponse {
 
-    private static final String CAMPAGNE_NOT_FOUND = "La campagne n'existe pas";
-    private static final String SUCCESS = "La campagne a été supprimée avec succès";
+    public static final String CAMPAGNE_NOT_FOUND = "La campagne n'existe pas";
+    public static final String SUCCESS = "La campagne a été supprimée avec succès";
 
     private HttpStatus status;
     private String message;

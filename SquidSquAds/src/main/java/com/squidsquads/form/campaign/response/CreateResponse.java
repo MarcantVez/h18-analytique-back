@@ -4,10 +4,11 @@ import org.springframework.http.HttpStatus;
 
 public class CreateResponse {
 
-    private static final String SUCCESS = "La campagne publicitaire a été créée";
-    private static final String MISSING_FIELDS = "Tous les champs requis doivent être remplis";
-    private static final String EXISTING_CAMPAIGN = "Nom de campagne déjà utilisé";
-    private static final String INVALID_ACCOUNT_NUMBER = "Numéro de compte invalide";
+    public static final String SUCCESS = "La campagne publicitaire a été créée";
+    public static final String MISSING_FIELDS = "Tous les champs requis doivent être remplis";
+    public static final String EXISTING_CAMPAIGN = "Nom de campagne déjà utilisé";
+    public static final String INVALID_ACCOUNT_NUMBER = "Numéro de compte invalide";
+    public static final String INVALID_DATE_FORMAT = "Le format de date fournis est invalide, utilisez le format \"yyyy-MM-dd\"";
 
     private HttpStatus status;
     private String message;
@@ -46,4 +47,12 @@ public class CreateResponse {
         message = EXISTING_CAMPAIGN;
         return this;
     }
+
+    public CreateResponse invalidDateFormat() {
+        status = HttpStatus.BAD_REQUEST;
+        message = INVALID_DATE_FORMAT;
+        return this;
+    }
+
+
 }
