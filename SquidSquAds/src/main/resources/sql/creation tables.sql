@@ -29,7 +29,7 @@ CREATE TABLE Paiement
 (
     Id_Paiement		SERIAL PRIMARY KEY,
     Id_Compte		INTEGER NOT NULL,
-    Montant				MONEY,
+    Montant				NUMERIC(8,2),
     Date_Paiement		TIMESTAMP
 );
 
@@ -45,7 +45,7 @@ CREATE TABLE Campagne
     Url_De_Redirection	VARCHAR(100),
     Date_Debut			TIMESTAMP,
     Date_Fin			TIMESTAMP,
-    Budget				MONEY
+    Budget				NUMERIC(8,2)
 );
 
 CREATE TABLE ProfilUtilisateur
@@ -99,7 +99,7 @@ CREATE TABLE Redevance
     Id_Redevance	SERIAL PRIMARY KEY,
     Id_Compte		INTEGER NOT NULL,
     Id_Visite		INTEGER NOT NULL,
-    Montant				MONEY,
+    Montant				NUMERIC(8,2),
     Date_Creation		TIMESTAMP,
     Est_Reclame			BOOLEAN
 );
