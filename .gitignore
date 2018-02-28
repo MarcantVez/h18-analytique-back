@@ -92,10 +92,16 @@ hs_err_pid*
 ## ignoring target file
 target/
 
+###
 .gradle/**
-SquidSquAds/out/**
+SquidSquAds/out/
+SquidSquAds/build/reports/
+SquidSquAds/build/resources/
+SquidSquAds/build/test-results/
+SquidSquAds/build/tmp/
+SquidSquAds/build/libs/squidsquads-backend-0.1.5.jar.original
+!SquidSquAds/build/libs/squidsquads-backend-0.1.5.jar
 *.class
 .idea/**
-!SquidSquAds/build/libs/squidsquads-backend-0.1.5.jar
 !gradle/wrapper/gradle-wrapper.jar
 *.iml
