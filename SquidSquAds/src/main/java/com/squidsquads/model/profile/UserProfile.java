@@ -11,7 +11,7 @@ import java.util.Date;
 public class UserProfile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_profilutilisateur")
     private long profileID;
 

@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class Visit {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_visite")
     private Long visitId;
 

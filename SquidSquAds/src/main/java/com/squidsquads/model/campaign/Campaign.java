@@ -9,7 +9,7 @@ import java.util.Date;
 public class Campaign {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_campagne")
     private Long campaignID;
 

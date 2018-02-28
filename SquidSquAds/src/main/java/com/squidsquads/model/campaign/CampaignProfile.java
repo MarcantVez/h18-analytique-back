@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class CampaignProfile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id_Campagne_ProfilUtilisateur")
     private Long campaignProfileID;
 

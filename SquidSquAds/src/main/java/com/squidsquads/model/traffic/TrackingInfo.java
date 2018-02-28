@@ -9,7 +9,7 @@ import java.time.Instant;
 public class TrackingInfo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_infodesuivi")
     private Long TrackingInfoId;
 

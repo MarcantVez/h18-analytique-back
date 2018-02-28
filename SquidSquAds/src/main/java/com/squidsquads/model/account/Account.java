@@ -12,7 +12,7 @@ public class Account {
     private static final long serialVersionUID = -3009157732242241606L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_compte")
     private long accountID;
 
