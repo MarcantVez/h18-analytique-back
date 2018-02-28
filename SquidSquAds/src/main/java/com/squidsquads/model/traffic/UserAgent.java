@@ -9,7 +9,7 @@ import java.time.Instant;
 public class UserAgent {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_agentutilisateur")
     private Long id;
 

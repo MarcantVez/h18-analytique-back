@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class BannerCampaign {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_banniere_campagne")
     private Long bannerCampaignId;
 

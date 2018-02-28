@@ -12,7 +12,7 @@ public class WebSiteAdmin {
     private static final long serialVersionUID = -3009157732242241606L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_sitewebadmin")
     private long webSiteAdminID;
 
