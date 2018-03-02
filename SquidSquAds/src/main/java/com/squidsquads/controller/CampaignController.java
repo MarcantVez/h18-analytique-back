@@ -3,8 +3,8 @@ package com.squidsquads.controller;
 import com.squidsquads.form.campaign.request.CreateRequest;
 import com.squidsquads.form.campaign.request.UpdateRequest;
 import com.squidsquads.form.campaign.response.*;
-import com.squidsquads.model.account.AdminType;
-import com.squidsquads.service.campaign.CampaignService;
+import com.squidsquads.model.AdminType;
+import com.squidsquads.service.CampaignService;
 import com.squidsquads.utils.session.SessionAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +43,7 @@ public class CampaignController {
 
     @GetMapping("/{campaignID}")
     @SessionAuthorize(AdminType.PUB)
-    public ResponseEntity<?> findById(@RequestHeader("Token") String token, @PathVariable("campaignID") Long campaignID) {
+    public ResponseEntity<?> findById(@RequestHeader("Token") String token, @PathVariable("campaignID") Integer campaignID) {
 
         InfoResponse infoResponse = campaignService.getByID(token, campaignID);
         return ResponseEntity.status(infoResponse.getStatus()).body(infoResponse);
@@ -53,7 +53,7 @@ public class CampaignController {
 
     @PutMapping("/{campaignID}")
     @SessionAuthorize(AdminType.PUB)
-    public ResponseEntity<?> updateCampainById(@RequestHeader("Token") String token, @PathVariable("campaignID") Long campaignID, @Valid @RequestBody UpdateRequest updatedCampaign) {
+    public ResponseEntity<?> updateCampainById(@RequestHeader("Token") String token, @PathVariable("campaignID") Integer campaignID, @Valid @RequestBody UpdateRequest updatedCampaign) {
 
         ModifyResponse modifyResponse = campaignService.modify(token, campaignID, updatedCampaign);
         return ResponseEntity.status(modifyResponse.getStatus()).body(modifyResponse);
@@ -63,7 +63,7 @@ public class CampaignController {
 
     @DeleteMapping("/{campaignID}")
     @SessionAuthorize(AdminType.PUB)
-    public ResponseEntity<?> deleteCampaignById(@RequestHeader("Token") String token, @PathVariable("campaignID") Long campaignID) {
+    public ResponseEntity<?> deleteCampaignById(@RequestHeader("Token") String token, @PathVariable("campaignID") Integer campaignID) {
 
         DeleteResponse deleteResponse = campaignService.delete(token, campaignID);
         return ResponseEntity.status(deleteResponse.getStatus()).body(deleteResponse);

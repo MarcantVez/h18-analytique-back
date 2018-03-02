@@ -8,10 +8,6 @@ public class CommonValidator {
         return s != null && !s.trim().isEmpty();
     }
 
-    public static boolean isPositive(final long f) {
-        return f > 0;
-    }
-
     public static boolean isPositive(final BigDecimal f) {
         return f.doubleValue() > 0;
     }

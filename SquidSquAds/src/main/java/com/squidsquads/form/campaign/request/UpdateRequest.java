@@ -6,7 +6,7 @@ public class UpdateRequest {
 
     private String name;
     private String redirectUrl;
-    private Long[] profileIds;
+    private Integer[] profileIds;
     private String startDate;
     private String endDate;
     private BigDecimal budget;
@@ -22,7 +22,7 @@ public class UpdateRequest {
         return redirectUrl;
     }
 
-    public Long[] getProfileIds() {
+    public Integer[] getProfileIds() {
         return profileIds;
     }
 
@@ -58,7 +58,7 @@ public class UpdateRequest {
         this.redirectUrl = redirectUrl;
     }
 
-    public void setProfileIds(Long[] profileIds) {
+    public void setProfileIds(Integer[] profileIds) {
         this.profileIds = profileIds;
     }
 

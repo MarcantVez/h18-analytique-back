@@ -1,6 +1,6 @@
 package com.squidsquads.form.campaign.response;
 
-import com.squidsquads.model.campaign.Campaign;
+import com.squidsquads.model.Campaign;
 import com.squidsquads.utils.DateFormatter;
 import org.springframework.http.HttpStatus;
 
@@ -9,8 +9,8 @@ import java.math.BigDecimal;
 public class InfoResponse {
 
     private String name;
-    private Long accountId;
-    private Long[] profileIds;
+    private Integer accountId;
+    private Integer[] profileIds;
     private String dateCreated;
     private String imgHorizontal;
     private String imgVertical;
@@ -68,11 +68,11 @@ public class InfoResponse {
         return name;
     }
 
-    public Long getAccountId() {
+    public Integer getAccountId() {
         return accountId;
     }
 
-    public Long[] getProfileIds() {
+    public Integer[] getProfileIds() {
         return profileIds;
     }
 

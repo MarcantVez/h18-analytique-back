@@ -1,6 +1,6 @@
 package com.squidsquads.utils.session;
 
-import com.squidsquads.model.account.AdminType;
+import com.squidsquads.model.AdminType;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

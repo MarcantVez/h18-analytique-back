@@ -1,18 +1,18 @@
 package com.squidsquads.utils.session;
 
-import com.squidsquads.model.account.AdminType;
+import com.squidsquads.model.AdminType;
 
 import java.util.Date;
 
 public class Session {
 
     private final AdminType adminType;
-    private final long accountId;
+    private final Integer accountId;
     private final String email;
     private String token;
     private Date expire;
 
-    public Session(AdminType adminType, long accountId, String email, String token, Date expire) {
+    public Session(AdminType adminType, Integer accountId, String email, String token, Date expire) {
         this.adminType = adminType;
         this.accountId = accountId;
         this.email = email;
@@ -24,7 +24,7 @@ public class Session {
         return adminType;
     }
 
-    public long getAccountId() {
+    public Integer getAccountId() {
         return accountId;
     }
 
