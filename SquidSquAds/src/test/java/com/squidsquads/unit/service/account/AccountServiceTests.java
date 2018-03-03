@@ -7,7 +7,7 @@ import com.squidsquads.form.account.response.*;
 import com.squidsquads.model.Account;
 import com.squidsquads.model.Banner;
 import com.squidsquads.model.WebSiteAdmin;
-import com.squidsquads.unit.service.AbstractTests;
+import com.squidsquads.unit.service.AbstractServiceTests;
 import com.squidsquads.utils.session.SessionManager;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.junit.Test;
@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
-public class AccountServiceTests extends AbstractTests {
+public class AccountServiceTests extends AbstractServiceTests {
 
     private AccountTestHelper helper = new AccountTestHelper();
 
@@ -263,7 +263,7 @@ public class AccountServiceTests extends AbstractTests {
     }
 
     ////////////////////
-    // Reset password //
+    // Reset Password //
     ////////////////////
 
     @Test

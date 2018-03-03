@@ -65,13 +65,13 @@ public class BannerService {
         for (Banner banner : banners) {
             switch (Orientation.valueOf(banner.getOrientation())) {
                 case HOR:
-                    horID = banner.getBannerId();
+                    horID = banner.getBannerID();
                     break;
                 case VER:
-                    verID = banner.getBannerId();
+                    verID = banner.getBannerID();
                     break;
                 case MOB:
-                    mobID = banner.getBannerId();
+                    mobID = banner.getBannerID();
                     break;
             }
         }

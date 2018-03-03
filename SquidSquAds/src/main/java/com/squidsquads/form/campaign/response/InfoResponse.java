@@ -23,7 +23,7 @@ public class InfoResponse {
     private HttpStatus status;
     private String message;
 
-    public static final String CREATE_FIELDS_MISSING = "Tous les champs requis doivent être remplis";
+    private final String CREATE_FIELDS_MISSING = "Tous les champs requis doivent être remplis";
 
     public InfoResponse() {
     }

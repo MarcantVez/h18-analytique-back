@@ -26,15 +26,27 @@ public class Banner {
         this.orientation = orientation;
     }
 
-    public Integer getBannerId() {
+    public Integer getBannerID() {
         return bannerID;
+    }
+
+    public void setBannerID(Integer bannerID) {
+        this.bannerID = bannerID;
+    }
+
+    public String getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(String orientation) {
+        this.orientation = orientation;
     }
 
     public Integer getAccountID() {
         return accountID;
     }
 
-    public String getOrientation() {
-        return orientation;
+    public void setAccountID(Integer accountID) {
+        this.accountID = accountID;
     }
 }

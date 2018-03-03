@@ -3,42 +3,14 @@ package com.squidsquads.unit.service.account;
 import com.squidsquads.form.account.request.CreateRequest;
 import com.squidsquads.form.account.request.LoginRequest;
 import com.squidsquads.form.account.request.ResetPasswordRequest;
-import com.squidsquads.model.Account;
 import com.squidsquads.model.AdminType;
-import com.squidsquads.model.WebSiteAdmin;
+import com.squidsquads.unit.service.ServiceTestHelper;
 
-public class AccountTestHelper {
+public class AccountTestHelper extends ServiceTestHelper {
 
-    private final int ACCOUNT_ID = 1;
-
-    private final String EMAIL_PUB = "ads@ads.com";
-    private final String EMAIL_WEB = "web@web.com";
-
-    private final String CLEAR_PASSWORD = "Password1!";
-    private final String HASHED_PASSWORD = "$2a$10$qyyJ6RAOdVdLzrF1EFsgkuE5/2P9IkK/G4mZoGoDyWrV7bm8pz.lu";
-
-    private final String BANK_ACCOUNT = "000-12345";
-    private final String DOMAIN = "https://www.google.ca";
-
-    /////////////
-    // Account //
-    /////////////
-
-    public Account getAccountPub() {
-        Account pub = new Account(AdminType.PUB.name(), EMAIL_PUB, HASHED_PASSWORD, BANK_ACCOUNT);
-        pub.setAccountID(ACCOUNT_ID);
-        return pub;
-    }
-
-    public Account getAccountWeb() {
-        Account web = new Account(AdminType.WEB.name(), EMAIL_WEB, HASHED_PASSWORD, BANK_ACCOUNT);
-        web.setAccountID(ACCOUNT_ID);
-        return web;
-    }
-
-    ///////////
-    // Login //
-    ///////////
+    /////////////////////
+    // Account : Login //
+    /////////////////////
 
     public LoginRequest getLoginRequest() {
         return buildLoginRequest(EMAIL_PUB, CLEAR_PASSWORD);
@@ -63,9 +35,9 @@ public class AccountTestHelper {
         return loginRequest;
     }
 
-    ////////////
-    // Create //
-    ////////////
+    //////////////////////
+    // Account : Create //
+    //////////////////////
 
     public CreateRequest getCreateRequestForWeb() {
         return buildCreateRequest(AdminType.WEB.name(), EMAIL_WEB, DOMAIN, BANK_ACCOUNT, CLEAR_PASSWORD, CLEAR_PASSWORD);
@@ -107,9 +79,9 @@ public class AccountTestHelper {
         return createRequest;
     }
 
-    public WebSiteAdmin getWebSiteAdmin() {
-        return new WebSiteAdmin(ACCOUNT_ID, DOMAIN);
-    }
+    //////////////////////////////
+    // Account : Reset Password //
+    //////////////////////////////
 
     public ResetPasswordRequest getResetPasswordRequest() {
         return buildResetPasswordRequest(CLEAR_PASSWORD, "new", "new");

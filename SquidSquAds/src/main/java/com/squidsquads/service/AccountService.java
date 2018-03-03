@@ -143,8 +143,15 @@ public class AccountService {
      */
     public InfoResponse getInfo(String token) {
 
-        Integer accountId = SessionManager.getInstance().getAccountIdForToken(token);
-        Account account = findByAccountID(accountId);
+        Integer accountID = SessionManager.getInstance().getAccountIdForToken(token);
+
+        // Si le compte n'a pas de session ici, c'est un probleme serveur
+        if (SessionManager.NO_SESSION.equals(accountID)) {
+            logger.error("Un compte basé sur un token de session est introuvable");
+            return new InfoResponse().failed();
+        }
+
+        Account account = findByAccountID(accountID);
 
         // Si le compte n'existe pas ici, c'est un probleme serveur
         if (account == null) {
@@ -156,7 +163,7 @@ public class AccountService {
 
         // Entité supplémentaire pour les admins web
         if (AdminType.WEB == account.getAdminTypeValue()) {
-            WebSiteAdmin webSiteAdmin = webSiteAdminService.findByAccountID(accountId);
+            WebSiteAdmin webSiteAdmin = webSiteAdminService.findByAccountID(accountID);
             domain = webSiteAdmin.getUrl();
         }
 
@@ -168,8 +175,15 @@ public class AccountService {
      */
     public ResetPasswordResponse resetPassword(String token, ResetPasswordRequest rpr) {
 
-        Integer accountId = SessionManager.getInstance().getAccountIdForToken(token);
-        Account account = findByAccountID(accountId);
+        Integer accountID = SessionManager.getInstance().getAccountIdForToken(token);
+
+        // Si le compte n'a pas de session ici, c'est un probleme serveur
+        if (SessionManager.NO_SESSION.equals(accountID)) {
+            logger.error("Un compte basé sur un token de session est introuvable");
+            return new ResetPasswordResponse().failed();
+        }
+
+        Account account = findByAccountID(accountID);
 
         // Si le compte n'existe pas ici, c'est un probleme serveur
         if (account == null) {
