@@ -1,7 +1,7 @@
 package com.squidsquads.controller;
 
 import com.squidsquads.form.banner.response.BannerResponse;
-import com.squidsquads.service.visit.BannerService;
+import com.squidsquads.service.BannerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ public class BannerController {
 
     // --------------------------------------------------------------------- //
     @GetMapping("/{bannerID}")
-    public ResponseEntity<BannerResponse> logVisit(@PathVariable("bannerID") Long bannerID) {
+    public ResponseEntity<BannerResponse> logVisit(@PathVariable("bannerID") Integer bannerID) {
         BannerResponse response = bannerService.getPublicityForBanner(bannerID);
         return ResponseEntity.status(response.getStatus()).body(response);
     }

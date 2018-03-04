@@ -1,7 +1,7 @@
 package com.squidsquads.form.userProfile.response;
 
-import com.squidsquads.model.profile.UserProfile;
-import com.squidsquads.model.site.Site;
+import com.squidsquads.model.UserProfile;
+import com.squidsquads.model.Site;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;

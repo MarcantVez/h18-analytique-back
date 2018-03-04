@@ -2,8 +2,8 @@ package com.squidsquads.controller;
 
 import com.squidsquads.form.userProfile.request.CreateModifyRequest;
 import com.squidsquads.form.userProfile.response.*;
-import com.squidsquads.model.account.AdminType;
-import com.squidsquads.service.userProfile.UserProfileService;
+import com.squidsquads.model.AdminType;
+import com.squidsquads.service.UserProfileService;
 import com.squidsquads.utils.session.SessionAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +39,7 @@ public class UserProfileController {
     // --------------------------------------------------------------------- //
     @GetMapping("/{profileID}")
     @SessionAuthorize(AdminType.PUB)
-    public ResponseEntity<?> getByID(@RequestHeader("Token") String token, @PathVariable("profileID") Long profileID) {
+    public ResponseEntity<?> getByID(@RequestHeader("Token") String token, @PathVariable("profileID") Integer profileID) {
 
         InfoResponse response = userProfileService.getByID(token, profileID);
         return ResponseEntity.status(response.getStatus()).body(response);
@@ -48,7 +48,7 @@ public class UserProfileController {
     // --------------------------------------------------------------------- //
     @PutMapping("/{profileID}")
     @SessionAuthorize(AdminType.PUB)
-    public ResponseEntity<?> modify(@RequestHeader("Token") String token, @PathVariable("profileID") Long profileID, @Valid @RequestBody CreateModifyRequest request) {
+    public ResponseEntity<?> modify(@RequestHeader("Token") String token, @PathVariable("profileID") Integer profileID, @Valid @RequestBody CreateModifyRequest request) {
 
         ModifyResponse response = userProfileService.modify(token, profileID, request);
         return ResponseEntity.status(response.getStatus()).body(response);
@@ -57,7 +57,7 @@ public class UserProfileController {
     // --------------------------------------------------------------------- //
     @DeleteMapping("/{profileID}")
     @SessionAuthorize(AdminType.PUB)
-    public ResponseEntity<?> delete(@RequestHeader("Token") String token, @PathVariable("profileID") Long profileID) {
+    public ResponseEntity<?> delete(@RequestHeader("Token") String token, @PathVariable("profileID") Integer profileID) {
 
         DeleteResponse response = userProfileService.delete(token, profileID);
         return ResponseEntity.status(response.getStatus()).body(response);

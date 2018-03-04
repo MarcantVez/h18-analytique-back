@@ -7,15 +7,15 @@ import java.util.List;
 public class BannerListResponse {
 
     private HttpStatus status;
-    private Long webSiteAdminID = null;
-    private Long horID = null;
-    private Long verID = null;
-    private Long mobID = null;
+    private Integer webSiteAdminID = null;
+    private Integer horID = null;
+    private Integer verID = null;
+    private Integer mobID = null;
 
     public BannerListResponse() {
     }
 
-    public BannerListResponse ok(Long webSiteAdminID, Long horID, Long verID, Long mobID) {
+    public BannerListResponse ok(Integer webSiteAdminID, Integer horID, Integer verID, Integer mobID) {
         status = HttpStatus.OK;
         this.webSiteAdminID = webSiteAdminID;
         this.horID = horID;
@@ -33,19 +33,19 @@ public class BannerListResponse {
         return status;
     }
 
-    public Long getWebSiteAdminID() {
+    public Integer getWebSiteAdminID() {
         return webSiteAdminID;
     }
 
-    public Long getHorID() {
+    public Integer getHorID() {
         return horID;
     }
 
-    public Long getVerID() {
+    public Integer getVerID() {
         return verID;
     }
 
-    public Long getMobID() {
+    public Integer getMobID() {
         return mobID;
     }
 }

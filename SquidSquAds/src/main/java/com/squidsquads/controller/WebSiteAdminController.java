@@ -1,6 +1,6 @@
 package com.squidsquads.controller;
 
-import com.squidsquads.service.account.WebSiteAdminService;
+import com.squidsquads.service.WebSiteAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
