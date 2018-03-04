@@ -105,3 +105,6 @@ SquidSquAds/build/libs/squidsquads-backend-0.1.5.jar.original
 .idea/**
 !gradle/wrapper/gradle-wrapper.jar
 *.iml
+
+# Visual Studio Code #
+.vscode

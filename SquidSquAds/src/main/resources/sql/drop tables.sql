@@ -11,3 +11,19 @@ DROP TABLE IF EXISTS ProfilUtilisateur CASCADE;
 DROP TABLE IF EXISTS Campagne CASCADE;
 DROP TABLE IF EXISTS Paiement CASCADE;
 DROP TABLE IF EXISTS CompteUtilisateur CASCADE;
+
+--Cleanup older tables
+DROP TABLE IF EXISTS campagne_profildutilisateur CASCADE;
+DROP TABLE IF EXISTS categorie CASCADE;
+DROP TABLE IF EXISTS categorie_visite CASCADE;
+DROP TABLE IF EXISTS orientation CASCADE;
+DROP TABLE IF EXISTS orientation_banniere CASCADE;
+DROP TABLE IF EXISTS profildutilisateur CASCADE;
+DROP TABLE IF EXISTS typenavigateur CASCADE;
+DROP TABLE IF EXISTS typenavigateur_agent CASCADE;
+
+
+
+
+
+
