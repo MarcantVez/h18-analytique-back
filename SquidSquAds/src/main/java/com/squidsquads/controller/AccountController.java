@@ -33,7 +33,7 @@ public class AccountController {
     }
 
     // --------------------------------------------------------------------- //
-    @PostMapping("/create")
+    @PostMapping("")
     public ResponseEntity<?> create(@Valid @RequestBody CreateRequest createRequest) {
 
         CreateResponse createResponse = accountService.create(createRequest);
@@ -41,7 +41,7 @@ public class AccountController {
     }
 
     // --------------------------------------------------------------------- //
-    @GetMapping("/info")
+    @GetMapping("")
     @SessionAuthorize({AdminType.PUB, AdminType.WEB})
     public ResponseEntity<?> getInfo(@RequestHeader("Token") String token) {
 
