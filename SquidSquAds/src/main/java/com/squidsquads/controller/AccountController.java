@@ -33,7 +33,7 @@ public class AccountController {
     }
 
     // --------------------------------------------------------------------- //
-    @PostMapping("/create")
+    @PostMapping("")
     public ResponseEntity<?> create(@Valid @RequestBody CreateRequest createRequest) {
 
         CreateResponse createResponse = accountService.create(createRequest);
