@@ -41,7 +41,7 @@ public class AccountController {
     }
 
     // --------------------------------------------------------------------- //
-    @GetMapping("/info")
+    @GetMapping("")
     @SessionAuthorize({AdminType.PUB, AdminType.WEB})
     public ResponseEntity<?> getInfo(@RequestHeader("Token") String token) {
 
