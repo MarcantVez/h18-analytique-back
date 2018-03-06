@@ -20,6 +20,7 @@ public class Campaign {
     @Column(name = "id_compte")
     private Integer accountID;
 
+    @Transient
     private Integer[] profileIds;
 
     @Column(name = "date_creation")
