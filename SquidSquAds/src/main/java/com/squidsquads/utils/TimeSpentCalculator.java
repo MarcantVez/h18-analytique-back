@@ -1,5 +1,6 @@
 package com.squidsquads.utils;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -10,6 +11,7 @@ import java.time.Instant;
  * Classe utilitaire servant à calculer le temps écoulé entre un ancien timestamp et le moment courrant.
  */
 @Component
+@Lazy
 public class TimeSpentCalculator {
 
     /**

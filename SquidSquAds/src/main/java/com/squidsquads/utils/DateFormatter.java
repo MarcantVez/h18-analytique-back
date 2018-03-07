@@ -1,5 +1,6 @@
 package com.squidsquads.utils;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
@@ -8,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Component
+@Lazy
 public class DateFormatter {
 
     private static DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
