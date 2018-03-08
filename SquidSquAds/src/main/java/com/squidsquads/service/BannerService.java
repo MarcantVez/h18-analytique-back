@@ -3,8 +3,7 @@ package com.squidsquads.service;
 import com.squidsquads.form.account.response.BannerListResponse;
 import com.squidsquads.form.banner.response.BannerResponse;
 import com.squidsquads.model.*;
-import com.squidsquads.repository.BannerCampaignRepository;
-import com.squidsquads.repository.BannerRepository;
+import com.squidsquads.repository.*;
 import com.squidsquads.utils.session.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +29,15 @@ public class BannerService {
 
     @Autowired
     private WebSiteAdminService webSiteAdminService;
+
+    @Autowired
+    private TrackingInfoRepository trackingInfoRepository;
+
+    @Autowired
+    private CampaignRepository campaignRepository;
+
+    @Autowired
+    private UserProfileRepository userProfileRepository;
 
     /**
      * Créer une bannière
@@ -120,39 +128,83 @@ public class BannerService {
         return new BannerResponse().ok(src, alt, redirectUrl);
     }
 
-    public BannerResponse targetedPublicityForBanner() {
+    public BannerResponse targetedPublicityForBanner(String userFingerprint) {
+        TrackingInfo trackingInfo = trackingInfoRepository.findFirstByFingerprintOrderByDateTimeDesc(userFingerprint);
+        /* Chercher dans chaque campagne le profil utilisateur qui correspond au fingerprint du client */
 
-        List<UserProfile> matchedProfile = matchProfiles();
-        // Si la liste comporte seulement un profil
-            // Retourner la banniere de la campagne
+        //Trouver la liste de toutes les campagnes
+        List<Campaign> campaignList = campaignRepository.findAll();
 
-        // Si la liste comporte plus que 1 profil
-            // Trouver la ponderation de chaque profil
-                // Si multiples profils ont la meme ponderation
+        // Trouver les campagnes actives
+        List<Campaign> activeCampaignList = findActiveCampaigns(campaignList);
+
+        // Si aucune campagne active
+        if (activeCampaignList.isEmpty()){
+            //Retourner la banniere de SquidSquads
+        } else {
+            List<UserProfile> matchedProfile = matchProfiles(trackingInfo, activeCampaignList);
+            // Si la liste est vide
+                //Retourner une banniere random parmi les campagnes actives
+
+            // Si la liste comporte seulement un profil
+                // Retourner la banniere de la campagne
+
+            // Si la liste comporte plus que 1 profil
+                // Trouver la ponderation de chaque profil
+                    // Si multiples profils ont la meme ponderation
                     // Retourner random entre les profils
 
-                // Sinon
-                    // Retourner le profil avec la plus grande ponderation
+            // Sinon
+                // Retourner le profil avec la plus grande ponderation
+        }
 
     }
 
-    private List<UserProfile> matchProfiles(){
-        List<UserProfile> userProfilesList = new ArrayList<>();
+    /**
+     * Trouver le profil utilisateur qui correspond au fingerprint du client
+     *
+     * @param userInfo
+     * @return
+     */
+    private List<UserProfile> matchProfiles(TrackingInfo userInfo, List<Campaign> activeCampaignList) {
+        List<UserProfile> matchedProfiles = new ArrayList<>();
 
-        // Chercher la campagne qui correspond au profil de l'utilisateur
+        // Vérifier si les informations sur l'utilisateurs correspondent à un ou plusieurs profils
+        // Pour chaque campagne active
+        for (Campaign campaign : activeCampaignList) {
+            // Trouver tous les profils correspondants à la campagne
+            Integer[] profileLists = campaign.getProfileIds();
+            List<UserProfile> userProfiles = new ArrayList<>();
+            for (int i = 0; i < profileLists.length; i++) {
+                userProfiles.add(userProfileRepository.findByProfileIDAndAccountID(profileLists[i],
+                        campaign.getAccountID()));
+            }
+            // Pour chaque profil attribué à la campagne
+            for (UserProfile userProfile : userProfiles) {
+                //TODO
+                // Checker si le pingerprint de l'utilisateur correspond au profil
+                // Si oui ajouter le profil a la liste
 
-        // Checker s'il y a des campagnes actives
+                // Sinon rien faire
+            }
+        }
+        return matchedProfiles;
+    }
 
-        // Si aucune camapgne active
-            // Envoyer banniere de squidquads
+    /**
+     * Extraire une liste de campagnes qui sont actives
+     *
+     * @param campaignList liste de campagnes à vériier
+     * @return liste de campagnes actives
+     */
+    private List<Campaign> findActiveCampaigns(List<Campaign> campaignList) {
+        List<Campaign> activeCamapaigns = new ArrayList<>();
 
-        // Si campagne active
-            // Pour chaque campagne
-                // Pour chaque profil
-                    // Checker si le pingerprint de l'utilisateur correspond au profil
-                        // Si oui ajouter le profil a la liste
-
-                        // Sinon rien faire
-
+        for (Campaign campaign : campaignList) {
+            if (campaign.isActive()) {
+                activeCamapaigns.add(campaign);
+            }
+        }
+        return activeCamapaigns;
     }
 }
