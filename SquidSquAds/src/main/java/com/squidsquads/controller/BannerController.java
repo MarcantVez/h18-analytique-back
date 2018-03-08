@@ -22,4 +22,11 @@ public class BannerController {
         BannerResponse response = bannerService.getPublicityForBanner(bannerID);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
+
+    @GetMapping("/targeted")
+    public ResponseEntity<BannerResponse> targetedBanner(){
+        BannerResponse response = bannerService.targetedPublicityForBanner();
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
 }

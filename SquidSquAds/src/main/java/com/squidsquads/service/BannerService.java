@@ -2,11 +2,7 @@ package com.squidsquads.service;
 
 import com.squidsquads.form.account.response.BannerListResponse;
 import com.squidsquads.form.banner.response.BannerResponse;
-import com.squidsquads.model.WebSiteAdmin;
-import com.squidsquads.model.Campaign;
-import com.squidsquads.model.Banner;
-import com.squidsquads.model.BannerCampaign;
-import com.squidsquads.model.Orientation;
+import com.squidsquads.model.*;
 import com.squidsquads.repository.BannerCampaignRepository;
 import com.squidsquads.repository.BannerRepository;
 import com.squidsquads.utils.session.SessionManager;
@@ -15,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -121,5 +118,41 @@ public class BannerService {
         }
 
         return new BannerResponse().ok(src, alt, redirectUrl);
+    }
+
+    public BannerResponse targetedPublicityForBanner() {
+
+        List<UserProfile> matchedProfile = matchProfiles();
+        // Si la liste comporte seulement un profil
+            // Retourner la banniere de la campagne
+
+        // Si la liste comporte plus que 1 profil
+            // Trouver la ponderation de chaque profil
+                // Si multiples profils ont la meme ponderation
+                    // Retourner random entre les profils
+
+                // Sinon
+                    // Retourner le profil avec la plus grande ponderation
+
+    }
+
+    private List<UserProfile> matchProfiles(){
+        List<UserProfile> userProfilesList = new ArrayList<>();
+
+        // Chercher la campagne qui correspond au profil de l'utilisateur
+
+        // Checker s'il y a des campagnes actives
+
+        // Si aucune camapgne active
+            // Envoyer banniere de squidquads
+
+        // Si campagne active
+            // Pour chaque campagne
+                // Pour chaque profil
+                    // Checker si le pingerprint de l'utilisateur correspond au profil
+                        // Si oui ajouter le profil a la liste
+
+                        // Sinon rien faire
+
     }
 }
