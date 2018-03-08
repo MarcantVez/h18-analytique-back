@@ -1,6 +1,6 @@
-package com.squidsquads.repository.stats;
+package com.squidsquads.repository;
 
-import com.squidsquads.model.stats.BrowserTypesItem;
+import com.squidsquads.model.BrowserTypesItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.squidsquads.form.stats.response;
 
-import com.squidsquads.model.stats.BrowserTypesItem;
+import com.squidsquads.model.BrowserTypesItem;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;

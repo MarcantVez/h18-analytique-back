@@ -2,9 +2,9 @@ package com.squidsquads.service;
 
 import com.squidsquads.form.stats.response.BrowserTypeStatsResponse;
 import com.squidsquads.model.WebSiteAdmin;
-import com.squidsquads.model.stats.BrowserTypesItem;
+import com.squidsquads.model.BrowserTypesItem;
 import com.squidsquads.repository.WebSiteAdminRepository;
-import com.squidsquads.repository.stats.BrowserTypesItemRepository;
+import com.squidsquads.repository.BrowserTypesItemRepository;
 import com.squidsquads.utils.session.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

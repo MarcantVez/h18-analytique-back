@@ -1,4 +1,4 @@
-package com.squidsquads.model.stats;
+package com.squidsquads.model;
 
 import org.hibernate.annotations.Immutable;
 
