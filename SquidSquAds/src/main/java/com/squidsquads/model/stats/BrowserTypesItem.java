@@ -11,7 +11,7 @@ public class BrowserTypesItem {
 
     @Id
     @Column(name = "id")
-    private Long id;
+    private Integer id;
 
     @Column(name = "navigateur")
     private String name;
@@ -20,12 +20,12 @@ public class BrowserTypesItem {
     private int ratio;
 
     @Column(name = "websiteid")
-    private Long websiteID;
+    private Integer websiteID;
 
     public BrowserTypesItem() {
     }
 
-    public BrowserTypesItem(String name, int ratio, Long websiteID) {
+    public BrowserTypesItem(String name, int ratio, Integer websiteID) {
         this.name = name;
         this.ratio = ratio;
         this.websiteID = websiteID;
@@ -39,7 +39,7 @@ public class BrowserTypesItem {
         return ratio;
     }
 
-    public Long getAdminID() {
+    public Integer getAdminID() {
         return websiteID;
     }
 }

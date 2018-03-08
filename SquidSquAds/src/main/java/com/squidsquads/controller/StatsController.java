@@ -1,8 +1,8 @@
 package com.squidsquads.controller;
 
 import com.squidsquads.form.stats.response.BrowserTypeStatsResponse;
-import com.squidsquads.model.account.AdminType;
-import com.squidsquads.service.stats.StatsService;
+import com.squidsquads.model.AdminType;
+import com.squidsquads.service.StatsService;
 import com.squidsquads.utils.session.SessionAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
