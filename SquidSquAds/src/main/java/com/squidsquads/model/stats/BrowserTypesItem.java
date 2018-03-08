@@ -39,7 +39,7 @@ public class BrowserTypesItem {
         return ratio;
     }
 
-    public Integer getAdminID() {
+    public Integer getWebsiteID() {
         return websiteID;
     }
 }

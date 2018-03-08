@@ -21,12 +21,15 @@ public class StatsService {
     WebSiteAdminRepository webSiteRepository;
 
     public BrowserTypeStatsResponse getBrowserStatsForUser(String token) {
+
         Integer accountID = SessionManager.getInstance().getAccountIdForToken(token);
+
+        // Si le compte n'a pas de session ici, c'est un probleme serveur
         if (SessionManager.NO_SESSION.equals(accountID)) {
-            return new BrowserTypeStatsResponse().unauthorised();
+            return new BrowserTypeStatsResponse().failed();
         }
 
-        // find website for this account
+        // Trouver le site lié au compte
         WebSiteAdmin webSiteAdmin = webSiteRepository.findByAccountID(accountID);
 
         List<BrowserTypesItem> browserTypesItems = browserTypesRepository.findAllByWebsiteIDOrderByRatioDesc(webSiteAdmin.getWebSiteAdminID());

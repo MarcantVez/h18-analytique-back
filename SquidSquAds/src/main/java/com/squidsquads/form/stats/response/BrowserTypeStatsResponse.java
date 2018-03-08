@@ -17,8 +17,8 @@ public class BrowserTypeStatsResponse {
         return this;
     }
 
-    public BrowserTypeStatsResponse unauthorised() {
-        status = HttpStatus.UNAUTHORIZED;
+    public BrowserTypeStatsResponse failed() {
+        status = HttpStatus.INTERNAL_SERVER_ERROR;
         return this;
     }
 
