@@ -143,6 +143,7 @@ public class BannerService {
             //Retourner la banniere de SquidSquads
         } else {
             List<UserProfile> matchedProfile = matchProfiles(trackingInfo, activeCampaignList);
+            //TODO
             // Si la liste est vide
                 //Retourner une banniere random parmi les campagnes actives
 
