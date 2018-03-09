@@ -9,14 +9,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.WebUtils;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class BannerService {
 
     private static final Logger logger = LoggerFactory.getLogger(BannerService.class);
+    public static final String SQUIDSQUADS_COOKIE = "_squidsquads";
 
     @Autowired
     private BannerRepository bannerRepository;
@@ -38,6 +43,12 @@ public class BannerService {
 
     @Autowired
     private UserProfileRepository userProfileRepository;
+
+    @Autowired
+    private SiteRepository siteRepository;
+
+    @Autowired
+    private HttpServletRequest request;
 
     /**
      * Créer une bannière
@@ -97,8 +108,8 @@ public class BannerService {
             return new BannerResponse().failed();
         }
 
-        // Pour le moment, aller chercher une campagne aléatoire
-        Campaign campaign = campaignService.getRandom();
+        // Aller chercher une campagne ciblee
+        Campaign campaign = getCampaignForATargetedAd();
 
         if (campaign == null) {
             return new BannerResponse().failed();
@@ -128,9 +139,11 @@ public class BannerService {
         return new BannerResponse().ok(src, alt, redirectUrl);
     }
 
-    public BannerResponse targetedPublicityForBanner(String userFingerprint) {
-        TrackingInfo trackingInfo = trackingInfoRepository.findFirstByFingerprintOrderByDateTimeDesc(userFingerprint);
-        /* Chercher dans chaque campagne le profil utilisateur qui correspond au fingerprint du client */
+    public Campaign getCampaignForATargetedAd() {
+        // Vérifier la présence du cookie de tracking
+        Cookie cookie = WebUtils.getCookie(request, SQUIDSQUADS_COOKIE);
+        // Récupérer le cookie et des headers dans la requête
+        String userFingerprint = cookie.getValue();
 
         //Trouver la liste de toutes les campagnes
         List<Campaign> campaignList = campaignRepository.findAll();
@@ -141,55 +154,94 @@ public class BannerService {
         // Si aucune campagne active
         if (activeCampaignList.isEmpty()){
             //Retourner la banniere de SquidSquads
+            return null;
         } else {
-            List<UserProfile> matchedProfile = matchProfiles(trackingInfo, activeCampaignList);
-            //TODO
+            // Retourner le count de la totalité des sites visités (distinct/uniques) d’une empreinte
+            int countTotalVisitedWebSites = 0;
+            countTotalVisitedWebSites = (trackingInfoRepository.findAllByFingerprint(userFingerprint)).size();
+
+            // Trouver une ou plusieurs campagnes ciblees
+            List<Campaign> matchedCampaign = findTargetedCampaigns(activeCampaignList, countTotalVisitedWebSites, userFingerprint);
+
             // Si la liste est vide
                 //Retourner une banniere random parmi les campagnes actives
-
-            // Si la liste comporte seulement un profil
-                // Retourner la banniere de la campagne
-
-            // Si la liste comporte plus que 1 profil
-                // Trouver la ponderation de chaque profil
-                    // Si multiples profils ont la meme ponderation
-                    // Retourner random entre les profils
-
-            // Sinon
-                // Retourner le profil avec la plus grande ponderation
+            if (matchedCampaign.isEmpty()) {
+                return getRandomCampaignInArray(activeCampaignList);
+            } else if (matchedCampaign.size() == 1) {
+                return matchedCampaign.get(0);
+            } else if (matchedCampaign.size() > 1) {
+                return getRandomCampaignInArray(matchedCampaign);
+            }
         }
 
+
+        return null;
+    }
+
+    // Obtenir un item aleatoire d'un tableau
+    // https://stackoverflow.com/questions/5034370/retrieving-a-random-item-from-arraylist
+    public Campaign getRandomCampaignInArray(List<Campaign> campaigns) {
+        Random randomGenerator = new Random();
+        int index = randomGenerator.nextInt(campaigns.size());
+        Campaign c = campaigns.get(index);
+        return c;
     }
 
     /**
      * Trouver le profil utilisateur qui correspond au fingerprint du client
-     *
-     * @param userInfo
+     * @param activeCampaignList
+     * @param countTotalSites
+     * @param userFingerprint
      * @return
      */
-    private List<UserProfile> matchProfiles(TrackingInfo userInfo, List<Campaign> activeCampaignList) {
-        List<UserProfile> matchedProfiles = new ArrayList<>();
+    private List<Campaign> findTargetedCampaigns(List<Campaign> activeCampaignList, int countTotalSites, String userFingerprint) {
+        List<Campaign> matchedCampaigns = new ArrayList<>();
 
-        // Vérifier si les informations sur l'utilisateurs correspondent à un ou plusieurs profils
+        int biggestCampaignRatio = 0;
+
+        int sumProfilesRatio = 0;
+        int sumCampaignRatio = 0;
+
+        // Vérifier si les informations sur l'utilisateurs correspondent à une ou plusieurs campagnes
         // Pour chaque campagne active
         for (Campaign campaign : activeCampaignList) {
+
+            sumCampaignRatio = 0;
+
             // Trouver tous les profils correspondants à la campagne
-            Integer[] profileLists = campaign.getProfileIds();
+            Integer[] profileList = campaign.getProfileIds();
             List<UserProfile> userProfiles = new ArrayList<>();
-            for (int i = 0; i < profileLists.length; i++) {
-                userProfiles.add(userProfileRepository.findByProfileIDAndAccountID(profileLists[i],
+            for (int i = 0; i < profileList.length; i++) {
+                userProfiles.add(userProfileRepository.findByProfileIDAndAccountID(profileList[i],
                         campaign.getAccountID()));
             }
             // Pour chaque profil attribué à la campagne
             for (UserProfile userProfile : userProfiles) {
-                //TODO
-                // Checker si le pingerprint de l'utilisateur correspond au profil
-                // Si oui ajouter le profil a la liste
+                sumProfilesRatio = 0;
 
-                // Sinon rien faire
+                // Trouver tous les sites correspondants au profil
+                List<Site> sites = siteRepository.findByUserProfileID(userProfile.getProfileID());
+
+                // Pour chaque site
+                for (Site site: sites) {
+                    int countTotalTargetedSites = (trackingInfoRepository.findAllByFingerprintAndCurrentUrl(userFingerprint, site.getUrl())).size();
+                    sumProfilesRatio += Math.round(countTotalTargetedSites/countTotalSites);
+                }
+                sumCampaignRatio += sumProfilesRatio;
+            }
+
+            // La moyenne de la somme des ponderations des profils d'une campagne
+            int currentCampaignRatio = Math.round(sumCampaignRatio/userProfiles.size());
+
+            if (currentCampaignRatio > biggestCampaignRatio) {
+                biggestCampaignRatio = currentCampaignRatio;
+                matchedCampaigns.clear();
+                matchedCampaigns.add(campaign);
+            } else if (currentCampaignRatio == biggestCampaignRatio) {
+                matchedCampaigns.add(campaign);
             }
         }
-        return matchedProfiles;
+        return matchedCampaigns;
     }
 
     /**

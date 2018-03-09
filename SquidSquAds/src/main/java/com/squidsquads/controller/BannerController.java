@@ -1,6 +1,7 @@
 package com.squidsquads.controller;
 
 import com.squidsquads.form.banner.response.BannerResponse;
+import com.squidsquads.model.Campaign;
 import com.squidsquads.service.BannerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,10 @@ public class BannerController {
     }
 
     @GetMapping("/targeted")
-    public ResponseEntity<BannerResponse> targetedBanner(){
-        BannerResponse response = bannerService.targetedPublicityForBanner();
-        return ResponseEntity.status(response.getStatus()).body(response);
+    public ResponseEntity<BannerResponse> targetedBanner(String userFingerprint){
+        Campaign response = bannerService.getCampaignForATargetedAd();
+        //return ResponseEntity.status(response.getStatus()).body(response);
+        return null;
     }
 
 }
