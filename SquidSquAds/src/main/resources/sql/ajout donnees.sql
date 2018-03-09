@@ -89,6 +89,24 @@ INSERT INTO Campagne VALUES
     200000
   );
 
+INSERT INTO banniere_campagne VALUES
+  (DEFAULT,
+   1,
+   (SELECT max(id_campagne) from campagne)
+  );
+
+INSERT INTO banniere_campagne VALUES
+  (DEFAULT,
+   2,
+   (SELECT max(id_campagne) from campagne)
+  );
+
+INSERT INTO banniere_campagne VALUES
+  (DEFAULT,
+   3,
+   (SELECT max(id_campagne) from campagne)
+  );
+
 INSERT INTO ProfilUtilisateur VALUES
   (DEFAULT,
    (select max(compteutilisateur.id_compte) from compteUtilisateur),
