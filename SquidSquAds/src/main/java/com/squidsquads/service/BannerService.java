@@ -45,6 +45,9 @@ public class BannerService {
     private UserProfileRepository userProfileRepository;
 
     @Autowired
+    private CampaignProfileRepository campaignProfileRepository;
+
+    @Autowired
     private SiteRepository siteRepository;
 
     @Autowired
@@ -209,10 +212,10 @@ public class BannerService {
             sumCampaignRatio = 0;
 
             // Trouver tous les profils correspondants à la campagne
-            Integer[] profileList = campaign.getProfileIds();
+            List<CampaignProfile> campaignProfileList = campaignProfileRepository.findAllByCampaignID(campaign.getCampaignID());
             List<UserProfile> userProfiles = new ArrayList<>();
-            for (int i = 0; i < profileList.length; i++) {
-                userProfiles.add(userProfileRepository.findByProfileIDAndAccountID(profileList[i],
+            for (int i = 0; i < campaignProfileList.size(); i++) {
+                userProfiles.add(userProfileRepository.findByProfileIDAndAccountID(campaignProfileList.get(i).getProfileID(),
                         campaign.getAccountID()));
             }
             // Pour chaque profil attribué à la campagne
@@ -251,13 +254,14 @@ public class BannerService {
      * @return liste de campagnes actives
      */
     private List<Campaign> findActiveCampaigns(List<Campaign> campaignList) {
-        List<Campaign> activeCamapaigns = new ArrayList<>();
+        List<Campaign> activeCampaigns = new ArrayList<>();
 
         for (Campaign campaign : campaignList) {
             if (campaign.isActive()) {
-                activeCamapaigns.add(campaign);
+                activeCampaigns.add(campaign);
             }
         }
-        return activeCamapaigns;
+        return activeCampaigns;
     }
+
 }
