@@ -19,9 +19,6 @@ public class RoyaltyAmount {
     @Column(name="id_compte")
     private Integer compte;
 
-    @Column(name="id_campagne")
-    private Integer campagne;
-
     @Column(name="sum_vue")
     private Float somme_vue;
 
@@ -36,11 +33,10 @@ public class RoyaltyAmount {
 
     public RoyaltyAmount() {}
 
-    public RoyaltyAmount(Integer id,String period, Integer compte, Integer campagne, Float somme_vue, Float somme_cible, Float somme_clique, Float somme_cible_clique){
+    public RoyaltyAmount(Integer id,String period, Integer compte, Float somme_vue, Float somme_cible, Float somme_clique, Float somme_cible_clique){
         this.id = id;
         this.period = period;
         this.compte = compte;
-        this.campagne = campagne;
         this.somme_vue = somme_vue;
         this.somme_cible = somme_cible;
         this.somme_clique = somme_clique;
@@ -50,7 +46,6 @@ public class RoyaltyAmount {
     public Integer getId() {return id;}
     public String getPeriod() {return period;}
     public Integer getCompte() {return compte;}
-    public Integer getCampagne() {return campagne;}
     public Float getSomme_vue() {return somme_vue;}
     public Float getSomme_cible() {return somme_cible;}
     public Float getSomme_clique() {return somme_clique;}

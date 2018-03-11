@@ -36,10 +36,8 @@ public class StatsService {
         if (SessionManager.NO_SESSION.equals(accountID)) {
             return new BrowserTypeStatsResponse().failed();
         }
-
         // Trouver le site lié au compte
         WebSiteAdmin webSiteAdmin = webSiteRepository.findByAccountID(accountID);
-
         List<BrowserTypesItem> browserTypesItems = browserTypesRepository.findAllByWebsiteIDOrderByRatioDesc(webSiteAdmin.getWebSiteAdminID());
         return new BrowserTypeStatsResponse().ok(browserTypesItems);
     }
@@ -64,10 +62,7 @@ public class StatsService {
         if (SessionManager.NO_SESSION.equals(accountID)) {
             return new RoyaltyStatsResponse().failed();
         }
-
-        WebSiteAdmin webSiteAdmin = webSiteRepository.findByAccountID(accountID);
-        List<RoyaltyAmount> royaltyAmounts = royaltyStatsRepository.findAllByCompte(webSiteAdmin.getAccountID());
-
+        List<RoyaltyAmount> royaltyAmounts = royaltyStatsRepository.findAllByCompte(accountID);
         return new RoyaltyStatsResponse().ok(royaltyAmounts);
     }
 }
