@@ -43,7 +43,7 @@ public class RoyaltyAmount {
         this.campagne = campagne;
         this.somme_vue = somme_vue;
         this.somme_cible = somme_cible;
-        this.somme_cible = somme_clique;
+        this.somme_clique = somme_clique;
         this.somme_cible_clique = somme_cible_clique;
     }
 
