@@ -64,6 +64,7 @@ public class CampaignServiceTests extends AbstractServiceTests {
         assertEquals("Nom de campagne déjà utilisé", res.getMessage());
     }
 
+
 //    @Test
 //    public void testCreateWithNullValues() {
 //        CreateRequest request = new CreateRequest();
