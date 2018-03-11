@@ -7,10 +7,8 @@ import java.util.List;
 public class RoyaltyStatsResponse {
 
     private HttpStatus status;
-
     private List<RoyaltyAmount> royaltyStats;
-
-
+    
     public RoyaltyStatsResponse ok(List<RoyaltyAmount> royaltyStats) {
         status = HttpStatus.OK;
         this.royaltyStats = royaltyStats;
@@ -25,9 +23,5 @@ public class RoyaltyStatsResponse {
     public HttpStatus getStatus() {
         return status;
     }
-
-    public List<RoyaltyAmount> royaltyStats() {
-        return royaltyStats;
-    }
-
+    public List<RoyaltyAmount> getRoyaltyStats() {return royaltyStats;}
 }
