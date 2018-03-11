@@ -1,6 +1,8 @@
 --compteUtilisateur
+
+-- Password => 123
 INSERT INTO compteUtilisateur VALUES
-  (DEFAULT,'WEB','adminWeb@test.com','mot_de_passe_en_clair','111AAA',NOW());
+  (DEFAULT,'WEB','adminWeb@test.com','$2y$10$cFK.j9YLrFTkoY38vG8xKeXq2v03CWwE49beAfpb1Amz17lG7alW2','111AAA',NOW());
 
 
 INSERT INTO SiteWebAdmin VALUES

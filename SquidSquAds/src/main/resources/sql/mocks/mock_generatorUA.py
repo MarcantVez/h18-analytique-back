@@ -23,7 +23,7 @@ def find_before(s,first):
         return ""
 
 counter = 0
-counter_max = 100
+counter_max = 500
 for _ in range(counter_max):
     counter +=1
     sqlString +="INSERT INTO public.agentutilisateur (id_agentutilisateur, agentutilisateurbrut, versionnavigateur, systeme_operation, information_navigateur, plateforme, information_plateforme, extension_navigateur, navigateur, date_heure) VALUES (DEFAULT, "

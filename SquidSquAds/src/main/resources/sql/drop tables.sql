@@ -24,12 +24,18 @@ DROP TABLE IF EXISTS typenavigateur_agent CASCADE;
 
 
 -- CLEANUP VIEWS
-DROP VIEW IF EXISTS vw_stat_24h CASCADE;
-DROP VIEW IF EXISTS vw_stat_week CASCADE;
-DROP VIEW IF EXISTS vw_stat_month CASCADE;
-DROP VIEW IF EXISTS vw_stat_year CASCADE;
-DROP VIEW IF EXISTS vw_stat_browser CASCADE;
-DROP VIEW IF EXISTS vw_stat_money_24h CASCADE;
+DROP VIEW IF EXISTS vw_stat_24h;
+DROP VIEW IF EXISTS vw_stat_week;
+DROP VIEW IF EXISTS vw_stat_month;
+DROP VIEW IF EXISTS vw_stat_year;
+DROP VIEW IF EXISTS vw_stat_browser;
+DROP VIEW IF EXISTS vw_stat_money_24h;
+DROP VIEW IF EXISTS vw_stat_redevance_24h;
+DROP VIEW IF EXISTS vw_stat_royalty_day;
+DROP VIEW IF EXISTS vw_stat_royalty_week;
+DROP VIEW IF EXISTS vw_stat_royalty_month;
+DROP VIEW IF EXISTS vw_stat_royalty_year;
+DROP VIEW IF EXISTS vw_stat_royalty;
 
 
 

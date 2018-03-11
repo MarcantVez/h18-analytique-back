@@ -2,6 +2,7 @@ package com.squidsquads.controller;
 
 import com.squidsquads.form.stats.response.BrowserTypeStatsResponse;
 import com.squidsquads.form.stats.response.VisitStatsResponse;
+import com.squidsquads.form.stats.response.RoyaltyStatsResponse;
 import com.squidsquads.model.AdminType;
 import com.squidsquads.service.StatsService;
 import com.squidsquads.utils.session.SessionAuthorize;
@@ -27,6 +28,13 @@ public class StatsController {
     @SessionAuthorize(AdminType.WEB)
     public ResponseEntity<VisitStatsResponse> getTrafficStatsForWebAdmin(@RequestHeader("Token") String token) {
         VisitStatsResponse response = statsService.getVisitsStatsForUser(token);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @GetMapping("/royalty")
+    @SessionAuthorize(AdminType.WEB)
+    public ResponseEntity<RoyaltyStatsResponse> getRoyaltyStatsForWebAdmin(@RequestHeader("Token") String token) {
+        RoyaltyStatsResponse response = statsService.getRoyaltyStatsForUser(token);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 

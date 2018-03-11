@@ -2,8 +2,10 @@ package com.squidsquads.service;
 
 import com.squidsquads.form.stats.response.BrowserTypeStatsResponse;
 import com.squidsquads.form.stats.response.VisitStatsResponse;
+import com.squidsquads.form.stats.response.RoyaltyStatsResponse;
 import com.squidsquads.model.*;
 import com.squidsquads.repository.*;
+import com.squidsquads.utils.session.Session;
 import com.squidsquads.utils.session.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ public class StatsService {
     VisitStatsForWeekRepository visitStatsForWeekRepository;
     @Autowired
     VisitStatsForYearRepository visitStatsForYearRepository;
+    @Autowired
+    RoyaltyStatsRepository royaltyStatsRepository;
 
     public BrowserTypeStatsResponse getBrowserStatsForUser(String token) {
         Integer accountID = SessionManager.getInstance().getAccountIdForToken(token);
@@ -53,5 +57,17 @@ public class StatsService {
         List<VisitsAmountForYear> visitsForYear = visitStatsForYearRepository.findAllByWebsiteID(webSiteAdmin.getWebSiteAdminID());
 
         return new VisitStatsResponse().ok(visitsForDay,visitsForWeek, visitsForMonth, visitsForYear);
+    }
+
+    public RoyaltyStatsResponse getRoyaltyStatsForUser(String token) {
+        Integer accountID = SessionManager.getInstance().getAccountIdForToken(token);
+        if (SessionManager.NO_SESSION.equals(accountID)) {
+            return new RoyaltyStatsResponse().failed();
+        }
+
+        WebSiteAdmin webSiteAdmin = webSiteRepository.findByAccountID(accountID);
+        List<RoyaltyAmount> royaltyAmounts = royaltyStatsRepository.findAllByCompte(webSiteAdmin.getAccountID());
+
+        return new RoyaltyStatsResponse().ok(royaltyAmounts);
     }
 }
