@@ -156,8 +156,9 @@ public class BannerService {
 
         // Si aucune campagne active
         if (activeCampaignList.isEmpty()){
-            //Retourner la banniere de SquidSquads
-            return null;
+            // Retourner la banniere de SquidSquads (premiere campagne cree)
+            Campaign campaign = campaignRepository.findOne(1);
+            return campaign;
         } else {
             // Retourner le count de la totalité des sites visités (distinct/uniques) d’une empreinte
             int countTotalVisitedWebSites = 0;
