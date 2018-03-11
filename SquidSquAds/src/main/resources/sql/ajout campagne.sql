@@ -1,6 +1,6 @@
 --compteUtilisateur
 INSERT INTO CompteUtilisateur VALUES
-  (DEFAULT,'PUB','sa@squidsquads.site','squid123','123-12345',NOW());
+  (DEFAULT,'PUB','sa@squidsquads.site','$2y$10$AAALv7ANjHob1V5nl2wjXOEjs074bxqFy9UvtAZn2DJB.yeEkiadG','123-12345',NOW());
 
 
 INSERT INTO Campagne VALUES
