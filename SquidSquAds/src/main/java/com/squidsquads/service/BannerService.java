@@ -21,7 +21,8 @@ import java.util.Random;
 public class BannerService {
 
     private static final Logger logger = LoggerFactory.getLogger(BannerService.class);
-    public static final String SQUIDSQUADS_COOKIE = "_squidsquads";
+    private static final String SQUIDSQUADS_COOKIE = "_squidsquads";
+    private static final int SQUIDSQUADS_CAMPAIGN_ID = 1;
 
     @Autowired
     private BannerRepository bannerRepository;
@@ -142,37 +143,42 @@ public class BannerService {
         return new BannerResponse().ok(src, alt, redirectUrl);
     }
 
-    public Campaign getCampaignForATargetedAd() {
+    private Campaign getCampaignForATargetedAd() {
+
         // Vérifier la présence du cookie de tracking
         Cookie cookie = WebUtils.getCookie(request, SQUIDSQUADS_COOKIE);
+
+        if (cookie == null) {
+            return null;
+        }
+
         // Récupérer le cookie et des headers dans la requête
         String userFingerprint = cookie.getValue();
 
-        //Trouver la liste de toutes les campagnes
+        // Trouver la liste de toutes les campagnes
         List<Campaign> campaignList = campaignRepository.findAll();
 
         // Trouver les campagnes actives
         List<Campaign> activeCampaignList = findActiveCampaigns(campaignList);
 
         // Si aucune campagne active
-        if (activeCampaignList.isEmpty()){
-            // Retourner la banniere de SquidSquads (premiere campagne cree)
-            Campaign campaign = campaignRepository.findOne(1);
-            return campaign;
+        if (activeCampaignList.isEmpty()) {
+            // Retourner la bannière de SquidSquads (première campagne créée)
+            return campaignRepository.findOne(SQUIDSQUADS_CAMPAIGN_ID);
         } else {
             // Retourner le count de la totalité des sites visités (distinct/uniques) d’une empreinte
-            int countTotalVisitedWebSites = 0;
-            countTotalVisitedWebSites = (trackingInfoRepository.findAllByFingerprint(userFingerprint)).size();
+            int countTotalVisitedWebSites = (trackingInfoRepository.findAllByFingerprint(userFingerprint)).size();
 
-            // Trouver une ou plusieurs campagnes ciblees
+            // Trouver une ou plusieurs campagnes ciblées
             List<Campaign> matchedCampaign = findTargetedCampaigns(activeCampaignList, countTotalVisitedWebSites, userFingerprint);
 
-            // Si la liste est vide
-                //Retourner une banniere random parmi les campagnes actives
+            // Si la liste est vide retourner une bannière random parmi les campagnes actives
             if (matchedCampaign.isEmpty()) {
                 return getRandomCampaignInArray(activeCampaignList);
+
             } else if (matchedCampaign.size() == 1) {
                 return matchedCampaign.get(0);
+
             } else if (matchedCampaign.size() > 1) {
                 return getRandomCampaignInArray(matchedCampaign);
             }
@@ -184,29 +190,24 @@ public class BannerService {
 
     // Obtenir un item aleatoire d'un tableau
     // https://stackoverflow.com/questions/5034370/retrieving-a-random-item-from-arraylist
-    public Campaign getRandomCampaignInArray(List<Campaign> campaigns) {
+    private Campaign getRandomCampaignInArray(List<Campaign> campaigns) {
         Random randomGenerator = new Random();
         int index = randomGenerator.nextInt(campaigns.size());
-        Campaign c = campaigns.get(index);
-        return c;
+        return campaigns.get(index);
     }
 
     /**
      * Trouver le profil utilisateur qui correspond au fingerprint du client
-     * @param activeCampaignList
-     * @param countTotalSites
-     * @param userFingerprint
-     * @return
      */
     private List<Campaign> findTargetedCampaigns(List<Campaign> activeCampaignList, int countTotalSites, String userFingerprint) {
+
         List<Campaign> matchedCampaigns = new ArrayList<>();
 
-        int biggestCampaignRatio = 0;
+        double biggestCampaignRatio = 0;
+        double sumProfilesRatio;
+        double sumCampaignRatio;
 
-        int sumProfilesRatio = 0;
-        int sumCampaignRatio = 0;
-
-        // Vérifier si les informations sur l'utilisateurs correspondent à une ou plusieurs campagnes
+        // Vérifier si les informations sur l'utilisateur correspondent à une ou plusieurs campagnes
         // Pour chaque campagne active
         for (Campaign campaign : activeCampaignList) {
 
@@ -219,6 +220,7 @@ public class BannerService {
                 userProfiles.add(userProfileRepository.findByProfileIDAndAccountID(campaignProfileList.get(i).getProfileID(),
                         campaign.getAccountID()));
             }
+
             // Pour chaque profil attribué à la campagne
             for (UserProfile userProfile : userProfiles) {
                 sumProfilesRatio = 0;
@@ -227,15 +229,15 @@ public class BannerService {
                 List<Site> sites = siteRepository.findByUserProfileID(userProfile.getProfileID());
 
                 // Pour chaque site
-                for (Site site: sites) {
+                for (Site site : sites) {
                     int countTotalTargetedSites = (trackingInfoRepository.findAllByFingerprintAndCurrentUrl(userFingerprint, site.getUrl())).size();
-                    sumProfilesRatio += Math.round(countTotalTargetedSites/countTotalSites);
+                    sumProfilesRatio += countTotalTargetedSites / countTotalSites;
                 }
                 sumCampaignRatio += sumProfilesRatio;
             }
 
             // La moyenne de la somme des ponderations des profils d'une campagne
-            int currentCampaignRatio = Math.round(sumCampaignRatio/userProfiles.size());
+            double currentCampaignRatio = sumCampaignRatio / userProfiles.size();
 
             if (currentCampaignRatio > biggestCampaignRatio) {
                 biggestCampaignRatio = currentCampaignRatio;
@@ -255,6 +257,7 @@ public class BannerService {
      * @return liste de campagnes actives
      */
     private List<Campaign> findActiveCampaigns(List<Campaign> campaignList) {
+
         List<Campaign> activeCampaigns = new ArrayList<>();
 
         for (Campaign campaign : campaignList) {

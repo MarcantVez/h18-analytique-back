@@ -24,11 +24,4 @@ public class BannerController {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    @GetMapping("/targeted")
-    public ResponseEntity<BannerResponse> targetedBanner(String userFingerprint){
-        Campaign response = bannerService.getCampaignForATargetedAd();
-        //return ResponseEntity.status(response.getStatus()).body(response);
-        return null;
-    }
-
 }
