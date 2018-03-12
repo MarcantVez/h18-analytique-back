@@ -35,6 +35,14 @@ public class ServiceTestHelper {
     protected final String VER_URL = "https://www.vertical.image";
     protected final String MOB_URL = "https://www.mobile.image";
 
+    protected final String USER_PROFILE_NAME = "Les personnes naives";
+    protected final String USER_PROFILE_DESCRIPTION = "On va se faire de l'oseille sur ces gens";
+    protected final String[] USER_PROFILE_URLS = new String[]{"https://www.facebook.com", "https://www.google.com"};
+
+    protected final int SITE_ID = 1;
+    protected final int SITE_PROFILE_ID = 1;
+    protected final String SITE_URL = "https://www.facebook.com";
+
     /////////////
     // Account //
     /////////////
@@ -80,5 +88,24 @@ public class ServiceTestHelper {
         campaign.setImgVertical(VER_URL);
         campaign.setImgMobile(MOB_URL);
         return campaign;
+    }
+
+    public UserProfile getUserProfile()
+    {
+        UserProfile userProfile = new UserProfile();
+        userProfile.setProfileID(ACCOUNT_ID);
+        userProfile.setAccountID(41);
+        userProfile.setName(USER_PROFILE_NAME);
+        userProfile.setDescription(USER_PROFILE_DESCRIPTION);
+        return userProfile;
+    }
+
+    public Site getSite()
+    {
+        Site site = new Site();
+        site.setSiteID(SITE_ID);
+        site.setUserProfileID(SITE_PROFILE_ID);
+        site.setUrl(SITE_URL);
+        return site;
     }
 }

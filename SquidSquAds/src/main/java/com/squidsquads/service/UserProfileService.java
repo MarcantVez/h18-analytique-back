@@ -82,9 +82,19 @@ public class UserProfileService {
         // Sinon on crée le profil utilisateur
         UserProfile userProfile = userProfileRepository.save(new UserProfile(accountID, request.getName(), request.getDescription()));
 
+        if(userProfile == null)
+        {
+            return new CreateResponse().failed();
+        }
+
         // Créer les sites pour le profil
         for (int i = 0; i < request.getUrls().length; i++) {
-            siteRepository.save(new Site(userProfile.getProfileID(), request.getUrls()[i]));
+
+            Site site = siteRepository.save(new Site(userProfile.getProfileID(), request.getUrls()[i]));
+            if(site == null)
+            {
+                return new CreateResponse().failed();
+            }
         }
 
         return new CreateResponse().ok();
