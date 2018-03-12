@@ -19,6 +19,9 @@ public class VisitsAmountForMonth {
     @Column(name = "dayofmonth")
     private Integer dayOfMonth;
 
+    @Column(name = "monthnumber")
+    private Integer monthOfYear;
+
     @Column(name = "sum")
     private Integer amount;
 
@@ -28,10 +31,11 @@ public class VisitsAmountForMonth {
     public VisitsAmountForMonth() {
     }
 
-    public VisitsAmountForMonth(Integer id, Integer websiteID, Integer dayOfMonth, Integer amount, Integer average) {
+    public VisitsAmountForMonth(Integer id, Integer websiteID, Integer dayOfMonth, Integer monthOfYear, Integer amount, Integer average) {
         this.id = id;
         this.websiteID = websiteID;
         this.dayOfMonth = dayOfMonth;
+        this.monthOfYear = monthOfYear;
         this.amount = amount;
         this.average = average;
     }
@@ -46,6 +50,10 @@ public class VisitsAmountForMonth {
 
     public Integer getDayOfMonth() {
         return dayOfMonth;
+    }
+
+    public Integer getMonthOfYear() {
+        return monthOfYear;
     }
 
     public Integer getAmount() {

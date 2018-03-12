@@ -3,15 +3,16 @@ package com.squidsquads.form.stats.response;
 import com.squidsquads.model.*;
 import org.springframework.http.HttpStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class VisitStatsResponse {
     private HttpStatus status;
 
-    private List<VisitsAmountFor24h> for24hList;
-    private List<VisitsAmountForWeek> forWeekList;
-    private List<VisitsAmountForMonth> forMonthList;
-    private List<VisitsAmountForYear> forYearList;
+    private List<VisitsAmountForDayDTO> for24hList;
+    private List<VisitsAmountForWeekDTO> forWeekList;
+    private List<VisitsAmountForMonthDTO> forMonthList;
+    private List<VisitsAmountForYearDTO> forYearList;
 
 
     public VisitStatsResponse ok(List<VisitsAmountFor24h> for24hList,
@@ -19,10 +20,22 @@ public class VisitStatsResponse {
                                  List<VisitsAmountForMonth> forMonthList,
                                  List<VisitsAmountForYear> forYearList) {
         status = HttpStatus.OK;
-        this.for24hList = for24hList;
-        this.forWeekList = forWeekList;
-        this.forMonthList = forMonthList;
-        this.forYearList = forYearList;
+        this.for24hList = new ArrayList<>();
+        for(VisitsAmountFor24h visitsForDay : for24hList){
+            this.for24hList.add(new VisitsAmountForDayDTO(visitsForDay));
+        }
+        this.forWeekList = new ArrayList<>();
+        for(VisitsAmountForWeek visitsForWeek : forWeekList){
+            this.forWeekList.add(new VisitsAmountForWeekDTO(visitsForWeek));
+        }
+        this.forMonthList = new ArrayList<>();
+        for(VisitsAmountForMonth visitForMonth : forMonthList){
+            this.forMonthList.add(new VisitsAmountForMonthDTO(visitForMonth));
+        }
+        this.forYearList = new ArrayList<>();
+        for(VisitsAmountForYear visitsForYear : forYearList){
+            this.forYearList.add(new VisitsAmountForYearDTO(visitsForYear));
+        }
         return this;
     }
 
@@ -35,19 +48,19 @@ public class VisitStatsResponse {
         return status;
     }
 
-    public List<VisitsAmountFor24h> getFor24hList() {
+    public List<VisitsAmountForDayDTO> getFor24hList() {
         return for24hList;
     }
 
-    public List<VisitsAmountForWeek> getForWeekList() {
+    public List<VisitsAmountForWeekDTO> getForWeekList() {
         return forWeekList;
     }
 
-    public List<VisitsAmountForMonth> getForMonthList() {
+    public List<VisitsAmountForMonthDTO> getForMonthList() {
         return forMonthList;
     }
 
-    public List<VisitsAmountForYear> getForYearList() {
+    public List<VisitsAmountForYearDTO> getForYearList() {
         return forYearList;
     }
 }
