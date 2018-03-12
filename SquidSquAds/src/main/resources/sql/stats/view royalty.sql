@@ -5,8 +5,8 @@ select
 FROM
   (
 SELECT
-     'daily' period,
-     id_compte,
+    'daily' period,
+    id_compte,
     SUM(CASE (NOT est_ciblee AND NOT est_cliquee) WHEN TRUE THEN 0.01 ELSE 0 END) sum_vue,
     SUM(CASE (est_ciblee AND NOT est_cliquee) WHEN TRUE THEN 0.03 ELSE 0 END) sum_cible,
     SUM(CASE (NOT est_ciblee AND est_cliquee) WHEN TRUE THEN 0.05 ELSE 0 END) sum_clique,
@@ -19,16 +19,16 @@ SELECT
 
 UNION ALL
 
-   SELECT
-  'weekly' period,
-  id_compte,
-     SUM(CASE (NOT est_ciblee AND NOT est_cliquee) WHEN TRUE THEN 0.01 ELSE 0 END) sum_vue,
-     SUM(CASE (est_ciblee AND NOT est_cliquee) WHEN TRUE THEN 0.03 ELSE 0 END) sum_cible,
-     SUM(CASE (NOT est_ciblee AND est_cliquee) WHEN TRUE THEN 0.05 ELSE 0 END) sum_clique,
-     SUM(CASE (est_ciblee AND est_cliquee) WHEN TRUE THEN 0.10 ELSE 0 END) sum_cible_clique
+  SELECT
+    'weekly' period,
+    id_compte,
+    SUM(CASE (NOT est_ciblee AND NOT est_cliquee) WHEN TRUE THEN 0.01 ELSE 0 END) sum_vue,
+    SUM(CASE (est_ciblee AND NOT est_cliquee) WHEN TRUE THEN 0.03 ELSE 0 END) sum_cible,
+    SUM(CASE (NOT est_ciblee AND est_cliquee) WHEN TRUE THEN 0.05 ELSE 0 END) sum_clique,
+    SUM(CASE (est_ciblee AND est_cliquee) WHEN TRUE THEN 0.10 ELSE 0 END) sum_cible_clique
   FROM visite v
-  INNER JOIN banniere b ON v.id_banniere = b.id_banniere
-  INNER JOIN banniere_campagne bc ON b.id_banniere = bc.id_banniere
+    INNER JOIN banniere b ON v.id_banniere = b.id_banniere
+    INNER JOIN banniere_campagne bc ON b.id_banniere = bc.id_banniere
   WHERE date_heure > CURRENT_DATE - INTERVAL '1 week'
   GROUP BY id_compte
 
