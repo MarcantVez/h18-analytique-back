@@ -22,4 +22,5 @@ public class BannerController {
         BannerResponse response = bannerService.getPublicityForBanner(bannerID);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
+
 }

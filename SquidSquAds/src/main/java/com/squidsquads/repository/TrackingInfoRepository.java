@@ -12,4 +12,6 @@ public interface TrackingInfoRepository extends JpaRepository<TrackingInfo, Inte
     List<TrackingInfo> findAllByFingerprint(String fingerprint);
 
     TrackingInfo findFirstByFingerprintOrderByDateTimeDesc(String fingerprint);
+
+    List<TrackingInfo> findAllByFingerprintAndCurrentUrl(String fingerprint, String currentUrl);
 }

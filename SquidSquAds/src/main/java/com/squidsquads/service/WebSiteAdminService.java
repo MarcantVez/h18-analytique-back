@@ -18,4 +18,8 @@ public class WebSiteAdminService {
     public WebSiteAdmin create(Integer accountID, String domain) {
         return webSiteAdminRepository.save(new WebSiteAdmin(accountID, domain));
     }
+
+    public WebSiteAdmin findOne(Integer siteWebAdminID) {
+        return webSiteAdminRepository.findOne(siteWebAdminID);
+    }
 }

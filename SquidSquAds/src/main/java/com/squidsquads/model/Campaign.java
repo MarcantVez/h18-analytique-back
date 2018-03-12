@@ -65,6 +65,25 @@ public class Campaign {
         this.profileIds = linkedProfiles;
     }
 
+    /**
+     * Vérifier que la campagne est active
+     *
+     * @return booléen indiqant si la campagne est active (true si active)
+     */
+    public boolean isActive() {
+
+        boolean isActive = false;
+        Date currentDate = new Date();
+
+        if (currentDate.equals(startDate) || currentDate.equals(endDate)) {
+            isActive = true;
+        } else if (currentDate.after(startDate) && currentDate.before(endDate)) {
+            isActive = true;
+        }
+
+        return isActive;
+    }
+
     public Integer getCampaignID() {
         return campaignID;
     }

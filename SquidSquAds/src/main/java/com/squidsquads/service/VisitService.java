@@ -35,6 +35,9 @@ public class VisitService {
     private UserAgentParser parser;
 
     @Autowired
+    private WebSiteAdminService webSiteAdminService;
+
+    @Autowired
     private TimeSpentCalculator calculator;
 
     @Autowired
@@ -84,6 +87,10 @@ public class VisitService {
         // été générée. Le traitement se fera alors dans createIdentity suite à un POST.
         if (cookie == null) {
             return new VisitResponse().ok();
+        }
+
+        if (webSiteAdminService.findOne(siteWebAdminID) == null) {
+            return new VisitResponse().failed();
         }
 
         // Récupérer le cookie et des headers dans la requête

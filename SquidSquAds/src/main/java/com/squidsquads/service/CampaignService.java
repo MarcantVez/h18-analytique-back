@@ -45,10 +45,9 @@ public class CampaignService {
     /**
      * Retourne une campagne publicitaire aléatoire
      */
-    public Campaign getRandom() {
+    public Campaign getRandom(List<Campaign> activeCampaignList) {
 
-        List<Campaign> campaigns = campaignRepository.findAll();
-        return campaigns.size() > 0 ? campaigns.get(0) : null;
+        return activeCampaignList.size() > 0 ? activeCampaignList.get(0) : null;
     }
 
     /**
