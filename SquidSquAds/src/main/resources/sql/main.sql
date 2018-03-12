@@ -421,4 +421,4 @@ CREATE OR REPLACE VIEW vw_stat_year AS
       SELECT id_sitewebadmin, date_part('month', generate_series) mois, date_part('year', generate_series) annee, 0 countData FROM generate_series((CURRENT_DATE - INTERVAL '1 year')::timestamp,now()::timestamp, '1 month'),sitewebadmin order by id_sitewebadmin
     ) subQueryA
   GROUP BY annee,mois,id_sitewebadmin
-  ORDER BY id_sitewebadmin ASC, yearValue DESC,  mois DESC;
+  ORDER BY id_sitewebadmin ASC, yearValue ASC,  mois ASC;
