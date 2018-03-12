@@ -1,7 +1,7 @@
 package com.squidsquads.form.validator;
 
 import com.squidsquads.form.account.request.CreateRequest;
-import com.squidsquads.model.account.AdminType;
+import com.squidsquads.model.AdminType;
 
 import java.util.regex.Pattern;
 
@@ -16,7 +16,7 @@ public class AccountValidator {
                 && CommonValidator.notEmpty(req.getPassword())
                 && CommonValidator.notEmpty(req.getConfirmPassword())
                 // Domain requis pour l'administrateur Web
-                && (AdminType.valueOf(req.getAdminType()) != AdminType.WEB || CommonValidator.notEmpty(req.getDomain()));
+                && (!AdminType.WEB.name().equals(req.getAdminType()) || CommonValidator.notEmpty(req.getDomain()));
     }
 
     public static boolean isBankAccountValid(String bankAccount) {

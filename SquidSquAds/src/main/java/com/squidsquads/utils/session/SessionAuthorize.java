@@ -1,6 +1,6 @@
 package com.squidsquads.utils.session;
 
-import com.squidsquads.model.account.AdminType;
+import com.squidsquads.model.AdminType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

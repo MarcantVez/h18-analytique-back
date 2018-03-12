@@ -4,9 +4,9 @@ import com.squidsquads.form.account.request.CreateRequest;
 import com.squidsquads.form.account.request.LoginRequest;
 import com.squidsquads.form.account.request.ResetPasswordRequest;
 import com.squidsquads.form.account.response.*;
-import com.squidsquads.model.account.AdminType;
-import com.squidsquads.service.account.AccountService;
-import com.squidsquads.service.visit.BannerService;
+import com.squidsquads.model.AdminType;
+import com.squidsquads.service.AccountService;
+import com.squidsquads.service.BannerService;
 import com.squidsquads.utils.session.SessionAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +33,7 @@ public class AccountController {
     }
 
     // --------------------------------------------------------------------- //
-    @PostMapping("/create")
+    @PostMapping("")
     public ResponseEntity<?> create(@Valid @RequestBody CreateRequest createRequest) {
 
         CreateResponse createResponse = accountService.create(createRequest);
@@ -41,7 +41,7 @@ public class AccountController {
     }
 
     // --------------------------------------------------------------------- //
-    @GetMapping("/info")
+    @GetMapping("")
     @SessionAuthorize({AdminType.PUB, AdminType.WEB})
     public ResponseEntity<?> getInfo(@RequestHeader("Token") String token) {
 

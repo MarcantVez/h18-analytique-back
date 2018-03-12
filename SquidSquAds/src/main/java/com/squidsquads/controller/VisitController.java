@@ -3,7 +3,7 @@ package com.squidsquads.controller;
 import com.squidsquads.form.visit.request.VisitRequest;
 import com.squidsquads.form.visit.response.CookieCreationResponse;
 import com.squidsquads.form.visit.response.VisitResponse;
-import com.squidsquads.service.visit.VisitService;
+import com.squidsquads.service.VisitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ public class VisitController {
 
     // --------------------------------------------------------------------- //
     @GetMapping("")
-    public ResponseEntity<VisitResponse> logVisit(@RequestParam Long userid) {
+    public ResponseEntity<VisitResponse> logVisit(@RequestParam Integer userid) {
         VisitResponse response = visitService.processVisit(userid);
         return ResponseEntity.status(response.getStatus()).body(null);
     }

@@ -12,11 +12,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import javax.annotation.sql.DataSourceDefinition;
 
 @Configuration
-@ComponentScan({"com.squidsquads.config", "com.squidsquads.controller", "com.squidsquads.service", "com.squidsquads.utils"})
-@EnableJpaRepositories("com.squidsquads.repository")
-@EntityScan("com.squidsquads.model")
 @EnableAutoConfiguration
-@SpringBootApplication
+@ComponentScan({"com.squidsquads.config", "com.squidsquads.controller", "com.squidsquads.service", "com.squidsquads.utils"})
+@EntityScan("com.squidsquads.model")
+@EnableJpaRepositories("com.squidsquads.repository")
 public class Application {
 
     private static ApplicationContext applicationContext;

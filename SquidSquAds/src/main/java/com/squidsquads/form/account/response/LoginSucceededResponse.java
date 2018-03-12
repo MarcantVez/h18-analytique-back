@@ -4,13 +4,13 @@ import org.springframework.http.HttpStatus;
 
 public class LoginSucceededResponse extends AbstractLoginResponse {
 
-    private final long accountId;
+    private final Integer accountId;
     private final boolean isAdminPub;
     private final boolean isAdminWeb;
     private final String displayName;
     private final String token;
 
-    public LoginSucceededResponse(long accountId, boolean isAdminPub, boolean isAdminWeb, String displayName, String token) {
+    public LoginSucceededResponse(Integer accountId, boolean isAdminPub, boolean isAdminWeb, String displayName, String token) {
         super(true, HttpStatus.OK);
         this.accountId = accountId;
         this.isAdminPub = isAdminPub;
@@ -19,7 +19,7 @@ public class LoginSucceededResponse extends AbstractLoginResponse {
         this.token = token;
     }
 
-    public long getAccountId() {
+    public Integer getAccountId() {
         return accountId;
     }
 

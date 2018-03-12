@@ -1,7 +1,7 @@
 package com.squidsquads.utils.session;
 
-import com.squidsquads.model.account.Account;
-import com.squidsquads.model.account.AdminType;
+import com.squidsquads.model.Account;
+import com.squidsquads.model.AdminType;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,9 +10,9 @@ import java.util.UUID;
 public class SessionManager {
 
     private static SessionManager instance = null;
-    private static final long TIMEOUT = 1000 * 60 * 30; // 30 minutes
+    private static final Integer TIMEOUT = 1000 * 60 * 30; // 30 minutes
 
-    public static final long NO_SESSION = 0L;
+    public static final Integer NO_SESSION = 0;
 
     private ArrayList<Session> sessions;
 
@@ -73,7 +73,7 @@ public class SessionManager {
         return session != null && session.getExpire().after(new Date());
     }
 
-    public long getAccountIdForToken(String token) {
+    public Integer getAccountIdForToken(String token) {
 
         Session session = findSessionByToken(token);
         return session == null ? NO_SESSION : session.getAccountId();
@@ -102,7 +102,7 @@ public class SessionManager {
 
     private Session findSessionByAccount(Account account) {
         return sessions.stream()
-                .filter(s -> s.getAccountId() == account.getAccountID())
+                .filter(s -> s.getAccountId().equals(account.getAccountID()))
                 .findFirst()
                 .orElse(null);
     }

@@ -2,7 +2,7 @@ package com.squidsquads.form.visit.request;
 
 public class VisitRequest {
 
-    private Long userId;
+    private Integer userId;
     private boolean doNotTrack;
     private int screenWidth;
     private int screenHeight;
@@ -10,7 +10,7 @@ public class VisitRequest {
     private String canvasFingerprint;
     private String timezone;
 
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
@@ -38,7 +38,7 @@ public class VisitRequest {
         return timezone;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
