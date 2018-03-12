@@ -7,11 +7,13 @@ public class VisitsAmountForYearDTO {
 
     private Integer monthIndex;
     private String month;
+    private Integer year;
     private Integer amount;
 
     public VisitsAmountForYearDTO(VisitsAmountForYear visitForYear) {
         this.monthIndex = visitForYear.getMonthOfYear();
         this.amount = visitForYear.getAmount();
+        this.year = visitForYear.getYear();
         this.month = DateFormatter.getMonthStringFromIndex(visitForYear.getMonthOfYear());
     }
 
@@ -23,9 +25,11 @@ public class VisitsAmountForYearDTO {
         return month;
     }
 
+    public Integer getYear() {
+        return year;
+    }
+
     public Integer getAmount() {
         return amount;
     }
-
-
 }

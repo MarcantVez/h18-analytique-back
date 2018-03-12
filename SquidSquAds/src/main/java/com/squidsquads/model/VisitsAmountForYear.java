@@ -18,6 +18,9 @@ public class VisitsAmountForYear {
     @Column(name = "monthofyear")
     private Integer monthOfYear;
 
+    @Column(name = "yearvalue")
+    private Integer year;
+
     @Column(name = "sum")
     private Integer amount;
 
@@ -27,10 +30,11 @@ public class VisitsAmountForYear {
     public VisitsAmountForYear() {
     }
 
-    public VisitsAmountForYear(Integer id, Integer websiteID, Integer monthOfYear, Integer amount, Integer average) {
+    public VisitsAmountForYear(Integer id, Integer websiteID, Integer monthOfYear, Integer year, Integer amount, Integer average) {
         this.id = id;
         this.websiteID = websiteID;
         this.monthOfYear = monthOfYear;
+        this.year = year;
         this.amount = amount;
         this.average = average;
     }
@@ -45,6 +49,10 @@ public class VisitsAmountForYear {
 
     public Integer getMonthOfYear() {
         return monthOfYear;
+    }
+
+    public Integer getYear() {
+        return year;
     }
 
     public Integer getAmount() {

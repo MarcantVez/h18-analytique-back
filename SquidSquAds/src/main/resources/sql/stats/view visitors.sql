@@ -30,11 +30,11 @@ CREATE OR REPLACE VIEW vw_stat_month AS
   ORDER BY id_sitewebadmin,monthNumber,jour;
 
 CREATE OR REPLACE VIEW vw_stat_year AS
-  select ROW_NUMBER() OVER (ORDER BY id_sitewebadmin,mois),id_sitewebadmin ,cast(mois as BIGINT) monthOfYear, sum(CASE WHEN countData=1 THEN 1 ELSE 0 END ) sum,0 avg FROM
+  select ROW_NUMBER() OVER (ORDER BY id_sitewebadmin, annee),id_sitewebadmin ,cast(mois as int) monthOfYear, cast(annee as INTEGER) yearValue, sum(CASE WHEN countData=1 THEN 1 ELSE 0 END ) sum,0 avg FROM
     (
-      select id_sitewebadmin, date_part('month', date_heure) mois,1 countData from infodesuivi WHERE  date_heure > CURRENT_DATE - INTERVAL '1 year'
+      select id_sitewebadmin, date_part('month', date_heure) mois, date_part('year', date_heure) annee,1 countData from infodesuivi WHERE  date_heure > CURRENT_DATE - INTERVAL '1 year'
       UNION ALL
-      SELECT id_sitewebadmin, date_part('month', generate_series) mois, 0 countData FROM generate_series((CURRENT_DATE - INTERVAL '1 year')::timestamp,now()::timestamp, '1 month'),sitewebadmin order by id_sitewebadmin
+      SELECT id_sitewebadmin, date_part('month', generate_series) mois, date_part('year', generate_series) annee, 0 countData FROM generate_series((CURRENT_DATE - INTERVAL '1 year')::timestamp,now()::timestamp, '1 month'),sitewebadmin order by id_sitewebadmin
     ) subQueryA
-  GROUP BY mois,id_sitewebadmin
-  ORDER BY id_sitewebadmin,mois;
+  GROUP BY annee,mois,id_sitewebadmin
+  ORDER BY id_sitewebadmin ASC, yearValue DESC,  mois DESC;
