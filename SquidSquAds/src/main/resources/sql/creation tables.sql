@@ -136,7 +136,7 @@ CREATE TABLE AgentUtilisateur
     Information_Navigateur		VARCHAR(150),
     Plateforme					VARCHAR(150),
     Information_Plateforme		VARCHAR(150),
-    Extension_Navigateur		VARCHAR(150),
+    Extension_Navigateur		VARCHAR(500),
     Navigateur 					VARCHAR(150),
     Date_Heure				TIMESTAMP
 );

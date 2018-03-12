@@ -1,12 +1,14 @@
 package com.squidsquads.utils;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.util.Base64;
 
 @Component
+@Lazy
 public class Serializer {
     public static String serialize(Serializable toSerialize){
         try {

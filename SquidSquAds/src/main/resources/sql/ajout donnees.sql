@@ -1,6 +1,8 @@
 --compteUtilisateur
+
+-- Password => 123
 INSERT INTO compteUtilisateur VALUES
-  (DEFAULT,'WEB','adminWeb@test.com','mot_de_passe_en_clair','111AAA',NOW());
+  (DEFAULT,'WEB','adminWeb@test.com','$2y$10$cFK.j9YLrFTkoY38vG8xKeXq2v03CWwE49beAfpb1Amz17lG7alW2','111AAA',NOW());
 
 
 INSERT INTO SiteWebAdmin VALUES
@@ -15,6 +17,7 @@ INSERT INTO AgentUtilisateur VALUES
    'Chrome/63.0.3239.132 Safari/537.36',
    'Win64',
    'x64',
+   'Plugin 0: Chrome PDF Plugin; Portable Document Format; internal-pdf-viewer. Plugin 1: Chrome PDF Viewer; ; mhjfbmdgcfjbbpaeojofohoefgiehjai. Plugin 2: Native Client; ; internal-nacl-plugin. Plugin 3: Shockwave Flash; Shockwave Flash 28.0 r0; pepflashplayer.dll. Plugin 4: Widevine Content Decryption Module; Enables Widevine licenses for playback of HTML audiovideo content. version: 1.4.9.1070; widevinecdmadapter.dll. ',
    'Chrome',
    '2018-02-07 18:00'
   );
@@ -22,7 +25,7 @@ INSERT INTO AgentUtilisateur VALUES
 INSERT INTO InfoDeSuivi VALUES
   (DEFAULT,
     (select max(id_agentutilisateur) from agentutilisateur),
-    (select max(id_compte) from compteUtilisateur),
+    (select max(id_sitewebadmin) from sitewebadmin),
     'e908f5b5ec9dedf0cb5bd964e1206f55',
     'https://www.siteWebA.com/produit/5',
     'https://www.siteWebA.com/produit/',
@@ -53,27 +56,6 @@ INSERT INTO Banniere VALUES
    'Mobile'
   );
 
-INSERT INTO Orientation_Banniere VALUES
-  (DEFAULT,
-   (SELECT MAX(numero_orientation) FROM Orientation),
-   (SELECT MAX(numero_banniere) FROM Banniere)
-  );
-
-INSERT INTO Categorie VALUES
-  (DEFAULT,
-   'Une publicitée qui a été vue');
-
-INSERT INTO Categorie VALUES
-  (DEFAULT,
-   'Une publicitée qui a été vue par un profil');
-
-INSERT INTO Categorie VALUES
-  (DEFAULT,
-   'Une publicitée qui a été cliquée');
-
-INSERT INTO Categorie VALUES
-  (DEFAULT,
-   'Une publicitée qui a été cliquée par un profil');
 
 INSERT INTO Visite VALUES
   (DEFAULT,
@@ -109,6 +91,24 @@ INSERT INTO Campagne VALUES
     200000
   );
 
+INSERT INTO banniere_campagne VALUES
+  (DEFAULT,
+   1,
+   (SELECT max(id_campagne) from campagne)
+  );
+
+INSERT INTO banniere_campagne VALUES
+  (DEFAULT,
+   2,
+   (SELECT max(id_campagne) from campagne)
+  );
+
+INSERT INTO banniere_campagne VALUES
+  (DEFAULT,
+   3,
+   (SELECT max(id_campagne) from campagne)
+  );
+
 INSERT INTO ProfilUtilisateur VALUES
   (DEFAULT,
    (select max(compteutilisateur.id_compte) from compteUtilisateur),
@@ -119,8 +119,8 @@ INSERT INTO ProfilUtilisateur VALUES
 
 INSERT INTO Campagne_ProfilUtilisateur VALUES
   (DEFAULT,
-   (SELECT MAX(id_compte) FROM Campagne),
-   (SELECT MAX(profilutilisateur.id_profilutilisateur) FROM ProfilUtilisateur)
+   (SELECT MAX(profilutilisateur.id_profilutilisateur) FROM ProfilUtilisateur),
+   (SELECT MAX(id_campagne) FROM Campagne)
   );
 
 INSERT INTO Site VALUES
@@ -134,4 +134,3 @@ INSERT INTO Site VALUES
 --Deuxieme compte
 INSERT INTO compteUtilisateur VALUES
   (DEFAULT,'PUB','adminPub@test.com','!Q@W#E4r','111BBB',NOW());
-

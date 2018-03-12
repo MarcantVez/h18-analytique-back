@@ -11,3 +11,28 @@ DROP TABLE IF EXISTS ProfilUtilisateur CASCADE;
 DROP TABLE IF EXISTS Campagne CASCADE;
 DROP TABLE IF EXISTS Paiement CASCADE;
 DROP TABLE IF EXISTS CompteUtilisateur CASCADE;
+
+--Cleanup older tables
+DROP TABLE IF EXISTS campagne_profildutilisateur CASCADE;
+DROP TABLE IF EXISTS categorie CASCADE;
+DROP TABLE IF EXISTS categorie_visite CASCADE;
+DROP TABLE IF EXISTS orientation CASCADE;
+DROP TABLE IF EXISTS orientation_banniere CASCADE;
+DROP TABLE IF EXISTS profildutilisateur CASCADE;
+DROP TABLE IF EXISTS typenavigateur CASCADE;
+DROP TABLE IF EXISTS typenavigateur_agent CASCADE;
+
+
+-- CLEANUP VIEWS
+DROP VIEW IF EXISTS vw_stat_24h;
+DROP VIEW IF EXISTS vw_stat_week;
+DROP VIEW IF EXISTS vw_stat_month;
+DROP VIEW IF EXISTS vw_stat_year;
+DROP VIEW IF EXISTS vw_stat_browser;
+DROP VIEW IF EXISTS vw_stat_royalty;
+
+
+
+
+
+
