@@ -22,7 +22,7 @@ public class VisitController {
     @GetMapping("")
     public ResponseEntity<VisitResponse> logVisit(@RequestParam Integer userid) {
         VisitResponse response = visitService.processVisit(userid);
-        return ResponseEntity.status(response.getStatus()).body(null);
+        return ResponseEntity.status(response.getStatus()).build();
     }
 
     // --------------------------------------------------------------------- //
@@ -41,6 +41,14 @@ public class VisitController {
 
         // Renvoyer Set-Cookie dans le header + fingerprint dans le body
         return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    // --------------------------------------------------------------------- //
+    @PostMapping("/leave")
+    public ResponseEntity<VisitResponse> leaveVisit(@RequestParam Integer userid) {
+        visitService.leave(userid);
+        // Cette requête est utilisée comme beacon, la réponse est ignorée
+        return ResponseEntity.ok().build();
     }
 
 }

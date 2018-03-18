@@ -5,13 +5,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 public interface TrackingInfoRepository extends JpaRepository<TrackingInfo, Integer> {
 
-    List<TrackingInfo> findAllByFingerprint(String fingerprint);
+    List<TrackingInfo> findAllByFingerprint(UUID fingerprint);
 
-    TrackingInfo findFirstByFingerprintOrderByDateTimeDesc(String fingerprint);
+    TrackingInfo findFirstByFingerprintOrderByDateTimeDesc(UUID fingerprint);
 
-    List<TrackingInfo> findAllByFingerprintAndCurrentUrl(String fingerprint, String currentUrl);
+    List<TrackingInfo> findAllByFingerprintAndCurrentUrl(UUID fingerprint, String currentUrl);
 }

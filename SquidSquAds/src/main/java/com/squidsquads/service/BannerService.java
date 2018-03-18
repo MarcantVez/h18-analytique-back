@@ -4,6 +4,7 @@ import com.squidsquads.form.account.response.BannerListResponse;
 import com.squidsquads.form.banner.response.BannerResponse;
 import com.squidsquads.model.*;
 import com.squidsquads.repository.*;
+import com.squidsquads.utils.Serializer;
 import com.squidsquads.utils.session.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +54,8 @@ public class BannerService {
 
     @Autowired
     private HttpServletRequest request;
+
+    private Random randomGenerator = new Random();
 
     /**
      * Créer une bannière
@@ -167,7 +170,7 @@ public class BannerService {
             return campaignRepository.findOne(SQUIDSQUADS_CAMPAIGN_ID);
         } else {
             // Retourner le count de la totalité des sites visités (distinct/uniques) d’une empreinte
-            int countTotalVisitedWebSites = (trackingInfoRepository.findAllByFingerprint(userFingerprint)).size();
+            int countTotalVisitedWebSites = (trackingInfoRepository.findAllByFingerprint(Serializer.fromString(userFingerprint))).size();
 
             // Trouver une ou plusieurs campagnes ciblées
             List<Campaign> matchedCampaign = findTargetedCampaigns(activeCampaignList, countTotalVisitedWebSites, userFingerprint);
@@ -184,14 +187,11 @@ public class BannerService {
             }
         }
 
-
         return null;
     }
 
     // Obtenir un item aleatoire d'un tableau
-    // https://stackoverflow.com/questions/5034370/retrieving-a-random-item-from-arraylist
     private Campaign getRandomCampaignInArray(List<Campaign> campaigns) {
-        Random randomGenerator = new Random();
         int index = randomGenerator.nextInt(campaigns.size());
         return campaigns.get(index);
     }
@@ -230,7 +230,7 @@ public class BannerService {
 
                 // Pour chaque site
                 for (Site site : sites) {
-                    int countTotalTargetedSites = (trackingInfoRepository.findAllByFingerprintAndCurrentUrl(userFingerprint, site.getUrl())).size();
+                    int countTotalTargetedSites = (trackingInfoRepository.findAllByFingerprintAndCurrentUrl(Serializer.fromString(userFingerprint), site.getUrl())).size();
                     sumProfilesRatio += countTotalTargetedSites / countTotalSites;
                 }
                 sumCampaignRatio += sumProfilesRatio;

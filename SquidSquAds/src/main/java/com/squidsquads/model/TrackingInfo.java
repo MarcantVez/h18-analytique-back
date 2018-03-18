@@ -1,8 +1,12 @@
 package com.squidsquads.model;
 
+import com.squidsquads.utils.Serializer;
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Table(name = "infodesuivi")
@@ -21,7 +25,8 @@ public class TrackingInfo {
     private Integer userAgentId;
 
     @Column(name = "empreinte")
-    private String fingerprint;
+    @Type(type = "pg-uuid")
+    private UUID fingerprint;
 
     @Column(name = "urlactuel")
     private String currentUrl;
@@ -53,7 +58,7 @@ public class TrackingInfo {
     public TrackingInfo(Integer adminWebSiteId, Integer userAgentId, String fingerprint, String currentUrl, String previousUrl, String ipv4Address, String ipv6Address, String screenSize, String language, int timeSpent) {
         this.adminWebSiteId = adminWebSiteId;
         this.userAgentId = userAgentId;
-        this.fingerprint = fingerprint;
+        this.fingerprint = Serializer.fromString(fingerprint);
         this.currentUrl = currentUrl;
         this.previousUrl = previousUrl;
         this.ipv4Address = ipv4Address;
@@ -73,7 +78,7 @@ public class TrackingInfo {
     }
 
     public String getFingerprint() {
-        return fingerprint;
+        return Serializer.uuidToString(fingerprint);
     }
 
     public String getCurrentUrl() {
@@ -114,5 +119,9 @@ public class TrackingInfo {
 
     public void setDateTime(Timestamp dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public void setTimeSpent(int timeSpent) {
+        this.timeSpent = timeSpent;
     }
 }

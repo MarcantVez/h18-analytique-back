@@ -138,7 +138,7 @@ CREATE TABLE infodesuivi
   id_infodesuivi      SERIAL PRIMARY KEY,
   id_agentutilisateur INTEGER NOT NULL,
   id_sitewebadmin     INTEGER NOT NULL,
-  empreinte           VARCHAR(200),
+  empreinte           UUID,
   urlactuel           VARCHAR(200),
   urlprovenance       VARCHAR(200),
   adresse_ipv4        VARCHAR(50),
