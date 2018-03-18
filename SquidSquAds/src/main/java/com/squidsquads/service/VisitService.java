@@ -31,6 +31,7 @@ public class VisitService {
     private static final String HEADER_USER_AGENT = "User-Agent";
     private static final String HEADER_ACCEPT_LANGUAGE = "accept-language";
     private static final String HEADER_REFERER = "referer";
+    private static final int GRACE_PERIOD_BETWEEN_VISITS = 10;
 
     private UserAgentParser parser;
 
@@ -105,7 +106,7 @@ public class VisitService {
         UserAgent targetAgent = userAgentRepository.findByUserAgentString(hdrUserAgent);
 
         // Si le fingerprint existe déjà, poursuivre le tracking de l'utilisateur
-        TrackingInfo lastInfo = trackingInfoRepository.findFirstByFingerprintOrderByDateTimeDesc(fingerprint);
+        TrackingInfo lastInfo = trackingInfoRepository.findFirstByFingerprintOrderByDateTimeDesc(Serializer.fromString(fingerprint));
 
         if (targetAgent == null) {
             targetAgent = createAgent(hdrUserAgent);
@@ -118,10 +119,9 @@ public class VisitService {
         int timeSpent = 1;
 
         // Lier le tracking entre les différentes pages du site
-        if (lastInfo != null) {
+        if (isTrackingFollowingOneAnother(lastInfo)) {
             previousUrl = lastInfo.getCurrentUrl();
             screenSize = lastInfo.getScreenSize();
-            timeSpent = calculator.calculateTimeFromNow(lastInfo.getDateTime());
         }
 
         info = new TrackingInfo(
@@ -172,7 +172,7 @@ public class VisitService {
         UserAgent targetAgent = userAgentRepository.findByUserAgentString(hdrUserAgent);
 
         // Si le fingerprint existe déjà, poursuivre le tracking de l'utilisateur
-        TrackingInfo lastInfo = trackingInfoRepository.findFirstByFingerprintOrderByDateTimeDesc(fingerPrintHash);
+        TrackingInfo lastInfo = trackingInfoRepository.findFirstByFingerprintOrderByDateTimeDesc(Serializer.fromString(fingerPrintHash));
 
         if (targetAgent == null) {
             targetAgent = createAgent(hdrUserAgent);
@@ -182,9 +182,8 @@ public class VisitService {
         int timeSpent = 1;
 
         // Lier le tracking entre les différentes pages du site
-        if (lastInfo != null) {
+        if (isTrackingFollowingOneAnother(lastInfo)) {
             previousUrl = lastInfo.getCurrentUrl();
-            timeSpent = calculator.calculateTimeFromNow(lastInfo.getDateTime());
         }
 
         TrackingInfo info = new TrackingInfo(
@@ -205,6 +204,35 @@ public class VisitService {
         return new CookieCreationResponse().ok(fingerPrintHash);
     }
 
+    public void leave(Integer siteWebAdminID) {
+
+        // Vérifier la présence du cookie de tracking
+        Cookie cookie = WebUtils.getCookie(request, SQUIDSQUADS_COOKIE);
+
+        if (cookie == null) {
+            return;
+        }
+
+        if (webSiteAdminService.findOne(siteWebAdminID) == null) {
+            return;
+        }
+
+        // Récupérer le cookie et des headers dans la requête
+        String fingerprint = cookie.getValue();
+
+        // Si le fingerprint existe déjà, poursuivre le tracking de l'utilisateur
+        TrackingInfo lastInfo = trackingInfoRepository.findFirstByFingerprintOrderByDateTimeDesc(Serializer.fromString(fingerprint));
+
+        // Erreur lors de la récupération du dernier tracking
+        if (lastInfo == null) {
+            return;
+        }
+
+        lastInfo.setTimeSpent(calculator.calculateTimeFromNow(lastInfo.getDateTime()));
+
+        trackingInfoRepository.save(lastInfo);
+    }
+
     /**
      * Utility method to create user agent object from string
      *
@@ -223,9 +251,14 @@ public class VisitService {
                 capabilities.getBrowserType(),
                 capabilities.getDeviceType(),
                 capabilities.getPlatformVersion(),
-                null // TODO on a pas les infos des plugins par http...
+                null
         );
 
         return userAgentRepository.save(agent);
     }
+
+    private boolean isTrackingFollowingOneAnother(TrackingInfo lastInfo) {
+        return lastInfo != null && calculator.calculateTimeFromNow(lastInfo.getDateTime()) <= (lastInfo.getTimeSpent() + GRACE_PERIOD_BETWEEN_VISITS);
+    }
+
 }
