@@ -2,7 +2,6 @@ package com.squidsquads.service;
 
 import com.squidsquads.form.account.response.BannerListResponse;
 import com.squidsquads.form.banner.response.BannerResponse;
-import com.squidsquads.form.visit.response.CookieCreationResponse;
 import com.squidsquads.model.*;
 import com.squidsquads.repository.*;
 import com.squidsquads.utils.Serializer;
@@ -31,9 +30,6 @@ public class BannerService {
 
     @Autowired
     private BannerCampaignRepository bannerCampaignRepository;
-
-    @Autowired
-    private CampaignService campaignService;
 
     @Autowired
     private WebSiteAdminService webSiteAdminService;
