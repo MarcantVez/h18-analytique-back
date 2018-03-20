@@ -2,6 +2,7 @@ package com.squidsquads.service;
 
 import com.squidsquads.form.account.response.BannerListResponse;
 import com.squidsquads.form.banner.response.BannerResponse;
+import com.squidsquads.form.visit.response.CookieCreationResponse;
 import com.squidsquads.model.*;
 import com.squidsquads.repository.*;
 import com.squidsquads.utils.Serializer;
@@ -152,7 +153,9 @@ public class BannerService {
         Cookie cookie = WebUtils.getCookie(request, SQUIDSQUADS_COOKIE);
 
         if (cookie == null) {
-            return null;
+            List<Campaign> campaignList = campaignRepository.findAll();
+            List<Campaign> activeCampaignList = findActiveCampaigns(campaignList);
+            return getRandomCampaignInArray(activeCampaignList);
         }
 
         // Récupérer le cookie et des headers dans la requête
