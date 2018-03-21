@@ -7,16 +7,16 @@ public class BannerResponse {
     private HttpStatus status;
     private String src = null;
     private String alt = null;
-    private String redirectUrl = null;
+    private Integer campaignID = null;
 
     public BannerResponse() {
     }
 
-    public BannerResponse ok(String src, String alt, String redirectUrl) {
+    public BannerResponse ok(String src, String alt, Integer campaignID) {
         status = HttpStatus.OK;
         this.src = src;
         this.alt = alt;
-        this.redirectUrl = redirectUrl;
+        this.campaignID = campaignID;
         return this;
     }
 
@@ -37,7 +37,7 @@ public class BannerResponse {
         return alt;
     }
 
-    public String getRedirectUrl() {
-        return redirectUrl;
+    public Integer getCampaignID() {
+        return campaignID;
     }
 }

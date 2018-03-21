@@ -1,6 +1,6 @@
 package com.squidsquads.form.stats.response;
 
-import com.squidsquads.model.RoyaltyAmount;
+import com.squidsquads.model.RoyaltyAmountStat;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
@@ -11,10 +11,10 @@ public class RoyaltyStatsResponse {
     private HttpStatus status;
     private List<RoyaltyAmountDTO> royaltyStats;
     
-    public RoyaltyStatsResponse ok(List<RoyaltyAmount> royaltyStats) {
+    public RoyaltyStatsResponse ok(List<RoyaltyAmountStat> royaltyStats) {
         status = HttpStatus.OK;
         this.royaltyStats = new ArrayList<>();
-        for(RoyaltyAmount amount : royaltyStats){
+        for(RoyaltyAmountStat amount : royaltyStats){
             this.royaltyStats.add(new RoyaltyAmountDTO(amount));
         }
         return this;

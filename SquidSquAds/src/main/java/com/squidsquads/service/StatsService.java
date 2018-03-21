@@ -5,7 +5,6 @@ import com.squidsquads.form.stats.response.VisitStatsResponse;
 import com.squidsquads.form.stats.response.RoyaltyStatsResponse;
 import com.squidsquads.model.*;
 import com.squidsquads.repository.*;
-import com.squidsquads.utils.session.Session;
 import com.squidsquads.utils.session.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,7 +61,7 @@ public class StatsService {
         if (SessionManager.NO_SESSION.equals(accountID)) {
             return new RoyaltyStatsResponse().failed();
         }
-        List<RoyaltyAmount> royaltyAmounts = royaltyStatsRepository.findAllByCompte(accountID);
-        return new RoyaltyStatsResponse().ok(royaltyAmounts);
+        List<RoyaltyAmountStat> royaltyAmountStats = royaltyStatsRepository.findAllByCompte(accountID);
+        return new RoyaltyStatsResponse().ok(royaltyAmountStats);
     }
 }

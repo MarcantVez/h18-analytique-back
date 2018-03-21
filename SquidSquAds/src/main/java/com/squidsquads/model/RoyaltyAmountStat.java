@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "vw_stat_royalty")
-public class RoyaltyAmount {
+public class RoyaltyAmountStat {
     @Id
     @Column(name = "id")
     private Integer id;
@@ -31,9 +31,9 @@ public class RoyaltyAmount {
     @Column(name="sum_cible_clique")
     private Float somme_cible_clique;
 
-    public RoyaltyAmount() {}
+    public RoyaltyAmountStat() {}
 
-    public RoyaltyAmount(Integer id,String period, Integer compte, Float somme_vue, Float somme_cible, Float somme_clique, Float somme_cible_clique){
+    public RoyaltyAmountStat(Integer id, String period, Integer compte, Float somme_vue, Float somme_cible, Float somme_clique, Float somme_cible_clique){
         this.id = id;
         this.period = period;
         this.compte = compte;
