@@ -2,7 +2,6 @@ package com.squidsquads.service;
 
 import com.squidsquads.form.account.response.BannerListResponse;
 import com.squidsquads.form.banner.response.BannerResponse;
-import com.squidsquads.form.banner.response.RedirectResponse;
 import com.squidsquads.model.*;
 import com.squidsquads.repository.*;
 import com.squidsquads.utils.Serializer;
@@ -15,8 +14,6 @@ import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -57,9 +54,6 @@ public class BannerService {
 
     @Autowired
     private HttpServletRequest request;
-
-    @Autowired
-    private HttpServletResponse httpResponse;
 
     private Random randomGenerator = new Random();
 
@@ -134,6 +128,7 @@ public class BannerService {
 
         // À partir des informations de la campagne, bâtir la réponse
         String alt = campaign.getName();
+        String redirectUrl = campaign.getRedirectUrl();
         String src = null;
 
         switch (Orientation.valueOf(banner.getOrientation())) {
@@ -148,7 +143,7 @@ public class BannerService {
                 break;
         }
 
-        return new BannerResponse().ok(src, alt, campaign.getCampaignID());
+        return new BannerResponse().ok(src, alt, redirectUrl);
     }
 
     private Campaign getCampaignForATargetedAd() {
@@ -172,7 +167,6 @@ public class BannerService {
         // Si aucune campagne active
         if (activeCampaignList.isEmpty()) {
             // Retourner la bannière de SquidSquads (première campagne créée)
-
             return campaignRepository.findOne(SQUIDSQUADS_CAMPAIGN_ID);
         } else {
             // Retourner le count de la totalité des sites visités (distinct/uniques) d’une empreinte
@@ -256,19 +250,6 @@ public class BannerService {
         return matchedCampaigns;
     }
 
-    public void findRedirectUrl(Integer campaignID) {
-        if(campaignID == null){
-            return;
-        }
-        // create royalty (clicked) for website
-        Campaign campaign = campaignRepository.findByCampaignID(campaignID);
-        try {
-            httpResponse.sendRedirect(campaign.getRedirectUrl());
-        } catch (IOException e) {
-            return;
-        }
-    }
-
     /**
      * Extraire une liste de campagnes qui sont actives
      *
@@ -286,4 +267,5 @@ public class BannerService {
         }
         return activeCampaigns;
     }
+
 }

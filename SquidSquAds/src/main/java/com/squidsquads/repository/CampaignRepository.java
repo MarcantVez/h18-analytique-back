@@ -11,8 +11,6 @@ public interface CampaignRepository extends JpaRepository<Campaign, Integer> {
 
     List<Campaign> findByAccountID(Integer accountID);
 
-    Campaign findByCampaignID(Integer campaignID);
-
     Campaign findByNameAndAccountID(String name, Integer accountID);
 
     List<Campaign> findAll();

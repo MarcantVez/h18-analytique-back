@@ -1,6 +1,6 @@
 package com.squidsquads.form.stats.response;
 
-import com.squidsquads.model.RoyaltyAmountStat;
+import com.squidsquads.model.RoyaltyAmount;
 
 public class RoyaltyAmountDTO {
     private String period;
@@ -9,12 +9,12 @@ public class RoyaltyAmountDTO {
     private Float sommeClique;
     private Float sommeCibleClique;
 
-    public RoyaltyAmountDTO(RoyaltyAmountStat royaltyAmountStat) {
-        this.period = royaltyAmountStat.getPeriod();
-        this.sommeCible = royaltyAmountStat.getSomme_cible();
-        this.sommeClique = royaltyAmountStat.getSomme_clique();
-        this.sommeVue = royaltyAmountStat.getSomme_vue();
-        this.sommeCibleClique = royaltyAmountStat.getSomme_cible_clique();
+    public RoyaltyAmountDTO(RoyaltyAmount royaltyAmount) {
+        this.period = royaltyAmount.getPeriod();
+        this.sommeCible = royaltyAmount.getSomme_cible();
+        this.sommeClique = royaltyAmount.getSomme_clique();
+        this.sommeVue = royaltyAmount.getSomme_vue();
+        this.sommeCibleClique = royaltyAmount.getSomme_cible_clique();
     }
 
     public String getPeriod() {
