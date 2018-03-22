@@ -7,8 +7,10 @@ import com.squidsquads.form.visit.response.VisitResponse;
 import com.squidsquads.model.Fingerprint;
 import com.squidsquads.model.TrackingInfo;
 import com.squidsquads.model.UserAgent;
+import com.squidsquads.model.Visit;
 import com.squidsquads.repository.TrackingInfoRepository;
 import com.squidsquads.repository.UserAgentRepository;
+import com.squidsquads.repository.VisitRepository;
 import com.squidsquads.utils.Serializer;
 import com.squidsquads.utils.TimeSpentCalculator;
 import org.slf4j.Logger;
@@ -50,6 +52,9 @@ public class VisitService {
     @Autowired
     private UserAgentRepository userAgentRepository;
 
+    @Autowired
+    private VisitRepository visitRepository;
+
     public VisitService() {
 
         try {
@@ -72,6 +77,16 @@ public class VisitService {
                 BrowsCapField.PLATFORM_VERSION,
                 BrowsCapField.PLATFORM_MAKER
         ));
+    }
+
+    public Visit findByID(Integer visitID)
+    {
+        return visitRepository.findOne(visitID);
+    }
+
+    public Visit save(Visit visit)
+    {
+        return visitRepository.save(visit);
     }
 
     /**
