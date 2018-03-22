@@ -32,9 +32,6 @@ public class BannerService {
     private BannerCampaignRepository bannerCampaignRepository;
 
     @Autowired
-    private CampaignService campaignService;
-
-    @Autowired
     private WebSiteAdminService webSiteAdminService;
 
     @Autowired
@@ -152,7 +149,9 @@ public class BannerService {
         Cookie cookie = WebUtils.getCookie(request, SQUIDSQUADS_COOKIE);
 
         if (cookie == null) {
-            return null;
+            List<Campaign> campaignList = campaignRepository.findAll();
+            List<Campaign> activeCampaignList = findActiveCampaigns(campaignList);
+            return getRandomCampaignInArray(activeCampaignList);
         }
 
         // Récupérer le cookie et des headers dans la requête
