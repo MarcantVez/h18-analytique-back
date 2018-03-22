@@ -195,21 +195,27 @@ public class BannerService {
             int countTotalVisitedWebSites = (trackingInfoRepository.findAllByFingerprint(Serializer.fromString(userFingerprint))).size();
 
             // Trouver une ou plusieurs campagnes ciblées
-            List<Campaign> matchedCampaign = findTargetedCampaigns(activeCampaignList, countTotalVisitedWebSites, userFingerprint);
+            List<CampaignTargeted> matchedCampaign = findTargetedCampaigns(activeCampaignList, countTotalVisitedWebSites, userFingerprint);
 
             // Si la liste est vide retourner une bannière random parmi les campagnes actives
             if (matchedCampaign.isEmpty()) {
                 campaignTargeted = new CampaignTargeted(getRandomCampaignInArray(activeCampaignList), false);
 
             } else if (matchedCampaign.size() == 1) {
-                campaignTargeted = new CampaignTargeted(matchedCampaign.get(0), true);
+                campaignTargeted = new CampaignTargeted(matchedCampaign.get(0).getCampaign(), matchedCampaign.get(0).isTargeted());
 
             } else {
-                campaignTargeted = new CampaignTargeted(getRandomCampaignInArray(matchedCampaign), true);
+                campaignTargeted = getRandomCampaignTargetedInArray(matchedCampaign);
             }
         }
 
         return campaignTargeted;
+    }
+
+    // Obtenir une campagne aléatoire parmi les campagnes de la liste
+    private CampaignTargeted getRandomCampaignTargetedInArray(List<CampaignTargeted> campaigns) {
+        int index = randomGenerator.nextInt(campaigns.size());
+        return campaigns.get(index);
     }
 
     // Obtenir une campagne aléatoire parmi les campagnes de la liste
@@ -221,13 +227,15 @@ public class BannerService {
     /**
      * Trouver le profil utilisateur qui correspond au fingerprint du client
      */
-    private List<Campaign> findTargetedCampaigns(List<Campaign> activeCampaignList, int countTotalSites, String userFingerprint) {
+    private List<CampaignTargeted> findTargetedCampaigns(List<Campaign> activeCampaignList, int countTotalSites, String userFingerprint) {
 
-        List<Campaign> matchedCampaigns = new ArrayList<>();
+        List<CampaignTargeted> matchedCampaigns = new ArrayList<>();
 
         double biggestCampaignRatio = 0;
         double sumProfilesRatio;
         double sumCampaignRatio;
+
+        int countCiblee = 0;
 
         // Vérifier si les informations sur l'utilisateur correspondent à une ou plusieurs campagnes
         // Pour chaque campagne active
@@ -254,6 +262,9 @@ public class BannerService {
                 for (Site site : sites) {
                     int countTotalTargetedSites = (trackingInfoRepository.findAllByFingerprintAndCurrentUrl(Serializer.fromString(userFingerprint), site.getUrl())).size();
                     sumProfilesRatio += countTotalTargetedSites / countTotalSites;
+                    if (sumProfilesRatio > 0.0) {
+                        countCiblee++;
+                    }
                 }
                 sumCampaignRatio += sumProfilesRatio;
             }
@@ -264,9 +275,9 @@ public class BannerService {
             if (currentCampaignRatio > biggestCampaignRatio) {
                 biggestCampaignRatio = currentCampaignRatio;
                 matchedCampaigns.clear();
-                matchedCampaigns.add(campaign);
+                matchedCampaigns.add(new CampaignTargeted(campaign, (countCiblee > 0)));
             } else if (currentCampaignRatio == biggestCampaignRatio) {
-                matchedCampaigns.add(campaign);
+                matchedCampaigns.add(new CampaignTargeted(campaign, (countCiblee > 0)));
             }
         }
         return matchedCampaigns;
