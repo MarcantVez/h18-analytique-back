@@ -16,7 +16,9 @@ import org.springframework.web.util.WebUtils;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 @Service
 public class BannerService {
@@ -102,7 +104,6 @@ public class BannerService {
             }
         }
 
-
         return new BannerListResponse().ok(webSiteAdmin.getWebSiteAdminID(), horID, verID, mobID);
     }
 
@@ -119,12 +120,13 @@ public class BannerService {
         }
 
         // Aller chercher une campagne ciblée
-        CampaignType campaignType = getCampaignForATargetedAd();
-        if (campaignType == null) {
+        CampaignTargeted campaignTargeted = getCampaignForATargetedAd();
+
+        if (campaignTargeted == null) {
             return new BannerResponse().failed();
         }
-        Campaign campaign = (Campaign) campaignType.getCampaign();
 
+        Campaign campaign = campaignTargeted.getCampaign();
 
         // Créer un lien entre la campagne et la bannière pour aider aux statistiques
         BannerCampaign bannerCampaign = new BannerCampaign(bannerID, campaign.getCampaignID());
@@ -146,24 +148,25 @@ public class BannerService {
                 break;
         }
 
-        // Create visit
-        Visit visit = new Visit(bannerID, false, (Boolean) campaignType.isTargeted());
-        visit = visitService.save(visit);
+        // Créer une visite pour la campagne et la bannière
+        Visit visit = visitService.create(bannerID, false, campaignTargeted.isTargeted());
+
         if (visit == null) {
             return new BannerResponse().failed();
         }
 
-        Royalty royalty = new Royalty(campaign.getAccountID(), visit.getVisitID(), Royalty.getFee((Boolean) campaignType.isTargeted(), false), false);
+        Royalty royalty = royaltyService.create(campaign, visit, campaignTargeted.isTargeted(), false);
+
         if (royalty == null) {
             return new BannerResponse().failed();
         }
 
-        return new BannerResponse().ok(src, alt, campaign.getCampaignID(), visit.getVisitID());
+        return new BannerResponse().ok(src, alt, campaign.getRedirectUrl(), visit.getVisitID());
     }
 
-    private CampaignType getCampaignForATargetedAd() {
+    private CampaignTargeted getCampaignForATargetedAd() {
 
-        CampaignType campaignType = null;
+        CampaignTargeted campaignTargeted = null;
 
         // Vérifier la présence du cookie de tracking
         Cookie cookie = WebUtils.getCookie(request, SQUIDSQUADS_COOKIE);
@@ -184,7 +187,7 @@ public class BannerService {
         // Si aucune campagne active
         if (activeCampaignList.isEmpty()) {
             // Retourner la bannière de SquidSquads (première campagne créée)
-            campaignType = new CampaignType(campaignRepository.findOne(SQUIDSQUADS_CAMPAIGN_ID), false);
+            campaignTargeted = new CampaignTargeted(campaignRepository.findOne(SQUIDSQUADS_CAMPAIGN_ID), false);
         } else {
             // Retourner le count de la totalité des sites visités (distinct/uniques) d’une empreinte
             int countTotalVisitedWebSites = (trackingInfoRepository.findAllByFingerprint(Serializer.fromString(userFingerprint))).size();
@@ -194,20 +197,20 @@ public class BannerService {
 
             // Si la liste est vide retourner une bannière random parmi les campagnes actives
             if (matchedCampaign.isEmpty()) {
-                campaignType = new CampaignType(getRandomCampaignInArray(activeCampaignList), false);
+                campaignTargeted = new CampaignTargeted(getRandomCampaignInArray(activeCampaignList), false);
 
             } else if (matchedCampaign.size() == 1) {
-                campaignType = new CampaignType(matchedCampaign.get(0), true);
+                campaignTargeted = new CampaignTargeted(matchedCampaign.get(0), true);
 
-            } else if (matchedCampaign.size() > 1) {
-                campaignType = new CampaignType(getRandomCampaignInArray(matchedCampaign), true);
+            } else {
+                campaignTargeted = new CampaignTargeted(getRandomCampaignInArray(matchedCampaign), true);
             }
         }
 
-        return campaignType;
+        return campaignTargeted;
     }
 
-    // Obtenir un item aleatoire d'un tableau
+    // Obtenir une campagne aléatoire parmi les campagnes de la liste
     private Campaign getRandomCampaignInArray(List<Campaign> campaigns) {
         int index = randomGenerator.nextInt(campaigns.size());
         return campaigns.get(index);
@@ -286,58 +289,25 @@ public class BannerService {
     }
 
     @Transactional
-    public RedirectResponse getRedirectUrl(Integer visitID, String redirectUrl)
-    {
+    public RedirectResponse getRedirectUrl(Integer visitID, String redirectUrl) {
+
+        // Mettre à jour la visite
         Visit visit = visitService.findByID(visitID);
-        if( visit == null )
-        {
+        if (visit == null) {
             return new RedirectResponse().failed();
         }
-
-
+        boolean isTargeted = visit.getTargeted();
         visit.setClicked(true);
-        Visit updatedVisit = visitService.save(visit);
+        visitService.update(visit);
 
+        // Mettre à jour la redevance
         Royalty royalty = royaltyService.findByVisitID(visitID);
-        royalty.setAmount(Royalty.getFee(visit.getTargeted(), true));
-        Royalty updatedRoyalty = royaltyService.save(royalty);
-
-        if( updatedVisit == null || updatedRoyalty == null)
-        {
+        if (royalty == null) {
             return new RedirectResponse().failed();
         }
+        royalty.setAmount(royaltyService.getFee(isTargeted, true));
+        royaltyService.update(royalty);
 
         return new RedirectResponse().redirect(redirectUrl);
     }
-
-
-    private class CampaignType<Campaign, Boolean> {
-        private Campaign campaign;
-        private Boolean isTargeted;
-
-        public CampaignType() {
-        }
-
-        public CampaignType(Campaign campaign, Boolean isTargeted) {
-            this.campaign = campaign;
-            this.isTargeted = isTargeted;
-        }
-
-        public Campaign getCampaign() {
-            return campaign;
-        }
-
-        public void setCampaign(Campaign campaign) {
-            this.campaign = campaign;
-        }
-
-        public Boolean isTargeted() {
-            return isTargeted;
-        }
-
-        public void setIsTargeted(Boolean isTargeted) {
-            this.isTargeted = isTargeted;
-        }
-    }
-
 }

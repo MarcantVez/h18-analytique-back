@@ -8,7 +8,6 @@ import com.squidsquads.model.Campaign;
 import com.squidsquads.model.CampaignProfile;
 import com.squidsquads.repository.CampaignProfileRepository;
 import com.squidsquads.repository.CampaignRepository;
-import com.squidsquads.repository.UserProfileRepository;
 import com.squidsquads.utils.DateFormatter;
 import com.squidsquads.utils.session.SessionManager;
 import org.slf4j.Logger;
@@ -40,14 +39,6 @@ public class CampaignService {
      */
     private Campaign findByNameAndAccountID(String name, Integer accountID) {
         return campaignRepository.findByNameAndAccountID(name, accountID);
-    }
-
-    /**
-     * Retourne une campagne publicitaire aléatoire
-     */
-    public Campaign getRandom(List<Campaign> activeCampaignList) {
-
-        return activeCampaignList.size() > 0 ? activeCampaignList.get(0) : null;
     }
 
     /**

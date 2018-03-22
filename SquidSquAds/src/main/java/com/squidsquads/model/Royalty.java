@@ -1,16 +1,12 @@
 package com.squidsquads.model;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
 @Table(name = "redevance")
 public class Royalty {
-
-    private static final float ROYALTY_FEE_VIEWED = 0.01f;
-    private static final float ROYALTY_FEE_TARGETED_VIEWED = 0.03f;
-    private static final float ROYALTY_FEE_CLICKED = 0.05f;
-    private static final float ROYALTY_FEE_TARGETED_CLICKED = 0.10f;
 
     @Id
     @SequenceGenerator(name = "redevance_id_redevance_seq", sequenceName = "redevance_id_redevance_seq", allocationSize = 1)
@@ -25,7 +21,7 @@ public class Royalty {
     private Integer visitID;
 
     @Column(name = "montant")
-    private Float amount;
+    private BigDecimal amount;
 
     @Column(name = "est_reclame")
     private Boolean isClaimed;
@@ -33,9 +29,10 @@ public class Royalty {
     @Column(name = "date_creation")
     private Date creationDate;
 
-    public Royalty(){}
+    public Royalty() {
+    }
 
-    public Royalty(Integer accountID, Integer visitID, Float amount, Boolean isClaimed) {
+    public Royalty(Integer accountID, Integer visitID, BigDecimal amount, Boolean isClaimed) {
         this.accountID = accountID;
         this.visitID = visitID;
         this.amount = amount;
@@ -67,11 +64,11 @@ public class Royalty {
         this.visitID = visitID;
     }
 
-    public Float getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Float amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -89,21 +86,5 @@ public class Royalty {
 
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
-    }
-
-    public static float getFee(boolean isTargeted, boolean isClicked)
-    {
-        float fee = 0.f;
-
-        if( isTargeted )
-        {
-            fee = (isClicked) ? ROYALTY_FEE_TARGETED_CLICKED : ROYALTY_FEE_TARGETED_VIEWED;
-        }
-        else
-        {
-            fee = (isClicked) ? ROYALTY_FEE_CLICKED : ROYALTY_FEE_VIEWED;
-        }
-
-        return fee;
     }
 }
