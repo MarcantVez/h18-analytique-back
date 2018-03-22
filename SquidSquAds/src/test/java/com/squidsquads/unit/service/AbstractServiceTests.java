@@ -82,7 +82,7 @@ public class AbstractServiceTests {
         // Banner Service
         ReflectionTestUtils.setField(bannerService, "bannerRepository", bannerRepository);
         ReflectionTestUtils.setField(bannerService, "bannerCampaignRepository", bannerCampaignRepository);
-        ReflectionTestUtils.setField(bannerService, "campaignService", campaignService);
+        ReflectionTestUtils.setField(bannerService, "campaignRepository", campaignRepository);
         ReflectionTestUtils.setField(bannerService, "webSiteAdminService", webSiteAdminService);
 
         // Campaign Service

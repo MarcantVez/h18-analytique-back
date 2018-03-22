@@ -2,6 +2,7 @@ package com.squidsquads.service;
 
 import com.squidsquads.form.account.response.BannerListResponse;
 import com.squidsquads.form.banner.response.BannerResponse;
+import com.squidsquads.form.banner.response.RedirectResponse;
 import com.squidsquads.model.*;
 import com.squidsquads.repository.*;
 import com.squidsquads.utils.Serializer;
@@ -14,6 +15,7 @@ import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -48,6 +50,12 @@ public class BannerService {
 
     @Autowired
     private SiteRepository siteRepository;
+
+    @Autowired
+    private VisitService visitService;
+
+    @Autowired
+    private RoyaltyService royaltyService;
 
     @Autowired
     private HttpServletRequest request;
@@ -96,7 +104,6 @@ public class BannerService {
             }
         }
 
-
         return new BannerListResponse().ok(webSiteAdmin.getWebSiteAdminID(), horID, verID, mobID);
     }
 
@@ -113,11 +120,13 @@ public class BannerService {
         }
 
         // Aller chercher une campagne ciblée
-        Campaign campaign = getCampaignForATargetedAd();
+        CampaignTargeted campaignTargeted = getCampaignForATargetedAd();
 
-        if (campaign == null) {
+        if (campaignTargeted == null) {
             return new BannerResponse().failed();
         }
+
+        Campaign campaign = campaignTargeted.getCampaign();
 
         // Créer un lien entre la campagne et la bannière pour aider aux statistiques
         BannerCampaign bannerCampaign = new BannerCampaign(bannerID, campaign.getCampaignID());
@@ -125,7 +134,6 @@ public class BannerService {
 
         // À partir des informations de la campagne, bâtir la réponse
         String alt = campaign.getName();
-        String redirectUrl = campaign.getRedirectUrl();
         String src = null;
 
         switch (Orientation.valueOf(banner.getOrientation())) {
@@ -140,10 +148,25 @@ public class BannerService {
                 break;
         }
 
-        return new BannerResponse().ok(src, alt, redirectUrl);
+        // Créer une visite pour la campagne et la bannière
+        Visit visit = visitService.create(bannerID, false, campaignTargeted.isTargeted());
+
+        if (visit == null) {
+            return new BannerResponse().failed();
+        }
+
+        Royalty royalty = royaltyService.create(campaign, visit, campaignTargeted.isTargeted(), false);
+
+        if (royalty == null) {
+            return new BannerResponse().failed();
+        }
+
+        return new BannerResponse().ok(src, alt, campaign.getRedirectUrl(), visit.getVisitID());
     }
 
-    private Campaign getCampaignForATargetedAd() {
+    private CampaignTargeted getCampaignForATargetedAd() {
+
+        CampaignTargeted campaignTargeted = null;
 
         // Vérifier la présence du cookie de tracking
         Cookie cookie = WebUtils.getCookie(request, SQUIDSQUADS_COOKIE);
@@ -166,7 +189,7 @@ public class BannerService {
         // Si aucune campagne active
         if (activeCampaignList.isEmpty()) {
             // Retourner la bannière de SquidSquads (première campagne créée)
-            return campaignRepository.findOne(SQUIDSQUADS_CAMPAIGN_ID);
+            campaignTargeted = new CampaignTargeted(campaignRepository.findOne(SQUIDSQUADS_CAMPAIGN_ID), false);
         } else {
             // Retourner le count de la totalité des sites visités (distinct/uniques) d’une empreinte
             int countTotalVisitedWebSites = (trackingInfoRepository.findAllByFingerprint(Serializer.fromString(userFingerprint))).size();
@@ -176,20 +199,20 @@ public class BannerService {
 
             // Si la liste est vide retourner une bannière random parmi les campagnes actives
             if (matchedCampaign.isEmpty()) {
-                return getRandomCampaignInArray(activeCampaignList);
+                campaignTargeted = new CampaignTargeted(getRandomCampaignInArray(activeCampaignList), false);
 
             } else if (matchedCampaign.size() == 1) {
-                return matchedCampaign.get(0);
+                campaignTargeted = new CampaignTargeted(matchedCampaign.get(0), true);
 
-            } else if (matchedCampaign.size() > 1) {
-                return getRandomCampaignInArray(matchedCampaign);
+            } else {
+                campaignTargeted = new CampaignTargeted(getRandomCampaignInArray(matchedCampaign), true);
             }
         }
 
-        return null;
+        return campaignTargeted;
     }
 
-    // Obtenir un item aleatoire d'un tableau
+    // Obtenir une campagne aléatoire parmi les campagnes de la liste
     private Campaign getRandomCampaignInArray(List<Campaign> campaigns) {
         int index = randomGenerator.nextInt(campaigns.size());
         return campaigns.get(index);
@@ -267,4 +290,26 @@ public class BannerService {
         return activeCampaigns;
     }
 
+    @Transactional
+    public RedirectResponse getRedirectUrl(Integer visitID, String redirectUrl) {
+
+        // Mettre à jour la visite
+        Visit visit = visitService.findByID(visitID);
+        if (visit == null) {
+            return new RedirectResponse().failed();
+        }
+        boolean isTargeted = visit.getTargeted();
+        visit.setClicked(true);
+        visitService.update(visit);
+
+        // Mettre à jour la redevance
+        Royalty royalty = royaltyService.findByVisitID(visitID);
+        if (royalty == null) {
+            return new RedirectResponse().failed();
+        }
+        royalty.setAmount(royaltyService.getFee(isTargeted, true));
+        royaltyService.update(royalty);
+
+        return new RedirectResponse().redirect(redirectUrl);
+    }
 }

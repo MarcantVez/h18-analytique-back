@@ -1,8 +1,7 @@
 package com.squidsquads.model;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.util.Date;
 
 @Entity
 @Table(name = "visite")
@@ -12,39 +11,67 @@ public class Visit {
     @SequenceGenerator(name = "visite_id_visite_seq", sequenceName = "visite_id_visite_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "visite_id_visite_seq")
     @Column(name = "id_visite")
-    private Integer visitId;
+    private Integer visitID;
+
+    @Column(name = "id_banniere")
+    private Integer bannerID;
 
     @Column(name = "est_Cliquee")
-    private Boolean estCliquee;
+    private Boolean isClicked;
 
     @Column(name = "est_Ciblee")
-    private Boolean estCiblee;
+    private Boolean isTargeted;
 
     @Column(name = "date_heure")
-    private Timestamp dateTime;
+    private Date dateTime;
 
     public Visit() {
     }
 
-    public Visit(Boolean estCliquee, Boolean estCiblee) {
-        this.estCliquee = estCliquee;
-        this.estCiblee = estCiblee;
-        this.dateTime = Timestamp.from(Instant.now());
+    public Visit(Integer bannerID, Boolean isClicked, Boolean isTargeted) {
+        this.bannerID = bannerID;
+        this.isClicked = isClicked;
+        this.isTargeted = isTargeted;
+        this.dateTime = new Date();
     }
 
-    public Integer getVisitId() {
-        return visitId;
+    public Integer getVisitID() {
+        return visitID;
     }
 
-    public Boolean getEstCiblee() {
-        return estCiblee;
+    public void setVisitID(Integer visitID) {
+        this.visitID = visitID;
     }
 
-    public Boolean getEstCliquee() {
-        return estCliquee;
+    public Integer getBannerID() {
+        return bannerID;
     }
 
-    public Timestamp getDateTime() {
+    public void setBannerID(Integer bannerID) {
+        this.bannerID = bannerID;
+    }
+
+    public Boolean getClicked() {
+        return isClicked;
+    }
+
+    public void setClicked(Boolean clicked) {
+        isClicked = clicked;
+    }
+
+    public Boolean getTargeted() {
+        return isTargeted;
+    }
+
+    public void setTargeted(Boolean targeted) {
+        isTargeted = targeted;
+    }
+
+    public Date getDateTime() {
         return dateTime;
+    }
+
+    public void setDateTime(Date dateTime) {
+        this.dateTime = dateTime;
     }
 }

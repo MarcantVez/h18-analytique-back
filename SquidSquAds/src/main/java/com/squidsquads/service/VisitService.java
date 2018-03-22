@@ -7,8 +7,10 @@ import com.squidsquads.form.visit.response.VisitResponse;
 import com.squidsquads.model.Fingerprint;
 import com.squidsquads.model.TrackingInfo;
 import com.squidsquads.model.UserAgent;
+import com.squidsquads.model.Visit;
 import com.squidsquads.repository.TrackingInfoRepository;
 import com.squidsquads.repository.UserAgentRepository;
+import com.squidsquads.repository.VisitRepository;
 import com.squidsquads.utils.Serializer;
 import com.squidsquads.utils.TimeSpentCalculator;
 import org.slf4j.Logger;
@@ -50,6 +52,9 @@ public class VisitService {
     @Autowired
     private UserAgentRepository userAgentRepository;
 
+    @Autowired
+    private VisitRepository visitRepository;
+
     public VisitService() {
 
         try {
@@ -72,6 +77,18 @@ public class VisitService {
                 BrowsCapField.PLATFORM_VERSION,
                 BrowsCapField.PLATFORM_MAKER
         ));
+    }
+
+    public Visit findByID(Integer visitID) {
+        return visitRepository.findOne(visitID);
+    }
+
+    public Visit create(Integer bannerID, boolean isClicked, boolean isTargerted) {
+        return visitRepository.save(new Visit(bannerID, isClicked, isTargerted));
+    }
+
+    public Visit update(Visit visit) {
+        return visitRepository.save(visit);
     }
 
     /**
@@ -260,5 +277,4 @@ public class VisitService {
     private boolean isTrackingFollowingOneAnother(TrackingInfo lastInfo) {
         return lastInfo != null && calculator.calculateTimeFromNow(lastInfo.getDateTime()) <= (lastInfo.getTimeSpent() + GRACE_PERIOD_BETWEEN_VISITS);
     }
-
 }
