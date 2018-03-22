@@ -47,6 +47,8 @@ public class Campaign {
     @Column(name = "budget")
     private BigDecimal budget;
 
+    private boolean isActive;
+
     public Campaign() {
     }
 
@@ -63,25 +65,15 @@ public class Campaign {
         this.budget = budget;
         this.creationDate = new Date();
         this.profileIds = linkedProfiles;
+        this.isActive = false;
     }
 
-    /**
-     * Vérifier que la campagne est active
-     *
-     * @return booléen indiqant si la campagne est active (true si active)
-     */
     public boolean isActive() {
-
-        boolean isActive = false;
-        Date currentDate = new Date();
-
-        if (currentDate.equals(startDate) || currentDate.equals(endDate)) {
-            isActive = true;
-        } else if (currentDate.after(startDate) && currentDate.before(endDate)) {
-            isActive = true;
-        }
-
         return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     public Integer getCampaignID() {
