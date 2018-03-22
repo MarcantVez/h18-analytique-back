@@ -174,7 +174,7 @@ public class BannerService {
         if (cookie == null) {
             List<Campaign> campaignList = campaignRepository.findAll();
             List<Campaign> activeCampaignList = findActiveCampaigns(campaignList);
-            return getRandomCampaignInArray(activeCampaignList);
+            return new CampaignTargeted(getRandomCampaignInArray(activeCampaignList), false);
         }
 
         // Récupérer le cookie et des headers dans la requête
