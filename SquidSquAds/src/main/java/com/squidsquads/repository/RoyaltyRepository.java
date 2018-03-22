@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface RoyaltyRepository extends JpaRepository<Royalty, Integer> {
     Royalty findByVisitID(Integer visitID);
-    List<Royalty> findAllByAccountIDAndClaimed(Integer accountID, Boolean isClaimed);
+    List<Royalty> findAllByAccountIDAndIsClaimed(Integer accountID, Boolean isClaimed);
 }

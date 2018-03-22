@@ -39,7 +39,7 @@ public class PaymentService {
         }
 
         // Aller chercher la totalité des redevances non-réclamées
-        List<Royalty> royaltyList = royaltyRepository.findAllByAccountIDAndClaimed(accountID, false);
+        List<Royalty> royaltyList = royaltyRepository.findAllByAccountIDAndIsClaimed(accountID, false);
 
         if (royaltyList.isEmpty()) {
             return new CreateResponse().failed();
