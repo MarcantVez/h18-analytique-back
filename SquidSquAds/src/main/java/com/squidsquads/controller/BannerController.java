@@ -29,7 +29,7 @@ public class BannerController {
     // --------------------------------------------------------------------- //
     @PostMapping("/redirect")
     public ResponseEntity<BannerResponse> redirect(@Valid @RequestBody RedirectRequest redirectRequest) {
-        RedirectResponse redirectResponse = bannerService.getRedirectUrl(redirectRequest.getVisitID(), redirectRequest.getCampaignID());
+        RedirectResponse redirectResponse = bannerService.getRedirectUrl(redirectRequest.getVisitID(), redirectRequest.getRedirectUrl());
         return ResponseEntity.status(redirectResponse.getStatus()).location(URI.create(redirectResponse.getRedirectUrl())).build();
     }
 }

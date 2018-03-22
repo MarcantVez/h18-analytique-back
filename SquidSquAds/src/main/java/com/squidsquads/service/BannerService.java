@@ -286,7 +286,7 @@ public class BannerService {
     }
 
     @Transactional
-    public RedirectResponse getRedirectUrl(Integer visitID, Integer campaignID)
+    public RedirectResponse getRedirectUrl(Integer visitID, String redirectUrl)
     {
         Visit visit = visitService.findByID(visitID);
         if( visit == null )
@@ -307,9 +307,7 @@ public class BannerService {
             return new RedirectResponse().failed();
         }
 
-        Campaign campaign = campaignRepository.findOne(campaignID);
-
-        return new RedirectResponse().redirect(campaign.getRedirectUrl());
+        return new RedirectResponse().redirect(redirectUrl);
     }
 
 

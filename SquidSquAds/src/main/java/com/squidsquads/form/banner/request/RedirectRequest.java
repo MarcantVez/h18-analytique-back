@@ -1,15 +1,15 @@
 package com.squidsquads.form.banner.request;
 
 public class RedirectRequest {
-    private Integer campaignID;
+    private String redirectUrl;
     private Integer visitID;
 
-    public Integer getCampaignID() {
-        return campaignID;
+    public String getRedirectUrl() {
+        return redirectUrl;
     }
 
-    public void setCampaignID(Integer campaignID) {
-        this.campaignID = campaignID;
+    public void setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
     }
 
     public Integer getVisitID() {
