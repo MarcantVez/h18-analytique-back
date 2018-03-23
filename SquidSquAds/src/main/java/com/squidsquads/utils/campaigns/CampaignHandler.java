@@ -26,26 +26,27 @@ public class CampaignHandler {
     @Autowired
     private CampaignRepository campaignRepository;
 
-    @Scheduled(fixedRate = 120000)
-    public void reportCurrentTime() {
-        List<Campaign> campaigns = campaignRepository.findAll();
-        if (!campaigns.isEmpty()) {
-            for (Campaign c : campaigns) {
-                //Vérifier que la campagne est active
-                System.out.println("Verification de la camapagne: " + c.getName());
-                boolean isActive = false;
-                Date currentDate = new Date();
-                if (currentDate.equals(c.getStartDate()) || currentDate.equals(c.getEndDate())) {
-                    isActive = true;
-                } else if (currentDate.after(c.getStartDate()) && currentDate.before(c.getEndDate())) {
-                    isActive = true;
-                }
-                System.out.println("La campagne " + c.getName() + " est active = " + isActive);
-                c.setActive(isActive);
-                log.info("The campaign " + c.getName() + "is active = " + isActive, dateFormat.format(new Date()));
-            }
-        } else {
-            System.out.println("No campaigns were found");
-        }
-    }
+//    @Scheduled(fixedRate = 120000)
+//    public void reportCurrentTime() {
+//        List<Campaign> campaigns = campaignRepository.findAll();
+//
+//        if (!campaigns.isEmpty()) {
+//            for (Campaign c : campaigns) {
+//                //Vérifier que la campagne est active
+//                System.out.println("Verification de la camapagne: " + c.getName());
+//                boolean isActive = false;
+//                Date currentDate = new Date();
+//                if (currentDate.equals(c.getStartDate()) || currentDate.equals(c.getEndDate())) {
+//                    isActive = true;
+//                } else if (currentDate.after(c.getStartDate()) && currentDate.before(c.getEndDate())) {
+//                    isActive = true;
+//                }
+//                System.out.println("La campagne " + c.getName() + " est active = " + isActive);
+//                c.setActive(isActive);
+//                log.info("The campaign " + c.getName() + "is active = " + isActive, dateFormat.format(new Date()));
+//            }
+//        } else {
+//            System.out.println("No campaigns were found");
+//        }
+//    }
 }
