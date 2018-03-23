@@ -155,7 +155,7 @@ public class BannerService {
             return new BannerResponse().failed();
         }
 
-        Royalty royalty = royaltyService.create(campaign, visit, campaignTargeted.isTargeted(), false);
+        Royalty royalty = royaltyService.create(banner.getAccountID(), visit, campaignTargeted.isTargeted(), false);
 
         if (royalty == null) {
             return new BannerResponse().failed();

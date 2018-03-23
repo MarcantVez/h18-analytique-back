@@ -46,7 +46,7 @@ public class PaymentService {
         }
 
         for (Royalty royalty: royaltyList) {
-            amount.add(royalty.getAmount());
+            amount = amount.add(royalty.getAmount());
             royalty.setClaimed(true);
         }
 
