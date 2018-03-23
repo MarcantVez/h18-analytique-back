@@ -26,7 +26,7 @@ public class CampaignHandler {
     @Autowired
     private CampaignRepository campaignRepository;
 
-    @Scheduled(fixedRate = 120000)
+    @Scheduled(fixedRate = 600000)
     public void reportCurrentTime() {
         List<Campaign> campaigns = campaignRepository.findAll();
 
