@@ -30,7 +30,7 @@ public class CreateResponse {
     }
 
     public CreateResponse noAmount() {
-        status = HttpStatus.OK;
+        status = HttpStatus.BAD_REQUEST;
         message = NO_ROYALTY_FOUND;
         return this;
     }

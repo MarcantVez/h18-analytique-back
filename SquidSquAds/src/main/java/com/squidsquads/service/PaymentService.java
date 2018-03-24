@@ -81,7 +81,7 @@ public class PaymentService {
         List<Royalty> royaltyList = royaltyRepository.findAllByAccountIDAndIsClaimed(accountID, false);
 
         for (Royalty royalty: royaltyList) {
-            Visit relatedVisit = visitRepository.findByVisitID(royalty.getVisitID());
+            Visit relatedVisit = visitRepository.findOne(royalty.getVisitID());
             if(relatedVisit.getClicked() && relatedVisit.getTargeted())
                 fromTargetedClicks = fromTargetedClicks.add(royalty.getAmount());
             if(!relatedVisit.getClicked() && !relatedVisit.getTargeted())
