@@ -27,4 +27,28 @@ public class AmountDueResponse {
         this.status = HttpStatus.BAD_REQUEST;
         return this;
     }
+
+    public HttpStatus getStatus() {
+        return status;
+    }
+
+    public Float getFromViews() {
+        return fromViews;
+    }
+
+    public Float getFromTargetedViews() {
+        return fromTargetedViews;
+    }
+
+    public Float getFromClicks() {
+        return fromClicks;
+    }
+
+    public Float getFromTargetedClicks() {
+        return fromTargetedClicks;
+    }
+
+    public Float getTotalAmount() {
+        return totalAmount;
+    }
 }
