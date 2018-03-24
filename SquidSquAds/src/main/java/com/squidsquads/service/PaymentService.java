@@ -48,6 +48,7 @@ public class PaymentService {
         for (Royalty royalty: royaltyList) {
             amount = amount.add(royalty.getAmount());
             royalty.setClaimed(true);
+            royaltyRepository.save(royalty);
         }
 
         Payment payment = new Payment(
@@ -55,7 +56,7 @@ public class PaymentService {
                 amount
         );
 
-        Payment created = paymentRepository.save(payment);
+        paymentRepository.save(payment);
 
         return new com.squidsquads.form.payment.response.CreateResponse().ok();
     }
