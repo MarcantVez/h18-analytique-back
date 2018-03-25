@@ -65,7 +65,6 @@ public class Campaign {
         this.budget = budget;
         this.creationDate = new Date();
         this.profileIds = linkedProfiles;
-        this.isActive = false;
     }
 
     @PostLoad
@@ -77,7 +76,7 @@ public class Campaign {
         } else if (currentDate.after(startDate) && currentDate.before(endDate)) {
             isActive = true;
         }
-        setActive(isActive);
+        this.isActive = isActive;
     }
 
     public boolean isActive() {

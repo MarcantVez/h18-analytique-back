@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.PostLoad;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +29,6 @@ public class CampaignHandler {
     @Scheduled(fixedRate = 600000)
     public void reportCurrentTime() {
         List<Campaign> campaigns = campaignRepository.findAll();
-
         if (!campaigns.isEmpty()) {
             for (Campaign c : campaigns) {
                 //Vérifier que la campagne est active
