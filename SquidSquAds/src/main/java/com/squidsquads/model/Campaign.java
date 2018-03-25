@@ -68,6 +68,18 @@ public class Campaign {
         this.isActive = false;
     }
 
+    @PostLoad
+    public void handleActiveStatus(){
+        boolean isActive = false;
+        Date currentDate = new Date();
+        if (currentDate.equals(startDate) || currentDate.equals(endDate)) {
+            isActive = true;
+        } else if (currentDate.after(startDate) && currentDate.before(endDate)) {
+            isActive = true;
+        }
+        setActive(isActive);
+    }
+
     public boolean isActive() {
         return isActive;
     }
