@@ -18,8 +18,7 @@ public class PaymentController {
 
     @PostMapping("")
     @SessionAuthorize(AdminType.WEB)
-    public ResponseEntity<?> createPayment(@RequestHeader("Token") String token) {
-
+    public ResponseEntity<CreateResponse> createPayment(@RequestHeader("Token") String token) {
         CreateResponse createResponse = paymentService.create(token);
         return ResponseEntity.status(createResponse.getStatus()).body(createResponse);
     }
