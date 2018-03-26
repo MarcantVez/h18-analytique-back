@@ -19,6 +19,8 @@ public class AbstractServiceTests {
     private static UserProfileService userProfileService;
     private static VisitService visitService;
     private static WebSiteAdminService webSiteAdminService;
+    private static PaymentService paymentService;
+    private static RoyaltyService royaltyService;
 
     // Repositories
     private static AccountRepository accountRepository;
@@ -31,6 +33,9 @@ public class AbstractServiceTests {
     private static UserAgentRepository userAgentRepository;
     private static UserProfileRepository userProfileRepository;
     private static WebSiteAdminRepository webSiteAdminRepository;
+    private static VisitRepository visitRepository;
+    private static PaymentRepository paymentRepository;
+    private static RoyaltyRepository royaltyRepository;
 
     // Utilities
     private static TimeSpentCalculator calculator;
@@ -54,6 +59,8 @@ public class AbstractServiceTests {
         userProfileService = new UserProfileService();
         visitService = new VisitService();
         webSiteAdminService = new WebSiteAdminService();
+        paymentService = new PaymentService();
+        royaltyService = new RoyaltyService();
     }
 
     private static void mockRepositories() {
@@ -68,6 +75,9 @@ public class AbstractServiceTests {
         userAgentRepository = mock(UserAgentRepository.class);
         userProfileRepository = mock(UserProfileRepository.class);
         webSiteAdminRepository = mock(WebSiteAdminRepository.class);
+        visitRepository = mock(VisitRepository.class);
+        royaltyRepository = mock(RoyaltyRepository.class);
+        paymentRepository = mock(PaymentRepository.class);
         calculator = mock(TimeSpentCalculator.class);
         request = mock(HttpServletRequest.class);
     }
@@ -103,6 +113,14 @@ public class AbstractServiceTests {
 
         // Web Site Admin Service
         ReflectionTestUtils.setField(webSiteAdminService, "webSiteAdminRepository", webSiteAdminRepository);
+
+        // Payment service
+        ReflectionTestUtils.setField(paymentService, "paymentRepository", paymentRepository);
+        ReflectionTestUtils.setField(paymentService, "royaltyRepository", royaltyRepository);
+        ReflectionTestUtils.setField(paymentService, "visitRepository", visitRepository);
+
+        // Royalty Service
+        ReflectionTestUtils.setField(royaltyService, "royaltyRepository", royaltyRepository);
     }
 
     /////////////
@@ -131,6 +149,14 @@ public class AbstractServiceTests {
 
     public static WebSiteAdminService getWebSiteAdminService() {
         return webSiteAdminService;
+    }
+
+    public static PaymentService getPaymentService() {
+        return paymentService;
+    }
+
+    public static RoyaltyService getRoyaltyService() {
+        return royaltyService;
     }
 
     public static AccountRepository getAccountRepository() {
@@ -171,6 +197,18 @@ public class AbstractServiceTests {
 
     public static WebSiteAdminRepository getWebSiteAdminRepository() {
         return webSiteAdminRepository;
+    }
+
+    public static VisitRepository getVisitRepository() {
+        return visitRepository;
+    }
+
+    public static PaymentRepository getPaymentRepository() {
+        return paymentRepository;
+    }
+
+    public static RoyaltyRepository getRoyaltyRepository() {
+        return royaltyRepository;
     }
 
     public static TimeSpentCalculator getCalculator() {
