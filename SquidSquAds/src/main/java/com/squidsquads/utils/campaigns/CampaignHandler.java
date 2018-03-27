@@ -33,10 +33,10 @@ public class CampaignHandler {
             for (Campaign c : campaigns) {
                 //Vérifier que la campagne est active
                 c.handleActiveStatus();
-                log.info("The campaign " + c.getName() + "is active = " + c.isActive(), dateFormat.format(new Date()));
+                log.debug("The campaign " + c.getName() + "is active = " + c.isActive(), dateFormat.format(new Date()));
             }
         } else {
-            log.info("No active campaigns were found.", dateFormat.format(new Date()));
+            log.debug("No active campaigns were found.", dateFormat.format(new Date()));
         }
     }
 }
