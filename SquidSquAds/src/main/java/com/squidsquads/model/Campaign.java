@@ -79,6 +79,11 @@ public class Campaign {
         this.isActive = isActive;
     }
 
+    @PostLoad
+    public void handleMaxBudget(BigDecimal amountSpent) {
+        this.isActive = (budget.compareTo(amountSpent) > 0);
+    }
+
     public boolean isActive() {
         return isActive;
     }
@@ -182,5 +187,4 @@ public class Campaign {
     public void setProfileIds(Integer[] profileIds) {
         this.profileIds = profileIds;
     }
-
 }
