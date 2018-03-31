@@ -22,7 +22,7 @@ public class ServiceTestHelper {
     protected final String CLEAR_PASSWORD = "Password1!";
     protected final String HASHED_PASSWORD = "$2a$10$qyyJ6RAOdVdLzrF1EFsgkuE5/2P9IkK/G4mZoGoDyWrV7bm8pz.lu";
 
-    protected final String BANK_ACCOUNT = "000-12345";
+    protected final String BANK_ACCOUNT = "00012345";
     protected final String DOMAIN = "https://www.google.ca";
 
     protected final String CAMPAIGN_NAME = "Ma campagne ultra!";
