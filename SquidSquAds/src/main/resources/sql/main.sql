@@ -235,8 +235,7 @@ INSERT INTO campagne VALUES
     'https://i.imgur.com/BdMNBkM.png',
     'https://www.squidsquads.site',
     NOW(),
-    NOW(),
-    1
+    NOW()
   );
 
 INSERT INTO profilutilisateur VALUES
