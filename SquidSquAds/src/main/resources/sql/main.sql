@@ -66,8 +66,7 @@ CREATE TABLE campagne
   image_mob          VARCHAR(100),
   url_de_redirection VARCHAR(100),
   date_debut         TIMESTAMP,
-  date_fin           TIMESTAMP,
-  budget             NUMERIC(8, 2)
+  date_fin           TIMESTAMP
 );
 
 CREATE TABLE profilutilisateur
