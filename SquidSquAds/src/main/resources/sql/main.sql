@@ -144,7 +144,7 @@ CREATE TABLE infodesuivi
   adresse_ipv4        VARCHAR(50),
   adresse_ipv6        VARCHAR(50),
   taille_ecran        VARCHAR(50),
-  langue              VARCHAR(50),
+  langue              VARCHAR(500),
   tempsecoule         INTEGER,
   date_heure          TIMESTAMP
 );
