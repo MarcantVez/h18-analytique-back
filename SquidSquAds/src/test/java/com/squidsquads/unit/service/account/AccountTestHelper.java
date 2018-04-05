@@ -60,7 +60,7 @@ public class AccountTestHelper extends ServiceTestHelper {
     }
 
     public CreateRequest getCreateRequestWhereBankFormatIsWrong() {
-        return buildCreateRequest(AdminType.WEB.name(), EMAIL_WEB, DOMAIN, "not valid", CLEAR_PASSWORD, CLEAR_PASSWORD);
+        return buildCreateRequest(AdminType.WEB.name(), EMAIL_WEB, DOMAIN, "000-12345", CLEAR_PASSWORD, CLEAR_PASSWORD);
     }
 
     public CreateRequest getCreateRequestWherePasswordsDoNotMatch() {
