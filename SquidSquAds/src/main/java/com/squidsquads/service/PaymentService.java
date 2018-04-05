@@ -30,6 +30,7 @@ import java.util.List;
 public class PaymentService {
 
     private static final Logger logger = LoggerFactory.getLogger(CampaignService.class);
+
     private static final String API_KEY = "30280103-7766-44df-8d96-49332f5e194c";
     private static final String POST_URL_GEL = "https://gti525passerelle.com/api/gel";
     private static final String POST_URL_TRANSACTION = "https://gti525passerelle.com/api/transaction";
@@ -38,7 +39,6 @@ public class PaymentService {
     private static final String CARD_NUMBER = "9140831287207583";
     private static final String CVV = "299";
     private static final String EXPIRATION_DATE = "2018-05-25";
-
 
     @Autowired
     private PaymentRepository paymentRepository;
@@ -71,7 +71,7 @@ public class PaymentService {
             return new CreateResponse().noAmount();
         }
 
-        for (Royalty royalty: royaltyList) {
+        for (Royalty royalty : royaltyList) {
             amount = amount.add(royalty.getAmount());
             royalty.setClaimed(true);
             royaltyRepository.save(royalty);
@@ -82,8 +82,8 @@ public class PaymentService {
                 amount
         );
 
-
         Boolean boolSuccess = false;
+
         try {
             // Première requête pour geler les fonds
             // https://stackoverflow.com/questions/38372422/how-to-post-form-data-with-spring-resttemplate
@@ -110,7 +110,7 @@ public class PaymentService {
             // Deuxième requête pour accepter de faire la transaction
             if (responseGel.getStatusCode().value() == 200) {
 
-                String id = (responseGel.getBody().replace("\"", ""));
+                String id = responseGel.getBody().replace("\"", "");
 
                 MultiValueMap<String, String> transaction = new LinkedMultiValueMap<String, String>();
                 transaction.add("id", id);
@@ -119,12 +119,15 @@ public class PaymentService {
                 HttpEntity<MultiValueMap<String, String>> requestTransaction = new HttpEntity<MultiValueMap<String, String>>(transaction, headers);
 
                 ResponseEntity<String> responseTransaction = restTemplate.postForEntity(POST_URL_TRANSACTION, requestTransaction, String.class);
+
+                if (responseTransaction.getStatusCode().value() == 200) {
+                    boolSuccess = true;
+                }
             }
 
-            boolSuccess = true;
-
-        } catch(Exception e) {
-
+        } catch (Exception e) {
+            boolSuccess = false;
+            logger.error("Le paiement avec passerelle n'a pas fonctionné. Erreur : " + e.getMessage());
         }
 
         if (boolSuccess) {
@@ -137,7 +140,9 @@ public class PaymentService {
     }
 
     public AmountDueResponse getAmount(String token) {
+
         Integer accountID = SessionManager.getInstance().getAccountIdForToken(token);
+
         // Si le compte n'a pas de session ici, c'est un probleme serveur
         if (SessionManager.NO_SESSION.equals(accountID)) {
             logger.error("Un compte basé sur un token de session est introuvable");
@@ -148,18 +153,19 @@ public class PaymentService {
         BigDecimal fromViews = BigDecimal.valueOf(0.00);
         BigDecimal fromTargetedClicks = BigDecimal.valueOf(0.00);
         BigDecimal fromTargetedViews = BigDecimal.valueOf(0.00);
+
         // Aller chercher la totalité des redevances non-réclamées
         List<Royalty> royaltyList = royaltyRepository.findAllByAccountIDAndIsClaimed(accountID, false);
 
-        for (Royalty royalty: royaltyList) {
+        for (Royalty royalty : royaltyList) {
             Visit relatedVisit = visitRepository.findOne(royalty.getVisitID());
-            if(relatedVisit.getClicked() && relatedVisit.getTargeted())
+            if (relatedVisit.getClicked() && relatedVisit.getTargeted())
                 fromTargetedClicks = fromTargetedClicks.add(royalty.getAmount());
-            if(!relatedVisit.getClicked() && !relatedVisit.getTargeted())
+            if (!relatedVisit.getClicked() && !relatedVisit.getTargeted())
                 fromViews = fromViews.add(royalty.getAmount());
-            if(relatedVisit.getClicked() && !relatedVisit.getTargeted())
+            if (relatedVisit.getClicked() && !relatedVisit.getTargeted())
                 fromClicks = fromClicks.add(royalty.getAmount());
-            if(!relatedVisit.getClicked() && relatedVisit.getTargeted())
+            if (!relatedVisit.getClicked() && relatedVisit.getTargeted())
                 fromTargetedViews = fromTargetedViews.add(royalty.getAmount());
         }
 
