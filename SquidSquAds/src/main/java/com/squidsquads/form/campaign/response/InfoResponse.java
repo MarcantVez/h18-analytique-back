@@ -18,7 +18,6 @@ public class InfoResponse {
     private String redirectUrl;
     private String startDate;
     private String endDate;
-    private BigDecimal budget;
 
     private HttpStatus status;
     private String message;
@@ -39,7 +38,6 @@ public class InfoResponse {
         redirectUrl = c.getRedirectUrl();
         startDate = DateFormatter.DateToString(c.getStartDate());
         endDate = DateFormatter.DateToString(c.getEndDate());
-        budget = c.getBudget();
         status = HttpStatus.OK;
         return this;
     }
@@ -102,10 +100,6 @@ public class InfoResponse {
 
     public String getEndDate() {
         return endDate;
-    }
-
-    public BigDecimal getBudget() {
-        return budget;
     }
 
     public String getMessage() {

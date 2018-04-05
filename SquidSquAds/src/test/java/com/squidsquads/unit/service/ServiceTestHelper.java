@@ -30,7 +30,6 @@ public class ServiceTestHelper {
     protected final Integer[] PROFILE_IDS = new Integer[]{41, 42, 43};
     protected final String START_DATE = "2018-01-01";
     protected final String END_DATE = "2019-01-01";
-    protected final BigDecimal BUDGET = new BigDecimal(6789.95);
     protected final String HOR_URL = "https://www.horizontal.image";
     protected final String VER_URL = "https://www.vertical.image";
     protected final String MOB_URL = "https://www.mobile.image";
@@ -81,7 +80,6 @@ public class ServiceTestHelper {
         campaign.setProfileIds(PROFILE_IDS);
         campaign.setCreationDate(new Date());
         campaign.setRedirectUrl(REDIRECT_URL);
-        campaign.setBudget(BUDGET);
         campaign.setStartDate(DateFormatter.StringToDate(START_DATE));
         campaign.setEndDate(DateFormatter.StringToDate(END_DATE));
         campaign.setImgHorizontal(HOR_URL);

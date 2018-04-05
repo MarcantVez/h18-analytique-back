@@ -137,7 +137,6 @@ public class CampaignService {
                     updatedCampaign.getRedirectUrl(),
                     startDate,
                     endDate,
-                    updatedCampaign.getBudget(),
                     updatedCampaign.getProfileIds()
             );
             campaignProfileRepository.deleteAllByCampaignID(campaignID);
@@ -195,7 +194,6 @@ public class CampaignService {
                 request.getRedirectUrl(),
                 startDate,
                 endDate,
-                request.getBudget(),
                 request.getProfileIds()
         );
 

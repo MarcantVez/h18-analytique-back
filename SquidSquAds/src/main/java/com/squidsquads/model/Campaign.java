@@ -44,13 +44,10 @@ public class Campaign {
     @Column(name = "date_fin")
     private Date endDate;
 
-    @Column(name = "budget")
-    private BigDecimal budget;
-
     public Campaign() {
     }
 
-    public Campaign(Integer campaignID, Integer accountID, String name, String imgHorizontal, String imgVertical, String imgMobile, String redirectUrl, Date startDate, Date endDate, BigDecimal budget, Integer[] linkedProfiles) {
+    public Campaign(Integer campaignID, Integer accountID, String name, String imgHorizontal, String imgVertical, String imgMobile, String redirectUrl, Date startDate, Date endDate, Integer[] linkedProfiles) {
         this.campaignID = campaignID;
         this.accountID = accountID;
         this.name = name;
@@ -60,7 +57,6 @@ public class Campaign {
         this.redirectUrl = redirectUrl;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.budget = budget;
         this.creationDate = new Date();
         this.profileIds = linkedProfiles;
     }
@@ -158,14 +154,6 @@ public class Campaign {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
-    }
-
-    public BigDecimal getBudget() {
-        return budget;
-    }
-
-    public void setBudget(BigDecimal budget) {
-        this.budget = budget;
     }
 
     public void setAccountID(Integer accountID) {
