@@ -60,18 +60,6 @@ public class CampaignHandler {
             for (Campaign c : campaigns) {
                 //Vérifier que la campagne non expirée
                 c.handleActiveStatus();
-
-//                if(c.isActive()) {
-//                    // vérifier que la campagne n'a pas dépassé son budget
-//                    List<BannerCampaign> bannerCampaignsList = bannerCampaignRepository.findAllByCampaignID(c.getCampaignID());
-//                    BigDecimal amountSpent = BigDecimal.valueOf(0.00);
-//                    for (BannerCampaign bannerCampaign : bannerCampaignsList) {
-//                        Visit visit = visitRepository.findByBannerID(bannerCampaign.getBannerID());
-//                        Royalty royalty = royaltyRepository.findByVisitID(visit.getVisitID());
-//                        amountSpent = amountSpent.add(royalty.getAmount());
-//                    }
-//                    c.handleMaxBudget(amountSpent);
-//                }
             }
         }
     }

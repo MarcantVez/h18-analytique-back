@@ -67,7 +67,7 @@ CREATE TABLE campagne
   url_de_redirection VARCHAR(100),
   date_debut         TIMESTAMP,
   date_fin           TIMESTAMP,
-  budget             NUMERIC(8, 2)
+  is_active          BOOLEAN
 );
 
 CREATE TABLE profilutilisateur
@@ -144,7 +144,7 @@ CREATE TABLE infodesuivi
   adresse_ipv4        VARCHAR(50),
   adresse_ipv6        VARCHAR(50),
   taille_ecran        VARCHAR(50),
-  langue              VARCHAR(50),
+  langue              VARCHAR(500),
   tempsecoule         INTEGER,
   date_heure          TIMESTAMP
 );
@@ -236,8 +236,7 @@ INSERT INTO campagne VALUES
     'https://i.imgur.com/BdMNBkM.png',
     'https://www.squidsquads.site',
     NOW(),
-    NOW(),
-    1
+    NOW()
   );
 
 INSERT INTO profilutilisateur VALUES

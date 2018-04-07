@@ -87,8 +87,7 @@ INSERT INTO Campagne VALUES
     'mobile.jpg',
     'https://www.microsoft.com/fr-ca/hololens',
     '2018-02-08 18:00',
-    '2020-02-08 18:00',
-    200000
+    '2020-02-08 18:00'
   );
 
 INSERT INTO banniere_campagne VALUES

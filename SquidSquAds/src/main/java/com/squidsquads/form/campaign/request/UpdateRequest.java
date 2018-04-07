@@ -9,7 +9,6 @@ public class UpdateRequest {
     private Integer[] profileIds;
     private String startDate;
     private String endDate;
-    private BigDecimal budget;
     private String imgHorizontal;
     private String imgVertical;
     private String imgMobile;
@@ -32,10 +31,6 @@ public class UpdateRequest {
 
     public String getEndDate() {
         return endDate;
-    }
-
-    public BigDecimal getBudget() {
-        return budget;
     }
 
     public String getImgHorizontal() {
@@ -68,10 +63,6 @@ public class UpdateRequest {
 
     public void setEndDate(String endDate) {
         this.endDate = endDate;
-    }
-
-    public void setBudget(BigDecimal budget) {
-        this.budget = budget;
     }
 
     public void setImgHorizontal(String imgHorizontal) {

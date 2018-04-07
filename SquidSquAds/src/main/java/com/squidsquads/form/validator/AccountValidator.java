@@ -20,6 +20,6 @@ public class AccountValidator {
     }
 
     public static boolean isBankAccountValid(String bankAccount) {
-        return Pattern.matches("^[0-9]{3}-[0-9]{5}$", bankAccount);
+        return Pattern.matches("^[0-9]{8}$", bankAccount);
     }
 }

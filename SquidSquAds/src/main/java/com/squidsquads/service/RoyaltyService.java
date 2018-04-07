@@ -24,8 +24,8 @@ public class RoyaltyService {
         return royaltyRepository.findByVisitID(visitID);
     }
 
-    public Royalty create(Campaign campaign, Visit visit, boolean isTargeted, boolean isClicked) {
-        return royaltyRepository.save(new Royalty(campaign.getAccountID(), visit.getVisitID(), getFee(isTargeted, isClicked), false));
+    public Royalty create(Integer accountID, Visit visit, boolean isTargeted, boolean isClicked) {
+        return royaltyRepository.save(new Royalty(accountID, visit.getVisitID(), getFee(isTargeted, isClicked), false));
     }
 
     public Royalty update(Royalty royalty) {

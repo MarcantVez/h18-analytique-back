@@ -43,16 +43,6 @@ public class CampaignServiceTests extends AbstractServiceTests {
     }
 
     @Test
-    public void createFailsWhenBudgetIsNegative() {
-
-        CreateRequest req = helper.getCreateRequestWhereBudgetIsNegative();
-        CreateResponse res = getCampaignService().create(token, req);
-
-        assertEquals(HttpStatus.BAD_REQUEST, res.getStatus());
-        assertEquals("Tous les champs requis doivent être remplis", res.getMessage());
-    }
-
-    @Test
     public void createFailsWhenCampaignNameAlreadyTaken() {
 
         when(getCampaignRepository().findByNameAndAccountID(anyString(), anyInt())).thenReturn(helper.getCampaign());
@@ -81,7 +71,6 @@ public class CampaignServiceTests extends AbstractServiceTests {
 //        request.setProfileIds(new Integer[]{1, 2});
 //        request.setStartDate("invalid date");
 //        request.setEndDate("2018-12-12");
-//        request.setBudget(BigDecimal.valueOf(4000));
 //        request.setImgHorizontal("hor");
 //        request.setImgVertical("ver");
 //        request.setImgMobile("mob");
@@ -99,7 +88,6 @@ public class CampaignServiceTests extends AbstractServiceTests {
 //        request.setProfileIds(new Integer[]{1, 2});
 //        request.setStartDate("2018-10-10");
 //        request.setEndDate("2018-12-12");
-//        request.setBudget(BigDecimal.valueOf(4000));
 //        request.setImgHorizontal("hor");
 //        request.setImgVertical("ver");
 //        request.setImgMobile("mob");
@@ -153,7 +141,6 @@ public class CampaignServiceTests extends AbstractServiceTests {
 //    public void testModifyWrongDate() {
 //        when(getCampaignService().campaignRepository.findOne(2)).thenReturn(getCampaign1());
 //        UpdateRequest updateRequest = new UpdateRequest();
-//        updateRequest.setBudget(BigDecimal.valueOf(100));
 //        updateRequest.setName("updated");
 //        updateRequest.setProfileIds(new Integer[]{1, 2, 4});
 //        updateRequest.setImgHorizontal("hor");
@@ -182,7 +169,6 @@ public class CampaignServiceTests extends AbstractServiceTests {
 //    public void testModifyCorrect() {
 //        when(getCampaignService().campaignRepository.findOne(2)).thenReturn(getCampaign1());
 //        UpdateRequest updateRequest = new UpdateRequest();
-//        updateRequest.setBudget(BigDecimal.valueOf(100));
 //        updateRequest.setName("updated");
 //        updateRequest.setProfileIds(new Integer[]{1, 2, 4});
 //        updateRequest.setImgHorizontal("hor");
