@@ -1,5 +1,9 @@
 package com.squidsquads.model;
 
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -67,7 +71,7 @@ public class Campaign {
         this.profileIds = linkedProfiles;
     }
 
-    @PostLoad
+//    @PostLoad
     public void handleActiveStatus(){
         boolean isActive = false;
         Date currentDate = new Date();
@@ -79,10 +83,10 @@ public class Campaign {
         this.isActive = isActive;
     }
 
-    @PostLoad
-    public void handleMaxBudget(BigDecimal amountSpent) {
-        this.isActive = (budget.compareTo(amountSpent) > 0);
-    }
+//    @PostLoad
+//    public void handleMaxBudget(BigDecimal amountSpent) {
+//        this.isActive = (budget.compareTo(amountSpent) > 0);
+//    }
 
     public boolean isActive() {
         return isActive;

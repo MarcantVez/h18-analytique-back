@@ -1,5 +1,6 @@
 package com.squidsquads.utils.campaigns;
 
+import com.squidsquads.Application;
 import com.squidsquads.model.BannerCampaign;
 import com.squidsquads.model.Campaign;
 import com.squidsquads.model.Royalty;
@@ -8,8 +9,18 @@ import com.squidsquads.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -23,6 +34,7 @@ import java.util.List;
  * @Date_of_last_modification:
  **/
 @Component
+@EnableScheduling
 public class CampaignHandler {
     private static final Logger log = LoggerFactory.getLogger(CampaignHandler.class);
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -39,6 +51,8 @@ public class CampaignHandler {
     @Autowired
     private BannerCampaignRepository bannerCampaignRepository;
 
+    @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Scheduled(fixedRate = 600000)
     public void reportCurrentTime() {
         List<Campaign> campaigns = campaignRepository.findAll();
@@ -46,22 +60,19 @@ public class CampaignHandler {
             for (Campaign c : campaigns) {
                 //Vérifier que la campagne non expirée
                 c.handleActiveStatus();
-                log.debug("The campaign " + c.getName() + "is active = " + c.isActive(), dateFormat.format(new Date()));
 
-                if(c.isActive()) {
-                    // vérifier que la campagne n'a pas dépassé son budget
-                    List<BannerCampaign> bannerCampaignsList = bannerCampaignRepository.findAllByCampaignID(c.getCampaignID());
-                    BigDecimal amountSpent = BigDecimal.valueOf(0.00);
-                    for (BannerCampaign bannerCampaign : bannerCampaignsList) {
-                        Visit visit = visitRepository.findByBannerID(bannerCampaign.getBannerID());
-                        Royalty royalty = royaltyRepository.findByVisitID(visit.getVisitID());
-                        amountSpent = amountSpent.add(royalty.getAmount());
-                    }
-                    c.handleMaxBudget(amountSpent);
-                }
+//                if(c.isActive()) {
+//                    // vérifier que la campagne n'a pas dépassé son budget
+//                    List<BannerCampaign> bannerCampaignsList = bannerCampaignRepository.findAllByCampaignID(c.getCampaignID());
+//                    BigDecimal amountSpent = BigDecimal.valueOf(0.00);
+//                    for (BannerCampaign bannerCampaign : bannerCampaignsList) {
+//                        Visit visit = visitRepository.findByBannerID(bannerCampaign.getBannerID());
+//                        Royalty royalty = royaltyRepository.findByVisitID(visit.getVisitID());
+//                        amountSpent = amountSpent.add(royalty.getAmount());
+//                    }
+//                    c.handleMaxBudget(amountSpent);
+//                }
             }
-        } else {
-            log.debug("No active campaigns were found.", dateFormat.format(new Date()));
         }
     }
 }
