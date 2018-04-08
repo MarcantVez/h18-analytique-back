@@ -158,6 +158,9 @@ public class CampaignService {
             if (startDate == null || endDate == null) {
                 return new ModifyResponse().invalidDateFormat();
             }
+            if (endDate.before(startDate)) {
+                return new ModifyResponse().invalidEndDate();
+            }
 
             Campaign campaign = new Campaign(
                     campaignID,
@@ -239,6 +242,9 @@ public class CampaignService {
         Date endDate = DateFormatter.StringToDate(request.getEndDate());
         if (startDate == null || endDate == null) {
             return new CreateResponse().invalidDateFormat();
+        }
+        if (endDate.before(startDate)) {
+            return new CreateResponse().invalidEndDate();
         }
 
         Campaign campaign = new Campaign(

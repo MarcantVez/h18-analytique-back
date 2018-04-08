@@ -118,6 +118,9 @@ public class VisitService {
         String hdrReferer = request.getHeader(HEADER_REFERER);
         String hdrRemoteAddr = request.getRemoteAddr();
 
+        // Retirer les params du URL
+        hdrReferer = hdrReferer.split("\\?")[0];
+
         // Il se peut que l'enregistrement de l'AgentUtilisateur soit déjà présent si ce
         // n'est pas la première fois qu'on track le visiteur.
         UserAgent targetAgent = userAgentRepository.findByUserAgentString(hdrUserAgent);
@@ -170,6 +173,9 @@ public class VisitService {
         String hdrAcceptLanguage = request.getHeader(HEADER_ACCEPT_LANGUAGE);
         String hdrReferer = request.getHeader(HEADER_REFERER);
         String hdrRemoteAddr = request.getRemoteAddr(); // requires option -Djava.net.preferIPv4Stack=true for IPV4, sinon pas constant
+
+        // Retirer les params du URL
+        hdrReferer = hdrReferer.split("\\?")[0];
 
         // Bâtir le fingerprint de l'utilisateur
         Fingerprint fingerprint = new Fingerprint(
