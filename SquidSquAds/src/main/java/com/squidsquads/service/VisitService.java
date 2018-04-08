@@ -4,10 +4,7 @@ import com.blueconic.browscap.*;
 import com.squidsquads.form.visit.request.VisitRequest;
 import com.squidsquads.form.visit.response.CookieCreationResponse;
 import com.squidsquads.form.visit.response.VisitResponse;
-import com.squidsquads.model.Fingerprint;
-import com.squidsquads.model.TrackingInfo;
-import com.squidsquads.model.UserAgent;
-import com.squidsquads.model.Visit;
+import com.squidsquads.model.*;
 import com.squidsquads.repository.TrackingInfoRepository;
 import com.squidsquads.repository.UserAgentRepository;
 import com.squidsquads.repository.VisitRepository;
@@ -107,7 +104,9 @@ public class VisitService {
             return new VisitResponse().ok();
         }
 
-        if (webSiteAdminService.findOne(siteWebAdminID) == null) {
+        WebSiteAdmin webSiteAdmin = webSiteAdminService.findOne(siteWebAdminID);
+
+        if (webSiteAdmin == null) {
             return new VisitResponse().failed();
         }
 
@@ -120,6 +119,11 @@ public class VisitService {
 
         // Retirer les params du URL
         hdrReferer = hdrReferer.split("\\?")[0];
+
+        if (hdrReferer.equals(webSiteAdmin.getUrl())) {
+            logger.warn("Un administrateur de site web (ID : " + siteWebAdminID + ") tente de s'auto-financer");
+            return new VisitResponse().autoFinancingDetected();
+        }
 
         // Il se peut que l'enregistrement de l'AgentUtilisateur soit déjà présent si ce
         // n'est pas la première fois qu'on track le visiteur.
@@ -189,6 +193,17 @@ public class VisitService {
 
         // Sérialiser ce fingerprint pour qu'il soit inséré dans les cookies du visiteur
         String fingerPrintHash = Serializer.serialize(fingerprint);
+
+        WebSiteAdmin webSiteAdmin = webSiteAdminService.findOne(visitRequest.getUserId());
+
+        if (webSiteAdmin == null) {
+            return new CookieCreationResponse().failed();
+        }
+
+        if (hdrReferer.equals(webSiteAdmin.getUrl())) {
+            logger.warn("Un administrateur de site web (ID : " + visitRequest.getUserId() + ") tente de s'auto-financer");
+            return new CookieCreationResponse().ok(fingerPrintHash);
+        }
 
         // Il se peut que l'enregistrement de l'AgentUtilisateur soit déjà présent si ce
         // n'est pas la première fois qu'on track le visiteur.
