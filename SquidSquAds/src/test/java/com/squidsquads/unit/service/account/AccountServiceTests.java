@@ -145,6 +145,28 @@ public class AccountServiceTests extends AbstractServiceTests {
     }
 
     @Test
+    public void createFailsWhenEmailFormatIsWrong() {
+
+        CreateRequest req = helper.getCreateRequestWhereEmailFormatIsWrong();
+        CreateResponse res = getAccountService().create(req);
+
+        assertNotNull(res);
+        assertEquals(HttpStatus.BAD_REQUEST, res.getStatus());
+        assertEquals("Le courriel ne respecte pas le format demandé (100 caractères maximum)", res.getMessage());
+    }
+
+    @Test
+    public void createFailsWhenEmailIsTooLong() {
+
+        CreateRequest req = helper.getCreateRequestWhereEmailIsTooLong();
+        CreateResponse res = getAccountService().create(req);
+
+        assertNotNull(res);
+        assertEquals(HttpStatus.BAD_REQUEST, res.getStatus());
+        assertEquals("Le courriel ne respecte pas le format demandé (100 caractères maximum)", res.getMessage());
+    }
+
+    @Test
     public void createFailsWhenPasswordsDoNotMatch() {
 
         CreateRequest req = helper.getCreateRequestWherePasswordsDoNotMatch();
