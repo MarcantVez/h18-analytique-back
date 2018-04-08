@@ -76,7 +76,7 @@ public class AccountTestHelper extends ServiceTestHelper {
     }
 
     public CreateRequest getCreateRequestWherePasswordIsTooLong() {
-        return buildCreateRequest(AdminType.WEB.name(), EMAIL_WEB, DOMAIN, BANK_ACCOUNT, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", CLEAR_PASSWORD);
+        return buildCreateRequest(AdminType.WEB.name(), EMAIL_WEB, DOMAIN, BANK_ACCOUNT, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     }
 
     public CreateRequest getCreateRequestWherePasswordsDoNotMatch() {

@@ -216,6 +216,10 @@ public class AccountService {
             return new ResetPasswordResponse().wrongNewPasswords();
         }
 
+        if(!AccountValidator.isPasswordLengthValid(rpr.getNewPassword())){
+            return new ResetPasswordResponse().wrongNewPasswords();
+        }
+
         account.setPassword(encoder.encode(rpr.getNewPassword()));
         accountRepository.save(account);
 
