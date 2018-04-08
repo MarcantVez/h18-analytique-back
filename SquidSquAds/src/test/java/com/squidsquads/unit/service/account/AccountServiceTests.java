@@ -189,6 +189,17 @@ public class AccountServiceTests extends AbstractServiceTests {
     }
 
     @Test
+    public void createFailsWhenPasswordiIsTooLong() {
+
+        CreateRequest req = helper.getCreateRequestWherePasswordIsTooLong();
+        CreateResponse res = getAccountService().create(req);
+
+        assertNotNull(res);
+        assertEquals(HttpStatus.BAD_REQUEST, res.getStatus());
+        assertEquals("Le mot de passe ne respecte pas le format demandé (60 caractères maximum)", res.getMessage());
+    }
+
+    @Test
     public void createFailsWhenEmailIsAlreadyUsed() {
 
         when(getAccountRepository().findByEmail(anyString())).thenReturn(helper.getAccountWeb());

@@ -40,7 +40,11 @@ public class AccountValidator {
 
     }
 
-    public static boolean isDomainValid(String domain) {
+    public static boolean isDomainLengthValid(String domain) {
         return domain.length() <= 200;
+    }
+
+    public static boolean isPasswordLengthValid(String password) {
+        return password.length() <= 60;
     }
 }
