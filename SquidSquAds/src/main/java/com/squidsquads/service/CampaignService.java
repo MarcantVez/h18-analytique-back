@@ -112,12 +112,44 @@ public class CampaignService {
             logger.error("Un compte basé sur un token de session est introuvable");
             return new ModifyResponse().failed();
         }
+
         if (campaignRepository.findOne(campaignID) == null) {
             return new ModifyResponse().notFound();
         }
 
         if (!CampaignValidator.isUpdateRequestComplete(updatedCampaign)) {
             return new ModifyResponse().fieldsMissing();
+        }
+
+        // Si la campagne a un nom trop long
+        if (!CampaignValidator.isCampaignNameValid(updatedCampaign.getName())) {
+            return new ModifyResponse().invalidName();
+        }
+
+        // Si le url l'image horizontale est trop long
+        if (!CampaignValidator.isImgUrlValid(updatedCampaign.getImgHorizontal())) {
+            return new ModifyResponse().invalidHorizontalImgUrl();
+        }
+
+        // Si le url l'image verticale est trop long
+        if (!CampaignValidator.isImgUrlValid(updatedCampaign.getImgVertical())) {
+            return new ModifyResponse().invalidVerticalImgUrl();
+        }
+
+        // Si le url l'image mobile est trop long
+        if (!CampaignValidator.isImgUrlValid(updatedCampaign.getImgMobile())) {
+            return new ModifyResponse().invalidMobileImgUrl();
+        }
+
+        // Si le url de redirection est trop long
+        if (!CampaignValidator.isRedirectUrlValid(updatedCampaign.getRedirectUrl())) {
+            return new ModifyResponse().invalidRedirectUrl();
+        }
+
+        // Si le nom de profile existe déjà pour l'utilisateur courrant
+        Campaign existing = findByNameAndAccountID(updatedCampaign.getName(), accountID);
+        if (existing != null && !existing.getCampaignID().equals(campaignID)) {
+            return new ModifyResponse().campaignAlreadyExists();
         }
 
         try {
@@ -172,6 +204,31 @@ public class CampaignService {
 
         if (!CampaignValidator.isCreateRequestComplete(request)) {
             return new CreateResponse().fieldsMissing();
+        }
+
+        // Si la campagne a un nom trop long
+        if (!CampaignValidator.isCampaignNameValid(request.getName())) {
+            return new CreateResponse().invalidName();
+        }
+
+        // Si le url l'image horizontale est trop long
+        if (!CampaignValidator.isImgUrlValid(request.getImgHorizontal())) {
+            return new CreateResponse().invalidHorizontalImgUrl();
+        }
+
+        // Si le url l'image verticale est trop long
+        if (!CampaignValidator.isImgUrlValid(request.getImgVertical())) {
+            return new CreateResponse().invalidVerticalImgUrl();
+        }
+
+        // Si le url l'image mobile est trop long
+        if (!CampaignValidator.isImgUrlValid(request.getImgMobile())) {
+            return new CreateResponse().invalidMobileImgUrl();
+        }
+
+        // Si le url de redirection est trop long
+        if (!CampaignValidator.isRedirectUrlValid(request.getRedirectUrl())) {
+            return new CreateResponse().invalidRedirectUrl();
         }
 
         // Si le nom de profile existe déjà pour l'utilisateur courrant

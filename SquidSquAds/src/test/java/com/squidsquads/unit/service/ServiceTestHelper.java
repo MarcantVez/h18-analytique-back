@@ -15,6 +15,7 @@ public class ServiceTestHelper {
 
     protected final int ACCOUNT_ID = 1;
     protected final int CAMPAIGN_ID = 4;
+    protected final int CAMPAIGN2_ID = 5;
 
     protected final String EMAIL_PUB = "ads@ads.com";
     protected final String EMAIL_WEB = "web@web.com";
@@ -26,6 +27,7 @@ public class ServiceTestHelper {
     protected final String DOMAIN = "https://www.google.ca";
 
     protected final String CAMPAIGN_NAME = "Ma campagne ultra!";
+    protected final String CAMPAIGN2_NAME = "Ma campagne améliorée!";
     protected final String REDIRECT_URL = "https://www.facebook.com";
     protected final Integer[] PROFILE_IDS = new Integer[]{41, 42, 43};
     protected final String START_DATE = "2018-01-01";
@@ -85,6 +87,13 @@ public class ServiceTestHelper {
         campaign.setImgHorizontal(HOR_URL);
         campaign.setImgVertical(VER_URL);
         campaign.setImgMobile(MOB_URL);
+        return campaign;
+    }
+
+    public Campaign getCampaign2() {
+        Campaign campaign = getCampaign();
+        campaign.setAccountID(2);
+        campaign.setCampaignID(CAMPAIGN2_ID);
         return campaign;
     }
 
