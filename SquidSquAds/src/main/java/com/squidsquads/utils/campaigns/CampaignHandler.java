@@ -60,6 +60,7 @@ public class CampaignHandler {
             for (Campaign c : campaigns) {
                 //Vérifier que la campagne non expirée
                 c.handleActiveStatus();
+                campaignRepository.save(c);
             }
         }
     }
