@@ -39,4 +39,8 @@ public class AccountValidator {
         }
 
     }
+
+    public static boolean isDomainValid(String domain) {
+        return domain.length() <= 200;
+    }
 }

@@ -109,9 +109,14 @@ public class AccountService {
             return new CreateResponse().invalidBankAccount();
         }
 
-        // Si le numéro de compte de banque ne suit pas la forme BBB-CCCCC
+        // Si le courriel du compte est trop long ou ne respecte pas le format d'un courriel valide
         if (!AccountValidator.isEmailValid(createRequest.getEmail())) {
             return new CreateResponse().invalidEmailFormat();
+        }
+
+        // Si le domaine de l'admin web est trop long
+        if (!AccountValidator.isDomainValid(createRequest.getDomain())) {
+            return new CreateResponse().invalidDomainFormat();
         }
 
         // Si les mots de passes ne correspondent pas

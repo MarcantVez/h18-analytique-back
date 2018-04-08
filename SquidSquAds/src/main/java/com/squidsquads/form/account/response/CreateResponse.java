@@ -10,7 +10,8 @@ public class CreateResponse {
     private static final String CREATE_INVALID_TYPE = "Type d'administrateur invalide";
     private static final String CREATE_INVALID_BANK = "Numéro de compte de banque invalide";
     private static final String CREATE_WRONG_PASSWORDS = "Mots de passe ne sont pas identiques";
-    private static final String CREATE_INVALID_EMAIL= "Le courriel ne respecte pas le format demandé (100 caractères maximum)";
+    private static final String CREATE_INVALID_EMAIL = "Le courriel ne respecte pas le format demandé (100 caractères maximum)";
+    private static final String CREATE_INVALID_DOMAIN = "Le domaine ne respecte pas le format demandé (200 caractères maximum)";
 
     private HttpStatus status;
     private String message;
@@ -65,6 +66,12 @@ public class CreateResponse {
     public CreateResponse invalidEmailFormat() {
         status = HttpStatus.BAD_REQUEST;
         message = CREATE_INVALID_EMAIL;
+        return this;
+    }
+
+    public CreateResponse invalidDomainFormat() {
+        status = HttpStatus.BAD_REQUEST;
+        message = CREATE_INVALID_DOMAIN;
         return this;
     }
 }

@@ -167,6 +167,17 @@ public class AccountServiceTests extends AbstractServiceTests {
     }
 
     @Test
+    public void createFailsWhenDomainiIsTooLong() {
+
+        CreateRequest req = helper.getCreateRequestWhereDomainIsTooLong();
+        CreateResponse res = getAccountService().create(req);
+
+        assertNotNull(res);
+        assertEquals(HttpStatus.BAD_REQUEST, res.getStatus());
+        assertEquals("Le domaine ne respecte pas le format demandé (200 caractères maximum)", res.getMessage());
+    }
+
+    @Test
     public void createFailsWhenPasswordsDoNotMatch() {
 
         CreateRequest req = helper.getCreateRequestWherePasswordsDoNotMatch();

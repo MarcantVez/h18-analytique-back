@@ -71,6 +71,10 @@ public class AccountTestHelper extends ServiceTestHelper {
         return buildCreateRequest(AdminType.WEB.name(), "unNomBeaucoupTropLongQuiFaitAucunSens@UnDomaineBienTropLongQuiEstAucunementLogiqueConsiderantQuonDoitSenRappeler.org", DOMAIN, BANK_ACCOUNT, CLEAR_PASSWORD, CLEAR_PASSWORD);
     }
 
+    public CreateRequest getCreateRequestWhereDomainIsTooLong() {
+        return buildCreateRequest(AdminType.WEB.name(), EMAIL_WEB, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", BANK_ACCOUNT, CLEAR_PASSWORD, CLEAR_PASSWORD);
+    }
+
     public CreateRequest getCreateRequestWherePasswordsDoNotMatch() {
         return buildCreateRequest(AdminType.WEB.name(), EMAIL_WEB, DOMAIN, BANK_ACCOUNT, CLEAR_PASSWORD, "not the same");
     }
