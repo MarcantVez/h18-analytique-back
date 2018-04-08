@@ -9,6 +9,9 @@ public class ModifyResponse {
     private static final String PROFILE_NOT_FOUND = "Le profil utilisateur n'existe pas";
     private static final String INVALID_URL = "URL invalide";
     private static final String INVALID_ACCOUNT_NUMBER = "Numéro de compte invalide";
+    private static final String INVALID_NAME_FORMAT = "Le nom du profil ne peut dépasser 100 caractères";
+    private static final String INVALID_DESC_FORMAT = "La description du profil ne peut dépasser 200 caractères";
+    private static final String INVALID_URL_FORMAT = "Les urls ciblés ne peuvent dépasser 200 caractères";
 
     private HttpStatus status;
     private String message;
@@ -51,6 +54,24 @@ public class ModifyResponse {
     public ModifyResponse notFound() {
         status = HttpStatus.NOT_FOUND;
         message = PROFILE_NOT_FOUND;
+        return this;
+    }
+
+    public ModifyResponse invalidNameFormat() {
+        status = HttpStatus.BAD_REQUEST;
+        message = INVALID_NAME_FORMAT;
+        return this;
+    }
+
+    public ModifyResponse invalidDescFormat() {
+        status = HttpStatus.BAD_REQUEST;
+        message = INVALID_DESC_FORMAT;
+        return this;
+    }
+
+    public ModifyResponse invalidURLFormat() {
+        status = HttpStatus.BAD_REQUEST;
+        message = INVALID_URL_FORMAT;
         return this;
     }
 }
