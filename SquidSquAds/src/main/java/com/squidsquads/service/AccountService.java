@@ -109,6 +109,11 @@ public class AccountService {
             return new CreateResponse().invalidBankAccount();
         }
 
+        // Si le numéro de compte de banque ne suit pas la forme BBB-CCCCC
+        if (!AccountValidator.isEmailValid(createRequest.getEmail())) {
+            return new CreateResponse().invalidEmailFormat();
+        }
+
         // Si les mots de passes ne correspondent pas
         if (!createRequest.getPassword().equals(createRequest.getConfirmPassword())) {
             return new CreateResponse().wrongPasswords();
