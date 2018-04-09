@@ -4,11 +4,10 @@ import com.blueconic.browscap.*;
 import com.squidsquads.form.visit.request.VisitRequest;
 import com.squidsquads.form.visit.response.CookieCreationResponse;
 import com.squidsquads.form.visit.response.VisitResponse;
-import com.squidsquads.model.Fingerprint;
-import com.squidsquads.model.TrackingInfo;
-import com.squidsquads.model.UserAgent;
+import com.squidsquads.model.*;
 import com.squidsquads.repository.TrackingInfoRepository;
 import com.squidsquads.repository.UserAgentRepository;
+import com.squidsquads.repository.VisitRepository;
 import com.squidsquads.utils.Serializer;
 import com.squidsquads.utils.TimeSpentCalculator;
 import org.slf4j.Logger;
@@ -31,6 +30,7 @@ public class VisitService {
     private static final String HEADER_USER_AGENT = "User-Agent";
     private static final String HEADER_ACCEPT_LANGUAGE = "accept-language";
     private static final String HEADER_REFERER = "referer";
+    private static final int GRACE_PERIOD_BETWEEN_VISITS = 10;
 
     private UserAgentParser parser;
 
@@ -48,6 +48,9 @@ public class VisitService {
 
     @Autowired
     private UserAgentRepository userAgentRepository;
+
+    @Autowired
+    private VisitRepository visitRepository;
 
     public VisitService() {
 
@@ -73,6 +76,18 @@ public class VisitService {
         ));
     }
 
+    public Visit findByID(Integer visitID) {
+        return visitRepository.findOne(visitID);
+    }
+
+    public Visit create(Integer bannerID, boolean isClicked, boolean isTargerted) {
+        return visitRepository.save(new Visit(bannerID, isClicked, isTargerted));
+    }
+
+    public Visit update(Visit visit) {
+        return visitRepository.save(visit);
+    }
+
     /**
      * Lorsqu'un visiteur se rend sur une page qui contient notre processus de tracking,
      * un GET est envoyé au serveur. Cette méthode traite ce GET en question pour faire
@@ -89,7 +104,9 @@ public class VisitService {
             return new VisitResponse().ok();
         }
 
-        if (webSiteAdminService.findOne(siteWebAdminID) == null) {
+        WebSiteAdmin webSiteAdmin = webSiteAdminService.findOne(siteWebAdminID);
+
+        if (webSiteAdmin == null) {
             return new VisitResponse().failed();
         }
 
@@ -100,12 +117,20 @@ public class VisitService {
         String hdrReferer = request.getHeader(HEADER_REFERER);
         String hdrRemoteAddr = request.getRemoteAddr();
 
+        // Retirer les params du URL
+        hdrReferer = hdrReferer.split("\\?")[0];
+
+        if (hdrReferer.equals(webSiteAdmin.getUrl())) {
+            logger.warn("Un administrateur de site web (ID : " + siteWebAdminID + ") tente de s'auto-financer");
+            return new VisitResponse().autoFinancingDetected();
+        }
+
         // Il se peut que l'enregistrement de l'AgentUtilisateur soit déjà présent si ce
         // n'est pas la première fois qu'on track le visiteur.
         UserAgent targetAgent = userAgentRepository.findByUserAgentString(hdrUserAgent);
 
         // Si le fingerprint existe déjà, poursuivre le tracking de l'utilisateur
-        TrackingInfo lastInfo = trackingInfoRepository.findFirstByFingerprintOrderByDateTimeDesc(fingerprint);
+        TrackingInfo lastInfo = trackingInfoRepository.findFirstByFingerprintOrderByDateTimeDesc(Serializer.fromString(fingerprint));
 
         if (targetAgent == null) {
             targetAgent = createAgent(hdrUserAgent);
@@ -118,10 +143,9 @@ public class VisitService {
         int timeSpent = 1;
 
         // Lier le tracking entre les différentes pages du site
-        if (lastInfo != null) {
+        if (isTrackingFollowingOneAnother(lastInfo)) {
             previousUrl = lastInfo.getCurrentUrl();
             screenSize = lastInfo.getScreenSize();
-            timeSpent = calculator.calculateTimeFromNow(lastInfo.getDateTime());
         }
 
         info = new TrackingInfo(
@@ -154,6 +178,9 @@ public class VisitService {
         String hdrReferer = request.getHeader(HEADER_REFERER);
         String hdrRemoteAddr = request.getRemoteAddr(); // requires option -Djava.net.preferIPv4Stack=true for IPV4, sinon pas constant
 
+        // Retirer les params du URL
+        hdrReferer = hdrReferer.split("\\?")[0];
+
         // Bâtir le fingerprint de l'utilisateur
         Fingerprint fingerprint = new Fingerprint(
                 visitRequest.getScreenWidth(),
@@ -167,12 +194,23 @@ public class VisitService {
         // Sérialiser ce fingerprint pour qu'il soit inséré dans les cookies du visiteur
         String fingerPrintHash = Serializer.serialize(fingerprint);
 
+        WebSiteAdmin webSiteAdmin = webSiteAdminService.findOne(visitRequest.getUserId());
+
+        if (webSiteAdmin == null) {
+            return new CookieCreationResponse().failed();
+        }
+
+        if (hdrReferer.equals(webSiteAdmin.getUrl())) {
+            logger.warn("Un administrateur de site web (ID : " + visitRequest.getUserId() + ") tente de s'auto-financer");
+            return new CookieCreationResponse().ok(fingerPrintHash);
+        }
+
         // Il se peut que l'enregistrement de l'AgentUtilisateur soit déjà présent si ce
         // n'est pas la première fois qu'on track le visiteur.
         UserAgent targetAgent = userAgentRepository.findByUserAgentString(hdrUserAgent);
 
         // Si le fingerprint existe déjà, poursuivre le tracking de l'utilisateur
-        TrackingInfo lastInfo = trackingInfoRepository.findFirstByFingerprintOrderByDateTimeDesc(fingerPrintHash);
+        TrackingInfo lastInfo = trackingInfoRepository.findFirstByFingerprintOrderByDateTimeDesc(Serializer.fromString(fingerPrintHash));
 
         if (targetAgent == null) {
             targetAgent = createAgent(hdrUserAgent);
@@ -182,9 +220,8 @@ public class VisitService {
         int timeSpent = 1;
 
         // Lier le tracking entre les différentes pages du site
-        if (lastInfo != null) {
+        if (isTrackingFollowingOneAnother(lastInfo)) {
             previousUrl = lastInfo.getCurrentUrl();
-            timeSpent = calculator.calculateTimeFromNow(lastInfo.getDateTime());
         }
 
         TrackingInfo info = new TrackingInfo(
@@ -205,6 +242,35 @@ public class VisitService {
         return new CookieCreationResponse().ok(fingerPrintHash);
     }
 
+    public void leave(Integer siteWebAdminID) {
+
+        // Vérifier la présence du cookie de tracking
+        Cookie cookie = WebUtils.getCookie(request, SQUIDSQUADS_COOKIE);
+
+        if (cookie == null) {
+            return;
+        }
+
+        if (webSiteAdminService.findOne(siteWebAdminID) == null) {
+            return;
+        }
+
+        // Récupérer le cookie et des headers dans la requête
+        String fingerprint = cookie.getValue();
+
+        // Si le fingerprint existe déjà, poursuivre le tracking de l'utilisateur
+        TrackingInfo lastInfo = trackingInfoRepository.findFirstByFingerprintOrderByDateTimeDesc(Serializer.fromString(fingerprint));
+
+        // Erreur lors de la récupération du dernier tracking
+        if (lastInfo == null) {
+            return;
+        }
+
+        lastInfo.setTimeSpent(calculator.calculateTimeFromNow(lastInfo.getDateTime()));
+
+        trackingInfoRepository.save(lastInfo);
+    }
+
     /**
      * Utility method to create user agent object from string
      *
@@ -223,9 +289,13 @@ public class VisitService {
                 capabilities.getBrowserType(),
                 capabilities.getDeviceType(),
                 capabilities.getPlatformVersion(),
-                null // TODO on a pas les infos des plugins par http...
+                null
         );
 
         return userAgentRepository.save(agent);
+    }
+
+    private boolean isTrackingFollowingOneAnother(TrackingInfo lastInfo) {
+        return lastInfo != null && calculator.calculateTimeFromNow(lastInfo.getDateTime()) <= (lastInfo.getTimeSpent() + GRACE_PERIOD_BETWEEN_VISITS);
     }
 }

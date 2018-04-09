@@ -145,6 +145,39 @@ public class AccountServiceTests extends AbstractServiceTests {
     }
 
     @Test
+    public void createFailsWhenEmailFormatIsWrong() {
+
+        CreateRequest req = helper.getCreateRequestWhereEmailFormatIsWrong();
+        CreateResponse res = getAccountService().create(req);
+
+        assertNotNull(res);
+        assertEquals(HttpStatus.BAD_REQUEST, res.getStatus());
+        assertEquals("Le courriel ne respecte pas le format demandé (100 caractères maximum)", res.getMessage());
+    }
+
+    @Test
+    public void createFailsWhenEmailIsTooLong() {
+
+        CreateRequest req = helper.getCreateRequestWhereEmailIsTooLong();
+        CreateResponse res = getAccountService().create(req);
+
+        assertNotNull(res);
+        assertEquals(HttpStatus.BAD_REQUEST, res.getStatus());
+        assertEquals("Le courriel ne respecte pas le format demandé (100 caractères maximum)", res.getMessage());
+    }
+
+    @Test
+    public void createFailsWhenDomainiIsTooLong() {
+
+        CreateRequest req = helper.getCreateRequestWhereDomainIsTooLong();
+        CreateResponse res = getAccountService().create(req);
+
+        assertNotNull(res);
+        assertEquals(HttpStatus.BAD_REQUEST, res.getStatus());
+        assertEquals("Le domaine ne respecte pas le format demandé (200 caractères maximum)", res.getMessage());
+    }
+
+    @Test
     public void createFailsWhenPasswordsDoNotMatch() {
 
         CreateRequest req = helper.getCreateRequestWherePasswordsDoNotMatch();
@@ -153,6 +186,17 @@ public class AccountServiceTests extends AbstractServiceTests {
         assertNotNull(res);
         assertEquals(HttpStatus.BAD_REQUEST, res.getStatus());
         assertEquals("Mots de passe ne sont pas identiques", res.getMessage());
+    }
+
+    @Test
+    public void createFailsWhenPasswordiIsTooLong() {
+
+        CreateRequest req = helper.getCreateRequestWherePasswordIsTooLong();
+        CreateResponse res = getAccountService().create(req);
+
+        assertNotNull(res);
+        assertEquals(HttpStatus.BAD_REQUEST, res.getStatus());
+        assertEquals("Le mot de passe ne respecte pas le format demandé (60 caractères maximum)", res.getMessage());
     }
 
     @Test

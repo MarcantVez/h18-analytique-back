@@ -8,7 +8,6 @@ import com.squidsquads.model.Campaign;
 import com.squidsquads.model.CampaignProfile;
 import com.squidsquads.repository.CampaignProfileRepository;
 import com.squidsquads.repository.CampaignRepository;
-import com.squidsquads.repository.UserProfileRepository;
 import com.squidsquads.utils.DateFormatter;
 import com.squidsquads.utils.session.SessionManager;
 import org.slf4j.Logger;
@@ -40,14 +39,6 @@ public class CampaignService {
      */
     private Campaign findByNameAndAccountID(String name, Integer accountID) {
         return campaignRepository.findByNameAndAccountID(name, accountID);
-    }
-
-    /**
-     * Retourne une campagne publicitaire aléatoire
-     */
-    public Campaign getRandom(List<Campaign> activeCampaignList) {
-
-        return activeCampaignList.size() > 0 ? activeCampaignList.get(0) : null;
     }
 
     /**
@@ -121,6 +112,7 @@ public class CampaignService {
             logger.error("Un compte basé sur un token de session est introuvable");
             return new ModifyResponse().failed();
         }
+
         if (campaignRepository.findOne(campaignID) == null) {
             return new ModifyResponse().notFound();
         }
@@ -129,11 +121,45 @@ public class CampaignService {
             return new ModifyResponse().fieldsMissing();
         }
 
+        // Si la campagne a un nom trop long
+        if (!CampaignValidator.isCampaignNameValid(updatedCampaign.getName())) {
+            return new ModifyResponse().invalidName();
+        }
+
+        // Si le url l'image horizontale est trop long
+        if (!CampaignValidator.isImgUrlValid(updatedCampaign.getImgHorizontal())) {
+            return new ModifyResponse().invalidHorizontalImgUrl();
+        }
+
+        // Si le url l'image verticale est trop long
+        if (!CampaignValidator.isImgUrlValid(updatedCampaign.getImgVertical())) {
+            return new ModifyResponse().invalidVerticalImgUrl();
+        }
+
+        // Si le url l'image mobile est trop long
+        if (!CampaignValidator.isImgUrlValid(updatedCampaign.getImgMobile())) {
+            return new ModifyResponse().invalidMobileImgUrl();
+        }
+
+        // Si le url de redirection est trop long
+        if (!CampaignValidator.isRedirectUrlValid(updatedCampaign.getRedirectUrl())) {
+            return new ModifyResponse().invalidRedirectUrl();
+        }
+
+        // Si le nom de profile existe déjà pour l'utilisateur courrant
+        Campaign existing = findByNameAndAccountID(updatedCampaign.getName(), accountID);
+        if (existing != null && !existing.getCampaignID().equals(campaignID)) {
+            return new ModifyResponse().campaignAlreadyExists();
+        }
+
         try {
             Date startDate = DateFormatter.StringToDate(updatedCampaign.getStartDate());
             Date endDate = DateFormatter.StringToDate(updatedCampaign.getEndDate());
             if (startDate == null || endDate == null) {
                 return new ModifyResponse().invalidDateFormat();
+            }
+            if (endDate.before(startDate)) {
+                return new ModifyResponse().invalidEndDate();
             }
 
             Campaign campaign = new Campaign(
@@ -146,7 +172,6 @@ public class CampaignService {
                     updatedCampaign.getRedirectUrl(),
                     startDate,
                     endDate,
-                    updatedCampaign.getBudget(),
                     updatedCampaign.getProfileIds()
             );
             campaignProfileRepository.deleteAllByCampaignID(campaignID);
@@ -184,6 +209,31 @@ public class CampaignService {
             return new CreateResponse().fieldsMissing();
         }
 
+        // Si la campagne a un nom trop long
+        if (!CampaignValidator.isCampaignNameValid(request.getName())) {
+            return new CreateResponse().invalidName();
+        }
+
+        // Si le url l'image horizontale est trop long
+        if (!CampaignValidator.isImgUrlValid(request.getImgHorizontal())) {
+            return new CreateResponse().invalidHorizontalImgUrl();
+        }
+
+        // Si le url l'image verticale est trop long
+        if (!CampaignValidator.isImgUrlValid(request.getImgVertical())) {
+            return new CreateResponse().invalidVerticalImgUrl();
+        }
+
+        // Si le url l'image mobile est trop long
+        if (!CampaignValidator.isImgUrlValid(request.getImgMobile())) {
+            return new CreateResponse().invalidMobileImgUrl();
+        }
+
+        // Si le url de redirection est trop long
+        if (!CampaignValidator.isRedirectUrlValid(request.getRedirectUrl())) {
+            return new CreateResponse().invalidRedirectUrl();
+        }
+
         // Si le nom de profile existe déjà pour l'utilisateur courrant
         if (findByNameAndAccountID(request.getName(), accountID) != null) {
             return new CreateResponse().campaignAlreadyExists();
@@ -192,6 +242,9 @@ public class CampaignService {
         Date endDate = DateFormatter.StringToDate(request.getEndDate());
         if (startDate == null || endDate == null) {
             return new CreateResponse().invalidDateFormat();
+        }
+        if (endDate.before(startDate)) {
+            return new CreateResponse().invalidEndDate();
         }
 
         Campaign campaign = new Campaign(
@@ -204,7 +257,6 @@ public class CampaignService {
                 request.getRedirectUrl(),
                 startDate,
                 endDate,
-                request.getBudget(),
                 request.getProfileIds()
         );
 

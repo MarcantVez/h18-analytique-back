@@ -67,6 +67,21 @@ public class UserProfileService {
             return new CreateResponse().fieldsMissing();
         }
 
+        // Si le nom du profil est trop long
+        if (!UserProfileValidator.isNameFormatValid(request.getName())) {
+            return new CreateResponse().invalidNameFormat();
+        }
+
+        // Si la description du profil est trop longue
+        if (!UserProfileValidator.isDescFormatValid(request.getDescription())) {
+            return new CreateResponse().invalidDescFormat();
+        }
+
+        // Si les urls du profil sont trop longs
+        if (!UserProfileValidator.isUrlFormatValid(request.getUrls())) {
+            return new CreateResponse().invalidURLFormat();
+        }
+
         // Si le nom de profile existe déjà pour l'utilisateur courrant
         if (findByNameAndAccountID(request.getName(), accountID) != null) {
             return new CreateResponse().profileAlreadyExists();
@@ -179,6 +194,21 @@ public class UserProfileService {
         // Si la requête est incomplète
         if (!UserProfileValidator.isUserProfileRequestComplete(request)) {
             return new ModifyResponse().fieldsMissing();
+        }
+
+        // Si le nom du profil est trop long
+        if (!UserProfileValidator.isNameFormatValid(request.getName())) {
+            return new ModifyResponse().invalidNameFormat();
+        }
+
+        // Si la description du profil est trop longue
+        if (!UserProfileValidator.isDescFormatValid(request.getDescription())) {
+            return new ModifyResponse().invalidDescFormat();
+        }
+
+        // Si les urls du profil sont trop longs
+        if (!UserProfileValidator.isUrlFormatValid(request.getUrls())) {
+            return new ModifyResponse().invalidURLFormat();
         }
 
         // Valider les URLs fournis

@@ -61,7 +61,7 @@ public class AccountController {
     // --------------------------------------------------------------------- //
     @GetMapping("/banner")
     @SessionAuthorize(AdminType.WEB)
-    public ResponseEntity<?> findAllForAuthor(@RequestHeader("Token") String token) {
+    public ResponseEntity<?> getBannerIDs(@RequestHeader("Token") String token) {
 
         BannerListResponse response = bannerService.getAll(token);
         return ResponseEntity.status(response.getStatus()).body(response);

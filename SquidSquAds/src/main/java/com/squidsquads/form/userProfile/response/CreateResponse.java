@@ -9,6 +9,9 @@ public class CreateResponse {
     private static final String EXISTING_PROFILE = "Nom de profil déjà utilisé";
     private static final String INVALID_URL = "URL invalide";
     private static final String INVALID_ACCOUNT_NUMBER = "Numéro de compte invalide";
+    private static final String INVALID_NAME_FORMAT = "Le nom du profil ne peut dépasser 100 caractères";
+    private static final String INVALID_DESC_FORMAT = "La description du profil ne peut dépasser 200 caractères";
+    private static final String INVALID_URL_FORMAT = "Les urls ciblés ne peuvent dépasser 200 caractères";
 
     private HttpStatus status;
     private String message;
@@ -51,6 +54,24 @@ public class CreateResponse {
     public CreateResponse invalidURL() {
         status = HttpStatus.BAD_REQUEST;
         message = INVALID_URL;
+        return this;
+    }
+
+    public CreateResponse invalidNameFormat() {
+        status = HttpStatus.BAD_REQUEST;
+        message = INVALID_NAME_FORMAT;
+        return this;
+    }
+
+    public CreateResponse invalidDescFormat() {
+        status = HttpStatus.BAD_REQUEST;
+        message = INVALID_DESC_FORMAT;
+        return this;
+    }
+
+    public CreateResponse invalidURLFormat() {
+        status = HttpStatus.BAD_REQUEST;
+        message = INVALID_URL_FORMAT;
         return this;
     }
 }

@@ -66,8 +66,7 @@ CREATE TABLE campagne
   image_mob          VARCHAR(100),
   url_de_redirection VARCHAR(100),
   date_debut         TIMESTAMP,
-  date_fin           TIMESTAMP,
-  budget             NUMERIC(8, 2)
+  date_fin           TIMESTAMP
 );
 
 CREATE TABLE profilutilisateur
@@ -138,13 +137,13 @@ CREATE TABLE infodesuivi
   id_infodesuivi      SERIAL PRIMARY KEY,
   id_agentutilisateur INTEGER NOT NULL,
   id_sitewebadmin     INTEGER NOT NULL,
-  empreinte           VARCHAR(200),
+  empreinte           UUID,
   urlactuel           VARCHAR(200),
   urlprovenance       VARCHAR(200),
   adresse_ipv4        VARCHAR(50),
   adresse_ipv6        VARCHAR(50),
   taille_ecran        VARCHAR(50),
-  langue              VARCHAR(50),
+  langue              VARCHAR(500),
   tempsecoule         INTEGER,
   date_heure          TIMESTAMP
 );
@@ -236,8 +235,7 @@ INSERT INTO campagne VALUES
     'https://i.imgur.com/BdMNBkM.png',
     'https://www.squidsquads.site',
     NOW(),
-    NOW(),
-    1
+    NOW()
   );
 
 INSERT INTO profilutilisateur VALUES
@@ -421,4 +419,4 @@ CREATE OR REPLACE VIEW vw_stat_year AS
       SELECT id_sitewebadmin, date_part('month', generate_series) mois, date_part('year', generate_series) annee, 0 countData FROM generate_series((CURRENT_DATE - INTERVAL '1 year')::timestamp,now()::timestamp, '1 month'),sitewebadmin order by id_sitewebadmin
     ) subQueryA
   GROUP BY annee,mois,id_sitewebadmin
-  ORDER BY id_sitewebadmin ASC, yearValue DESC,  mois DESC;
+  ORDER BY id_sitewebadmin ASC, yearValue ASC,  mois ASC;
