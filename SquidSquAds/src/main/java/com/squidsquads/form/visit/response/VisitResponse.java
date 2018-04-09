@@ -18,6 +18,11 @@ public class VisitResponse {
         return this;
     }
 
+    public VisitResponse autoFinancingDetected() {
+        status = HttpStatus.BAD_REQUEST;
+        return this;
+    }
+
     public HttpStatus getStatus() {
         return status;
     }

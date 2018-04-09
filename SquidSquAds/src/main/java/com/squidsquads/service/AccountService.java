@@ -14,7 +14,6 @@ import com.squidsquads.utils.session.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,9 +108,23 @@ public class AccountService {
             return new CreateResponse().invalidBankAccount();
         }
 
+        // Si le courriel du compte est trop long ou ne respecte pas le format d'un courriel valide
+        if (!AccountValidator.isEmailValid(createRequest.getEmail())) {
+            return new CreateResponse().invalidEmailFormat();
+        }
+
+        // Si le domaine de l'admin web est trop long
+        if (!AccountValidator.isDomainLengthValid(createRequest.getDomain())) {
+            return new CreateResponse().invalidDomainFormat();
+        }
+
         // Si les mots de passes ne correspondent pas
         if (!createRequest.getPassword().equals(createRequest.getConfirmPassword())) {
             return new CreateResponse().wrongPasswords();
+        }
+
+        if(!AccountValidator.isPasswordLengthValid(createRequest.getPassword())){
+            return new CreateResponse().invalidPasswordFormat();
         }
 
         // Si le courriel est déjà utilisé par un autre utilisateur
@@ -200,6 +213,10 @@ public class AccountService {
 
         // Si les nouveaux mots de passe ne correspondent pas
         if (!rpr.getNewPassword().equals(rpr.getConfirmNewPassword())) {
+            return new ResetPasswordResponse().wrongNewPasswords();
+        }
+
+        if(!AccountValidator.isPasswordLengthValid(rpr.getNewPassword())){
             return new ResetPasswordResponse().wrongNewPasswords();
         }
 

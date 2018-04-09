@@ -15,6 +15,7 @@ public class ServiceTestHelper {
 
     protected final int ACCOUNT_ID = 1;
     protected final int CAMPAIGN_ID = 4;
+    protected final int CAMPAIGN2_ID = 5;
 
     protected final String EMAIL_PUB = "ads@ads.com";
     protected final String EMAIL_WEB = "web@web.com";
@@ -26,6 +27,7 @@ public class ServiceTestHelper {
     protected final String DOMAIN = "https://www.google.ca";
 
     protected final String CAMPAIGN_NAME = "Ma campagne ultra!";
+    protected final String CAMPAIGN2_NAME = "Ma campagne améliorée!";
     protected final String REDIRECT_URL = "https://www.facebook.com";
     protected final Integer[] PROFILE_IDS = new Integer[]{41, 42, 43};
     protected final String START_DATE = "2018-01-01";
@@ -37,6 +39,7 @@ public class ServiceTestHelper {
     protected final String USER_PROFILE_NAME = "Les personnes naives";
     protected final String USER_PROFILE_DESCRIPTION = "On va se faire de l'oseille sur ces gens";
     protected final String[] USER_PROFILE_URLS = new String[]{"https://www.facebook.com", "https://www.google.com"};
+    protected final String[] INVALID_USER_PROFILE_URLS = new String[]{"https://www.google.ca/search?rlz=1C1CHBF_frCA746CA746&ei=0pfJWpjvMcaz5gKc-IWYBw&q=We%27re+no+strangers+to+love+You+know+the+rules+and+so+do+I+A+full+commitment%27s+what+I%27m+thinking+of+You+wouldn%27t+get+this+from+any+other+guy+I+just+wanna+tell+you+how+I%27m+feeling+Gotta+make+you+understand+Never+gonna+give+you+up+Never+gonna+let+you+down+Never+gonna+run+around+and+desert+you+Never+gonna+make+you+cry+Never+gonna+say+goodbye+Never+gonna+tell+a+lie+and+hurt+you&oq=We%27re+no+strangers+to+love+You+know+the+rules+and+so+do+I+A+full+commitment%27s+what+I%27m+thinking+of+You+wouldn%27t+get+this+from+any+other+guy+I+just+wanna+tell+you+how+I%27m+feeling+Gotta+make+you+understand+Never+gonna+give+you+up+Never+gonna+let+you+down+Never+gonna+run+around+and+desert+you+Never+gonna+make+you+cry+Never+gonna+say+goodbye+Never+gonna+tell+a+lie+and+hurt+you&gs_l=psy-ab.3..0i71k1l8.108037.108037.0.108369.1.1.0.0.0.0.0.0..0.0....0...1.1.64.psy-ab..1.0.0....0.-76x8BOE6BE", "https://www.google.com"};
 
     protected final int SITE_ID = 1;
     protected final int SITE_PROFILE_ID = 1;
@@ -85,6 +88,13 @@ public class ServiceTestHelper {
         campaign.setImgHorizontal(HOR_URL);
         campaign.setImgVertical(VER_URL);
         campaign.setImgMobile(MOB_URL);
+        return campaign;
+    }
+
+    public Campaign getCampaign2() {
+        Campaign campaign = getCampaign();
+        campaign.setAccountID(2);
+        campaign.setCampaignID(CAMPAIGN2_ID);
         return campaign;
     }
 

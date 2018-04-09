@@ -63,6 +63,22 @@ public class AccountTestHelper extends ServiceTestHelper {
         return buildCreateRequest(AdminType.WEB.name(), EMAIL_WEB, DOMAIN, "000-12345", CLEAR_PASSWORD, CLEAR_PASSWORD);
     }
 
+    public CreateRequest getCreateRequestWhereEmailFormatIsWrong() {
+        return buildCreateRequest(AdminType.WEB.name(), "sdfsdfsdfafsd", DOMAIN, BANK_ACCOUNT, CLEAR_PASSWORD, CLEAR_PASSWORD);
+    }
+
+    public CreateRequest getCreateRequestWhereEmailIsTooLong() {
+        return buildCreateRequest(AdminType.WEB.name(), "unNomBeaucoupTropLongQuiFaitAucunSens@UnDomaineBienTropLongQuiEstAucunementLogiqueConsiderantQuonDoitSenRappeler.org", DOMAIN, BANK_ACCOUNT, CLEAR_PASSWORD, CLEAR_PASSWORD);
+    }
+
+    public CreateRequest getCreateRequestWhereDomainIsTooLong() {
+        return buildCreateRequest(AdminType.WEB.name(), EMAIL_WEB, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", BANK_ACCOUNT, CLEAR_PASSWORD, CLEAR_PASSWORD);
+    }
+
+    public CreateRequest getCreateRequestWherePasswordIsTooLong() {
+        return buildCreateRequest(AdminType.WEB.name(), EMAIL_WEB, DOMAIN, BANK_ACCOUNT, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    }
+
     public CreateRequest getCreateRequestWherePasswordsDoNotMatch() {
         return buildCreateRequest(AdminType.WEB.name(), EMAIL_WEB, DOMAIN, BANK_ACCOUNT, CLEAR_PASSWORD, "not the same");
     }

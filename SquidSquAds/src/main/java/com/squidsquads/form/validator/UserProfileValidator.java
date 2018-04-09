@@ -3,6 +3,10 @@ package com.squidsquads.form.validator;
 import com.squidsquads.form.userProfile.request.CreateModifyRequest;
 
 public class UserProfileValidator {
+    private static final int NAME_MAX_LEN = 100;
+    private static final int DESC_MAX_LEN = 200;
+    private static final int URLS_MAX_LEN = 100;
+
 
     public static boolean isUserProfileRequestComplete(CreateModifyRequest req) {
 
@@ -28,4 +32,19 @@ public class UserProfileValidator {
                 */
     }
 
+    public static boolean isNameFormatValid(String name) {
+        return name.length() <= NAME_MAX_LEN;
+    }
+
+    public static boolean isDescFormatValid(String desc) {
+        return desc.length() <= DESC_MAX_LEN;
+    }
+
+    public static boolean isUrlFormatValid(String[] urls) {
+        for (String url : urls){
+            if (url.length() > URLS_MAX_LEN)
+                return false;
+        }
+        return true;
+    }
 }

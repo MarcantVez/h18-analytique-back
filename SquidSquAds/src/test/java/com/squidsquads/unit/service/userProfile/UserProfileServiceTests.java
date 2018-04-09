@@ -106,6 +106,24 @@ public class UserProfileServiceTests extends AbstractServiceTests {
     }
 
     @Test
+    public void createNameTooLong() {
+        CreateResponse createResponse = getUserProfileService().create(token, helper.getCreateModifyRequestWithNameTooLong());
+        assertCreateResponse(createResponse, HttpStatus.BAD_REQUEST, "Le nom du profil ne peut dépasser 100 caractères");
+    }
+
+    @Test
+    public void createDescTooLong() {
+        CreateResponse createResponse = getUserProfileService().create(token, helper.getCreateModifyRequestWithDescTooLong());
+        assertCreateResponse(createResponse, HttpStatus.BAD_REQUEST, "La description du profil ne peut dépasser 200 caractères");
+    }
+
+    @Test
+    public void createUrlsTooLong() {
+        CreateResponse createResponse = getUserProfileService().create(token, helper.getCreateModifyRequestWithUrlTooLong());
+        assertCreateResponse(createResponse, HttpStatus.BAD_REQUEST, "Les urls ciblés ne peuvent dépasser 200 caractères");
+    }
+
+    @Test
     public void createValid() {
         when(getUserProfileRepository().save(any(UserProfile.class))).thenReturn(helper.getUserProfile());
         when(getSiteRepository().save(any(Site.class))).thenReturn(helper.getSite());
@@ -234,6 +252,30 @@ public class UserProfileServiceTests extends AbstractServiceTests {
 
         reset(getAccountRepository());
         reset(getUserProfileRepository());
+    }
+
+    @Test
+    public void modifyNameTooLong() {
+        when(getAccountRepository().findByAccountID(anyInt())).thenReturn(helper.getAccountPub());
+        when(getUserProfileRepository().findByProfileIDAndAccountID(anyInt(), anyInt())).thenReturn(helper.getUserProfile());
+        ModifyResponse resp = getUserProfileService().modify(token, 1, helper.getCreateModifyRequestWithNameTooLong());
+        assertModifyResponse(resp, HttpStatus.BAD_REQUEST, "Le nom du profil ne peut dépasser 100 caractères");
+    }
+
+    @Test
+    public void modifyDescTooLong() {
+        when(getAccountRepository().findByAccountID(anyInt())).thenReturn(helper.getAccountPub());
+        when(getUserProfileRepository().findByProfileIDAndAccountID(anyInt(), anyInt())).thenReturn(helper.getUserProfile());
+        ModifyResponse resp = getUserProfileService().modify(token, 1, helper.getCreateModifyRequestWithDescTooLong());
+        assertModifyResponse(resp, HttpStatus.BAD_REQUEST, "La description du profil ne peut dépasser 200 caractères");
+    }
+
+    @Test
+    public void modifyUrlsTooLong() {
+        when(getAccountRepository().findByAccountID(anyInt())).thenReturn(helper.getAccountPub());
+        when(getUserProfileRepository().findByProfileIDAndAccountID(anyInt(), anyInt())).thenReturn(helper.getUserProfile());
+        ModifyResponse resp = getUserProfileService().modify(token, 1,helper.getCreateModifyRequestWithUrlTooLong());
+        assertModifyResponse(resp, HttpStatus.BAD_REQUEST, "Les urls ciblés ne peuvent dépasser 200 caractères");
     }
 
 
