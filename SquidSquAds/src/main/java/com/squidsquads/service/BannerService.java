@@ -261,7 +261,8 @@ public class BannerService {
                 // Pour chaque site
                 for (Site site : sites) {
                     int countTotalTargetedSites = (trackingInfoRepository.findAllByFingerprintAndCurrentUrl(Serializer.fromString(userFingerprint), site.getUrl())).size();
-                    sumProfilesRatio += countTotalTargetedSites / countTotalSites;
+                    if (countTotalSites > 0)
+                        sumProfilesRatio += (double) countTotalTargetedSites / (double) countTotalSites;
                     if (sumProfilesRatio > 0.0) {
                         countCiblee++;
                     }
