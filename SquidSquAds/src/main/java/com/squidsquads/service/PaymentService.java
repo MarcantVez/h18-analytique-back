@@ -73,14 +73,7 @@ public class PaymentService {
 
         for (Royalty royalty : royaltyList) {
             amount = amount.add(royalty.getAmount());
-            royalty.setClaimed(true);
-            royaltyRepository.save(royalty);
         }
-
-        Payment payment = new Payment(
-                accountID,
-                amount
-        );
 
         Boolean boolSuccess = false;
 
@@ -120,7 +113,7 @@ public class PaymentService {
 
                 ResponseEntity<String> responseTransaction = restTemplate.postForEntity(POST_URL_TRANSACTION, requestTransaction, String.class);
 
-                if (responseTransaction.getStatusCode().value() == 200) {
+                if (responseTransaction.getStatusCode().value() == 200 || responseTransaction.getStatusCode().value() == 202) {
                     boolSuccess = true;
                 }
             }
@@ -131,7 +124,13 @@ public class PaymentService {
         }
 
         if (boolSuccess) {
-            paymentRepository.save(payment);
+
+            for (Royalty royalty : royaltyList) {
+                royalty.setClaimed(true);
+                royaltyRepository.save(royalty);
+            }
+
+            paymentRepository.save(new Payment(accountID, amount));
             return new CreateResponse().ok();
         }
 
